@@ -35,18 +35,22 @@ class wfile:
     @staticmethod
     def _striptext(rawt):
         """ remove comments and blank lines"""
-        strippedtext = ''
+        ret = ''
+        data = 0b00 # 0b10 = escaped, 0b01 = commented
         for char in rawt:
-            if not strippedtext:
-                strippedtext += char
-            elif strippedtext[-1] in control.comment:
-                if char in control.endline or char in control.comment:
-                    strippedtext = strippedtext[:-1]
+            if char in control.escape  and not data & 0b10:
+                data ^= 0b10
+            elif char in control.comment and not data & 0b10:
+                data ^= 0b01
+            elif char in control.endline:
+                if not data & 0b10 and ret[-1] not in control.endline: #so no duplicate \ns
+                    ret += char
+                data &= 0b10
             else:
-                if char in control.endline and strippedtext[-1] in control.endline:
-                    continue
-                strippedtext += char
-        return strippedtext
+                data &= 0b01
+                if not data & 0b01:
+                    ret += char
+        return ret
     
     @staticmethod
     def tokenize(rawt):
