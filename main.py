@@ -1,6 +1,7 @@
 class control:
     endline = '\n\r;'
     comment = '#'
+    escape = '\\'
     whitespace = ' \t\x0b\x0c' + endline
     # digits = '0123456789abcdefABCDEF.,oOxX'
     # punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~._'
@@ -28,27 +29,30 @@ class wfile:
         self.filepath = filepath
         import codecs
         with codecs.open(filepath, 'r', encoding) as f:
-            self.rawtext = wfile._reducelines(f.read())
+            self.striptext = wfile._striptext(f.read())
+        self.tokens = wfile.tokenize(self.striptext)
 
     @staticmethod
-    def _reducelines(rawt):
+    def _striptext(rawt):
         """ remove comments and blank lines"""
-        ret = ''
+        strippedtext = ''
         for char in rawt:
-            if not ret:
-                ret += char
-                continue
-            elif ret[-1] in control.comment:
+            if not strippedtext:
+                strippedtext += char
+            elif strippedtext[-1] in control.comment:
                 if char in control.endline or char in control.comment:
-                    ret = ret[:-1]
+                    strippedtext = strippedtext[:-1]
             else:
-                #if ret is '' or ret[-1] #, add char
-                if char in control.endline and ret[-1] in control.endline:
-                    #if ret[-1] is \n and this is \n, then skip adding this \n
+                if char in control.endline and strippedtext[-1] in control.endline:
                     continue
-                ret += char
-        return ret
+                strippedtext += char
+        return strippedtext
+    
+    @staticmethod
+    def tokenize(rawt):
+        return rawt
     def __str__(self):
+        return str(self.tokens)
         return str(vars(self))
 
 
