@@ -14,8 +14,8 @@ class control:
     #          '+', '*', '-', '/', '%', '~', '|', '&', '^', '<', '>', '=')
     # unarayl = ()
     # unarayr = ()
+    # funcs = binfuncs + unarayl + unarayr
 
-    funcs = binfuncs + unarayl + unarayr
     @staticmethod
     def allin(totest, tocompareto):
         for s in totest:
@@ -35,8 +35,18 @@ class wfile:
         """ remove comments and blank lines"""
         ret = ''
         for char in rawt:
-            if char in control.comment:
-            if char in control.endline:
+            if not ret:
+                ret += char
+                continue
+            elif ret[-1] in control.comment:
+                if char in control.endline or char in control.comment:
+                    ret = ret[:-1]
+            else:
+                #if ret is '' or ret[-1] #, add char
+                if char in control.endline and ret[-1] in control.endline:
+                    #if ret[-1] is \n and this is \n, then skip adding this \n
+                    continue
+                ret += char
         return ret
     def __str__(self):
         return str(vars(self))
