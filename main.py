@@ -1,108 +1,129 @@
-class element:
-    def __init__(self, val, **kwargs):
-        pass
-class node:
-    def __init__(self, name, args = [], parens = None):
-        self.name = name
-        self.parens = ['', ''] or parens
-        self.args = args
-    def __str__(self):
-        return self.name + self.parens[0] + ', '.join(self.args) + self.parens[1]
-    def __repr__(self):
-        # return 'node({}, parens={}, args={})'.format(self.name, self.parens, self.args)
-        return '{}{}<{}>{}'.format(self.name, self.parens[0], self.args, self.parens[1])
 class control:
-    inbuilt_functions = {
-        'assign': {
-            '->': element('->', func=lambda l, r: None)
-        }
-    }
-            # {'unaryl':_cdict({'~':_oper('~', 13, 1)}),\
-             # 'unaryr':_cdict({'!':_oper('!', 14, 2)}),\
-             # 'binoper':_cdict(\
-                # {'assign': _cdict({                                                                                   \
-                #     '->' : _oper('->',  0), '<-' : _oper('<-',  0), '-?>': _oper('-?>', 0), '<?-': _oper('<?-', 0) }),\
-                #  'iassaign': _cdict({                                                                                 \
-                #     '+=' : _oper('+=',  0), '-=' : _oper('-=',  0), '*=' : _oper('*=',  0), '/=' : _oper('/=',  0),   \
-                #     '**=': _oper('**=', 0), '%=' : _oper('%=',  0), '>>=': _oper('>>=', 0), '<<=': _oper('<<=', 0),   \
-                #     '|=' : _oper('|=',  0), '&=' : _oper('&=',  0), '^=' : _oper('^=',  0)                         }),\
-                #  'math'  : _cdict({                                                                                   \
-                #     '+'  : _oper('+',  10), '-'  : _oper('-',  10), '*'  : _oper('*',  11), '/'  : _oper('/',  11),   \
-                #     '%'  : _oper('%',  11), '**' : _oper('**', 12)                                                 }),\
-                #  'bitwise':_cdict({                                                                                   \
-                #     '>>' : _oper('>>',  9), '<<' : _oper('<<',  9), '|'  : _oper('|',   4), '^'  : _oper('^',   5),   \
-                #     '&'  : _oper('&',   6)                                                                         }),\
-                #  'equality': _cdict({                                                                                 \
-                #     '>'  : _oper('>',   8), '<'  : _oper('<',   8), '<=' : _oper('<=',  8), '>=' : _oper('>=',  8),   \
-                #     '='  : _oper('=',   7), '!=': _oper('!=',   7)                                                 }),\
-                #  })
-    parens = {"l":('(','[','{'), "r":(')',']','}')}
-    escapechar = '\\'
-    quotechar = '\''
-    tokensepchar = ' '
-    linesepchar = '\n'
+    __all__ = []
+    #these are borrowed from "import string"
+    digits = '0123456789abcdefABCDEF.,oOxX'
+    punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~._'
+    parensr = '[({'
+    parensl = '])}'
+    parenstr = parensl + parensr + '\'\"'
+
+    delims = '!#$&;@\\`' + parenstr
+    whitespace = ' \t\n\r\x0b\x0c'
+    endline = '\n\r;'
+    comment = '#'
+
+    binfuncs = ('-?>', '<?-', '->', '<-', '==', '**', '<=', '>=', '!=', '>>', '<<',\
+             '+', '*', '-', '/', '%', '~', '|', '&', '^', '<', '>', '=')
+    unarayl = ()
+    unarayr = ()
+
+    funcs = binfuncs + unarayl + unarayr
+    @staticmethod
+    def allin(totest, tocompareto):
+        for s in totest:
+            if s not in tocompareto:
+                return False
+        return True
 
 class file:
-    def __init__(self, filepath):
+    def __init__(self, filepath, rawtext, values = None, stack = None):
         self.filepath = filepath
-        with open(filepath) as f:
-            self.rawlines = ''.join(f.readlines()).split(control.linesepchar)
-        self.rawlines = [l.strip('\n') for l in self.rawlines if l.strip()[0] != '#']
-        self.lines = file._parseraw(self.rawlines)
+        self.rawtext = rawtext
+        self.tokens = file.parsetokens(self.rawtext)
+        self.values = values or {}
+        self.stack = stack or []
+
+    @staticmethod
+    def parsetokens(rawt):
+        #generator
+        def tokenize(rawt):
+            ctokens = []
+            prev = ''
+            for c in rawt:
+                if c not in control.delims and c not in control.whitespace:
+                    prev += c
+                else:
+                    if prev:
+                        yield prev
+                    prev = ''
+                    yield c
+            if prev:
+                yield prev
+        def condensewhitespace(tokengen):
+            genline = []
+            commented = False
+            for t in tokengen:
+                if t in control.comment:
+                    commented = not commented
+                    continue
+                if t in control.endline:
+                    yield genline
+                    genline.clear()
+                    commented = False
+                elif not commented and t.strip(control.whitespace):
+                    genline.append(t)
+            yield genline
+
+        def condensetokens(linegen):
+            for line in linegen:
+                if not line:
+                    continue
+                yield line
+        return tuple(tuple(x) for x in condensetokens(condensewhitespace(tokenize(rawt))))
+
+    @staticmethod
+    def fromfile(filepath, encoding = 'utf-8'):
+        import codecs
+        with codecs.open(filepath, 'r', encoding) as f:
+            rawtext = f.read()
+        return file(filepath, rawtext)
 
     def __str__(self):
-        return "file '{}':\n{}".format(self.filepath, '\n'.join([str(e) for e in self.lines]))
+        return str(self.tokens)
 
-    def _parseraw(rawl):
-        import re #regex
-        def fixline(rawl):
-            """ TODO: This. It should do 'a*b' --> 'a * b'. """ 
-            # for parentype in control.parens['l'], control.parens['r']:
-                # for p in parentype:
-                # rawl = re.sub('([^ ]{}[^ ])')
-            return rawl
+    def evalexpr(self, fname, *args):
+        if __debug__:
+            assert len(args) == 2, args
+        args = (self.values[args[0]] if args[0] in self.values else args[0], \
+                self.values[args[1]] if args[1] in self.values else args[1])
 
-        def tokenize(rawl):
-            ret = ['']
-            isqouted = False
-            rawiter = iter(rawl)
-            for char in rawiter:
-                if char == control.escapechar:
-                    ret[-1] += next(rawiter)
-                    continue
-                if char == control.quotechar:
-                    isqouted = not isqouted
-                    if isqouted:
-                        ret.append(control.quotechar)
-                    continue
-                if isqouted:
-                    ret[-1] += char
+        if fname == '+':
+            self.values['_'] = float(args[0]) + float(args[1])
+
+        elif fname == '*':
+            self.values['_'] = float(args[0]) * float(args[1])
+
+        elif fname == '->' or fname == '<-':
+            fn = fname == '->'
+            self.values[args[not fn]] = args[fn]
+            if '_' in self.values:
+                del self.values['_']
+        else:
+            raise SyntaxError("Expression value of '{}' with args '{}'' isn't implemented yet!".format(fname, args))
+    def eval(self):
+        for line in self.tokens:
+            lineiter = iter(line)
+            for ele in lineiter:
+                if ele in control.binfuncs:
+                    if __debug__:
+                        assert len(self.stack) != 0 or '_' in self.values,\
+                            'cannot ' + ele + ' with an empty stack (values: ' + str(self.values) + ')'
+                        if len(self.stack) > 0 and isinstance(self.stack[-1], str):
+                            assert self.stack[-1] not in control.parensr, 'cannot ' + ele + ' with a paren on the left'
+                    assert 0, help(memoryview)
+                    n = next(lineiter)
+                    l = self.values['_'] if '_' in self.values else self.stack.pop()
+                    self.evalexpr(ele, n, l)
+                    print(self.values)
                 else:
-                    if char != control.tokensepchar:
-                        ret[-1] += char
-                    else:
-                        ret.append('')
-            return [v for v in ret if v]
-        def join(tokens):
-            ret = []
-            while tokens:
-                t = tokens.pop(0)
-                if t not in control.parens['l'] and t not in control.parens['r']:
-                    ret.append(node(t))
+                    self.stack.append(ele)
+        return self.values
 
-                elif t in control.parens['l']:
-                    ret[-1].parens[0] = t
-                    ret[-1].args.append(ret[-1])
 
-                elif t in control.parens['r']:
-                    tokens.insert(0, t)
-                    print(tokens)
-                    break
-            return ret
-        return tuple(join(tokenize(fixline(line))) for line in rawl)
 if __name__ == '__main__':
-    f = file('testcode.wc')
+    f = file.fromfile('testcode.wc')
     print(f)
+    print(f.eval())
 
 """
 @f1(arg)
@@ -110,6 +131,42 @@ if __name__ == '__main__':
    def func(): pass
 
 """
+
+
+
+
+
+
+
+"""
+('1,234.5', '*', '(', '1e4', '-', '2.4', ')', '-?>', 'b')
+1,234.5
+--
+*
+1,234.5
+--
+(
+*
+1,234.5
+--
+1e4
+(
+*
+1, 234.5
+--
+2.4
+-
+1e4
+(
+*
+1, 234.5
+"""
+
+
+
+
+
+
 
 
 
