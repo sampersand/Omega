@@ -2,35 +2,28 @@ class control:
     endline = '\n\r;'
     comment = '#'
     escape = '\\'
-    whitespace = ' \t\x0b\x0c' + endline
-    # digits = '0123456789abcdefABCDEF.,oOxX'
-    # punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~._'
-    # parensr = '[({'
-    # parensl = '])}'
-    # parenstr = parensl + parensr + '\'\"'
-
-    # delims = '!#$&;@\\`' + parenstr
-
-    # binfuncs = ('-?>', '<?-', '->', '<-', '==', '**', '<=', '>=', '!=', '>>', '<<',\
-    #          '+', '*', '-', '/', '%', '~', '|', '&', '^', '<', '>', '=')
-    # unarayl = ()
-    # unarayr = ()
-    # funcs = binfuncs + unarayl + unarayr
-
-    @staticmethod
-    def allin(totest, tocompareto):
-        for s in totest:
-            if s not in tocompareto:
-                return False
-        return True
-
+    nbwhitespace = ' \t\x0b\x0c'
+    whitespace = nbwhitespace + endline
+    punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~._' #stuff used to break apart things
+    opers = {
+        'binary':{'-?>', '<?-', '->', '<-', '==', '**', '<=', '>=', '!=', '>>', '<<',\
+                    '+',   '*',  '-',  '/',  '%',  '~',  '|',  '&',  '^',  '<',  '>',\
+                    '='},
+        'unary':{
+            'l':{'~'},\
+            'r':{'!'}
+        }
+    }
+    sortedopers = tuple(x for x in reversed(sorted(opers['binary']     |\
+                                  opers['unary']['l'] |\
+                                  opers['unary']['r'], key = lambda x: len(x)))) #sorted by length
 class wfile:
     def __init__(self, filepath, encoding = 'utf-8'):
         self.filepath = filepath
         import codecs
         with codecs.open(filepath, 'r', encoding) as f:
             self.striptext = wfile._striptext(f.read())
-        self.tokens = wfile.tokenize(self.striptext)
+        self.tokens = wfile._tokenize(self.striptext)
 
     @staticmethod
     def _striptext(rawt):
@@ -53,8 +46,29 @@ class wfile:
         return ret
     
     @staticmethod
-    def tokenize(rawt):
-        return rawt
+    def _tokenize(rawt):
+        """ goes thru, and splits them up first based upon control.sortedopers and then by control.punctuation. """
+        def tokenize(rawt):
+            for oper in control.sortedopers:
+                if oper in rawt:
+                    par = rawt.partition(oper)
+                    return tokenize(par[0]) + [par[1]] + tokenize(par[2])
+            for punc in control.punctuation + control.endline:
+                if punc in rawt:
+                    par = rawt.partition(punc)
+                    return tokenize(par[0]) + [par[1]] + tokenize(par[2])
+            return [rawt]
+        tokens = (token.strip(control.nbwhitespace) for token in tokenize(rawt))
+        ret = [[]]
+        for token in tokens:
+            if not token:
+                continue
+            if token in control.endline:
+                ret.append([])
+            else:
+                ret[-1].append(token)
+        return tuple(tuple(e) for e in ret)
+        # return tuple(x for x in tokenize(rawt) if x.strip(control.whitespace))
     def __str__(self):
         return str(self.tokens)
         return str(vars(self))
