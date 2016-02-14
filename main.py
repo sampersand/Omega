@@ -177,7 +177,6 @@ class control:
     }
     funcs = {
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
-        'else': lambda eles, locls: control._doFunc(eles, locls, 'else'),
     }
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
@@ -194,17 +193,8 @@ class control:
             if locls['$']:
                 eles[1][1][0].eval(locls)
             elif len(eles[1][1][1]) == 2:
-                eles[1][1][1][1].eval(locls)
+                eles[1][1][1].eval(locls)
 
-        elif funcname == 'else':
-            if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\t break!'
-                assert eles.val == ':', 'this shouldn\'t break!'
-                assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-                assert eles[1].val == ':', 'this shouldn\'t break!'
-            eles[1][0].eval(locls)
-            if locls['$']:
-                eles[1][1].eval(locls)
         else:
             raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
     @staticmethod
