@@ -1,10 +1,18 @@
 class oper:
-    def __init__(self, value, priority, oper):
+    def __init__(self, value, priority, func):
         self.value = value
         self.priority = priority
-        self.oper = oper
-class element:
-    pass
+        self.func = func
+    def __repr__(self):
+        return 'oper({}, {}, {})'.format(self.value, self.priority, self.func)
+    def __str__(self):
+        return self.value
+    def __lt__(self, other):
+        return self.priority < other.priority
+class group:
+    def __init__(self, val, *args):
+        self.val = val
+        self.args = args
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -105,10 +113,8 @@ class control:
             'r':{'!':oper('!', 1, lambda x: None)}
         }
     }
-    sortedopers = tuple(x for x in reversed(sorted(list(opers['binary'].keys()) +
-                                                   list(opers['unary']['l'].keys()) + 
-                                                   list(opers['unary']['r'].keys()),
-                                            key = lambda l: len(l)))) #sorted by length
+    allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
+    sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
 class wfile:
     def __init__(self, filepath, encoding = 'utf-8'):
         self.filepath = filepath
@@ -163,16 +169,33 @@ class wfile:
         return [l for l in ret if l]
 
     @staticmethod
-    def _compresstokens(tokens):
-        def findhighest(tokens):
-            pass
-        def fixline(line):
-            ret = []
-            for line in tokens:
-                ret.append(line)
-            return ret
+    def _compresstokens(linetokens):
+        def findhighest(linetokens):
+            if __debug__:
+                assert linetokens
+            highest = None
+            for elep in range(len(linetokens)):
+                ele = linetokens[elep]
+                if ele in control.allopers and (highest == None or
+                                                control.allopers[ele] > control.allopers[linetokens[highest]]):
+                    highest = elep
+            if __debug__:
+                assert highest != None
+            return highest
+
+        def fixtokens(line):
+            if len(line) <= 1:
+                return line
+            highest = findhighest(line)
+            oper = line[highest]
+            if oper in control.opers['binary']:
+                if __debug__:
+                    assert len(line) > 2, 'binary operator \'{}\' in {} needs to have 3+ elements!'.format(oper, line)
+                return group(oper, fixtokens(line[0:highest]), fixtokens(line[0:highest]), 
+            return None
+            
         ['a', '<-', '(', '1', '+', '2', ')']
-        return [fixline(line) for line in tokens]
+        return [fixtokens(line) for line in linetokens]
     def __str__(self):
         return str(self.compressedtokens)
         return str(vars(self))
