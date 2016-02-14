@@ -118,7 +118,7 @@ class control:
     }
     opers = {
         'binary':{
-            '::'  : oper('::',     0, lambda eles, locls: control._doOper(eles, locls, '@::')), # association
+            ':'  : oper(':',     0, lambda eles, locls: control._doOper(eles, locls, '@:')), # association
             '**'  : oper('**',     3, lambda eles, locls: control._doOper(eles, locls, '**' )), # power of
             '*'   : oper('*',      4, lambda eles, locls: control._doOper(eles, locls, '*'  )), # mult
             '/'   : oper('/',      4, lambda eles, locls: control._doOper(eles, locls, '/'  )), # div
@@ -176,7 +176,8 @@ class control:
         }
     }
     funcs = {
-        'if': lambda eles, locls: control._doFunc(eles, locls, 'if')
+        'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
+        'else': lambda eles, locls: control._doFunc(eles, locls, 'else'),
     }
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
@@ -186,10 +187,22 @@ class control:
         if funcname == 'if':
             if __debug__:
                 assert eles[0].val == funcname, 'this shouldn\t break!'
-                assert eles.val == '::', 'this shouldn\'t break!'
+                assert eles.val == ':', 'this shouldn\'t break!'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-                assert eles[1].val == '::', 'this shouldn\'t break!'
-            eles[1][0].eval(locls) #0 is 'if', 1 is '::', 2 is the if val
+                assert eles[1].val == ':', 'this shouldn\'t break!'
+            eles[1][0].eval(locls) # evaluates the condition
+            if locls['$']:
+                eles[1][1][0].eval(locls)
+            elif len(eles[1][1][1]) == 2:
+                eles[1][1][1][1].eval(locls)
+
+        elif funcname == 'else':
+            if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\t break!'
+                assert eles.val == ':', 'this shouldn\'t break!'
+                assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
+                assert eles[1].val == ':', 'this shouldn\'t break!'
+            eles[1][0].eval(locls)
             if locls['$']:
                 eles[1][1].eval(locls)
         else:
@@ -198,7 +211,7 @@ class control:
     def _doOper(eles, locls, funcname):
         if funcname[0] == '@':
             funcname = funcname[1:]
-            if funcname == '::':
+            if funcname == ':':
                 if __debug__:
                     assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
                 control.funcs[eles[0].val](eles, locls)
