@@ -87,10 +87,12 @@ class control:
     parens = {'l':'([{',
               'r':')]}'}
     allparens = ''.join(list(parens.values()))
-    alldelims = ','
+    alldelims = ',|'
     punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims#stuff used to break apart things, ignoring ._
     consts = {
-        'pi': math.pi,  'PI': math.pi,    'π': math.pi,   'Π': math.pi,
+        'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
+        'T': True, 'F': False, 'N':None, #these can be overriden
+        'pi': math.pi,  'PI': math.pi,      'π': math.pi,   'Π': math.pi,
         'e': math.e,    'E':  math.e,
         'k': 8.9875517873681764E9, 'K': 8.9875517873681764E9,
         'i': complex(0, 1), 'j':complex(0,1),
@@ -177,22 +179,37 @@ class control:
     }
     funcs = {
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
+        'for': lambda eles, locls: control._doFunc(eles, locls, 'for'),
+        'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
     }
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
 
     @staticmethod
     def _doFunc(eles, locls, funcname):
-        if funcname == 'if':
+        if __debug__:
+            assert eles[0].val == funcname, 'this shouldn\'t break'
+            assert eles.val == ':', 'this shouldn\'t break!'
+        if funcname == 'disp':
+            eles[1].eval(locls)
+            print(locls['$'])
+        elif funcname == 'if':
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\t break!'
-                assert eles.val == ':', 'this shouldn\'t break!'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
                 assert eles[1].val == ':', 'this shouldn\'t break!'
             eles[1][0].eval(locls) # evaluates the condition
             if locls['$']:
                 eles[1][1][0].eval(locls)
-            elif len(eles[1][1][1]) == 2:
+            elif len(eles[1][1]) == 2:
+                eles[1][1][1].eval(locls)
+        elif funcname == 'for':
+            if __debug__:
+                assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
+                assert eles[1].val == ':', 'this shouldn\'t break!'
+            eles[1][0].eval(locls) # evaluates the condition
+            if locls['$']:
+                eles[1][1][0].eval(locls)
+            elif len(eles[1][1]) == 2:
                 eles[1][1][1].eval(locls)
 
         else:
@@ -409,6 +426,19 @@ class wfile:
         return locls
 
 if __name__ == '__main__':
+    """
+    assignment:
+        a -> b
+        b <- a
+        a -+> b
+        b <+- a
+        ect, etc...
+    if statements:
+        if:(Condition):{Expression if true}:{Expression if false}
+        the false part is optional
+        The parenthesis used do not matter, so it can be
+        if:{a == b}:(a <+- 1):[b <+- 1]
+    """
     f = wfile('testcode.wc')
     print(f)
     print('--')
