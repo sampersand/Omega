@@ -186,10 +186,13 @@ class control:
             'r':{'!':oper('!', 2, lambda x, y: None)}
         }
     }
+    for delim in alldelims:
+        opers['unary']['l'][str(delim)] = oper(str(delim), 14, lambda x, y: y)
     funcs = {
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
         'for': lambda eles, locls: control._doFunc(eles, locls, 'for'),
         'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
+        'displ': lambda eles, locls: control._doFunc(eles, locls, 'displ'),
     }
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
@@ -198,9 +201,9 @@ class control:
     def _doFunc(eles, locls, funcname):
         if __debug__:
             assert eles[0].val == funcname, 'this shouldn\'t break'
-        if funcname == 'disp':
+        if funcname == 'disp' or funcname == 'displ':
             eles[1].eval(locls)
-            print(locls['$']) #keep this here!
+            print(locls['$'], end = '\n' if funcname == 'displ' else '') #keep this here!
         elif funcname == 'if':
             if __debug__:
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
@@ -216,7 +219,13 @@ class control:
         elif funcname == 'for':
             if __debug__:
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-            eles[1][0].eval(locls) # evaluates the condition
+            eles[1][0][0].eval(locls) # evaluates the condition
+            while True:
+                eles[1][0][1][0].eval(locls) #checks the statement
+                if not locls['$']:
+                    break
+                eles[1][1].eval(locls)
+                eles[1][0][1][1].eval(locls)
             if locls['$']:
                 eles[1][1][0].eval(locls)
             elif len(eles[1][1]) == 2:
@@ -449,19 +458,6 @@ class wfile:
         return locls
 
 if __name__ == '__main__':
-    """
-    assignment:
-        a -> b
-        b <- a
-        a -+> b
-        b <+- a
-        ect, etc...
-    if statements:
-        if:(Condition):{Expression if true}:{Expression if false}
-        the false part is optional
-        The parenthesis used do not matter, so it can be
-        if:{a == b}:(a <+- 1):[b <+- 1]
-    """
     f = wfile('testcode.om')
     print(f)
     print('--')
