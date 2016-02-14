@@ -47,6 +47,8 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+    def isnull(self):
+        return not self and not self.hasparens() and not self.val
     def eval(self, locls):
         # print(self.val, self.val in control.funcs)
         if self.val in control.allopers:
@@ -173,7 +175,7 @@ class control:
             '->>'  : oper('->>',  13, lambda eles, locls: control._doOper(eles, locls, '@->>'))  # y >>= x 
              },\
         'unary':{
-            'l':{'~':oper('~', 1, lambda x: None)},
+            'l':{'~':oper('~', 1, lambda eles, locls: control._doOper(eles, locls, '@~'))},
             'r':{'!':oper('!', 2, lambda x: None)}
         }
     }
@@ -227,6 +229,11 @@ class control:
                 element = locls['$']
                 eles[1].eval(locls)
                 locls['$'] = (element or locls['$']) if funcname == 'or' else (element and locls['$'])
+            elif funcname in control.opers['unary']['l']:
+                if __debug__:
+                    assert eles[0].isnull(),eles #should be (nothing, item)
+                eles[1].eval(locls)
+                locls['$'] = ~locls['$']
             else:
                 # if funcname in ['<-', '->', '<?-', '->':
                 if funcname in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
@@ -260,6 +267,18 @@ class control:
                     elif funcname == '<>-'  or funcname == '->>' : locls[key] = value
         else:
             funcs = {
+            """
+
+
+
+
+
+            this here can be used for ~ and !. aka, instead of opers all pointing here, make it a little better :)
+
+
+
+
+            """
                 '**'  : lambda a, b: a ** b,
                 '*'   : lambda a, b: a * b,
                 '/'   : lambda a, b: a /  b,
@@ -370,24 +389,19 @@ class wfile:
             ret = group(parens = linegrp.parens) #universe
             while linegrp:
                 ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
-                if ele not in control.allparens and ele not in control.alldelims:
+                if ele not in control.allparens:
                     ret.append(group(ele))
-                el
+                else:
                     toappend = group()
-                    isdelim = ele in control.alldelims
-                    parens = isdelim
-                    while parens > (~isdelim + 1) and linegrp:
+                    parens = 1
+                    while parens > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
                         if toappend[-1] in control.parens['l']:
                             parens += 1
                         if toappend[-1] in control.parens['r']:
                             parens -= 1
-                        if parens == 0 and isdelim:
-                            break
                     if __debug__:
-                        print(toappend, ~isdelim + 1)
-                        # assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
-                        assert toappend[-1] in control.allparens or toappend[-1] in control.alldelims, toappend
+                        assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (ele, toappend.pop())
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
