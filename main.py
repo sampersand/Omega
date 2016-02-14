@@ -460,7 +460,7 @@ if __name__ == '__main__':
         The parenthesis used do not matter, so it can be
         if:{a == b}:(a <+- 1):[b <+- 1]
     """
-    f = wfile('testcode.wc')
+    f = wfile('testcode.om')
     print(f)
     print('--')
     print(f.eval())
