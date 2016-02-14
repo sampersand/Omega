@@ -49,13 +49,15 @@ class group(list):
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
     def eval(self, locls):
         if self.val in control.allopers:
-            # print(self.val, repr(self))
+            print(self.val,'in control.allopers')
             control.allopers[self.val].func(self, locls)
         else:
-            if self.val in locls:
-                print('self.val ({}) in locls ({}) !'.format(self.val, locls))
-                assert 0
-            return self.val
+            if self.val == '':
+                if __debug__:
+                    assert len(self) == 1 #expects 1 element (in parens)
+                self[0].eval(locls)
+            else:
+                locls['$'] = locls[self.val] if self.val in locls else float(self.val)
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -102,61 +104,101 @@ class control:
                     x <%-  y     x <&- y     x <|- y     x <^- y     x <<<- y    x <>>- y
                     And their inverses
             """
-    def test(eles, locls):
-        print(repr(eles[0]), locls)
-        locls.__setitem__(eles[0], eles[1]) # x = y
+    def _dofunc(eles, locls, func):
+        if func[0] == '@':
+            func = func[1:]
+            if func == 'or' or func == 'and':
+                eles[0].eval(locls)
+                element = locls['$']
+                eles[1].eval(locls)
+                locls['$'] = (element or locls['$']) if func == 'or' else (element and locls['$'])
+            else:
+                # if func in ['<-', '->', '<?-', '->':
+                if func in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
+                    eles[1].eval(locls)
+                    value =locls['$']
+                    key = eles[0].val
+                else:
+                    eles[0].eval(locls)
+                    value =locls['$']
+                    key = eles[1].val
+
+                if __debug__:
+                    assert func == '<-' or func == '->' or key in locls,\
+                        '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, func)
+                    if   func == '<-'   or func == '->'  : locls[key] = value
+                    elif func == '<?-'  or func == '-?>' : locls[key] = value if value else locls[key]
+                    elif func == '<+-'  or func == '-+>' : locls[key] += value
+                    elif func == '<--'  or func == '-->' : locls[key] = value
+                    elif func == '<*-'  or func == '-*>' : locls[key] = value
+                    elif func == '</-'  or func == '-/>' : locls[key] = value
+                    elif func == '<**-' or func == '-**>': locls[key] = value
+                    elif func == '<%-'  or func == '-%>' : locls[key] = value
+                    elif func == '<&-'  or func == '-&>' : locls[key] = value
+                    elif func == '<|-'  or func == '-|>' : locls[key] = value
+                    elif func == '<^-'  or func == '-^>' : locls[key] = value
+                    elif func == '<<-'  or func == '-<>' : locls[key] = value
+                    elif func == '<>-'  or func == '->>' : locls[key] = value
+        else:
+            eles[0].eval(locls)
+            ret = locls['$']
+            for ele in eles[1:]:
+                ele.eval(locls)
+                print(locls)
+                ret = getattr(ret, func)(locls['$'])
+            locls['$'] = ret# x = y
     opers = {
         'binary':{
-            ':'   : oper(':',      0, lambda eles, locls: None), # association
-            '**'  : oper('**',     3, lambda eles, locls: None), # power of
-            '*'   : oper('*',      4, lambda eles, locls: None), # mult
-            '/'   : oper('/',      4, lambda eles, locls: None), # div
-            '%'   : oper('%',      4, lambda eles, locls: None), # mod
-            '+'   : oper('+',      5, lambda eles, locls: None), # plus
-            '-'   : oper('-',      5, lambda eles, locls: None), # minus
-            'b<<' : oper('b<<',    6, lambda eles, locls: None), # bitwise <<
-            'b>>' : oper('b<<',    6, lambda eles, locls: None), # bitwise >>
-            'b&'  : oper('b&',     7, lambda eles, locls: None), # bitwise &
-            'b^'  : oper('b^',     8, lambda eles, locls: None), # bitwise ^
-            'b|'  : oper('b|',     9, lambda eles, locls: None), # bitwise |
-            '<'   : oper('<',     10, lambda eles, locls: None), # less than
-            '>'   : oper('>',     10, lambda eles, locls: None), # greater than
-            '<='  : oper('<=',    10, lambda eles, locls: None), # less than or equal
-            '>='  : oper('>=',    10, lambda eles, locls: None), # greater than or equal
-            '=='  : oper('==',    10, lambda eles, locls: None), # equal to
-            '!='  : oper('!=',    10, lambda eles, locls: None), # not equal to
-            '&&'  : oper('&&',    11, lambda eles, locls: None), # boolean and
-            '||'  : oper('||',    12, lambda eles, locls: None), # booleon or
+            ':'   : oper(':',      0, lambda eles, locls: control._dofunc(eles, locls, ...)), # association
+            '**'  : oper('**',     3, lambda eles, locls: control._dofunc(eles, locls, '__pow__')), # power of
+            '*'   : oper('*',      4, lambda eles, locls: control._dofunc(eles, locls, '__mul__')), # mult
+            '/'   : oper('/',      4, lambda eles, locls: control._dofunc(eles, locls, '__div__')), # div
+            '%'   : oper('%',      4, lambda eles, locls: control._dofunc(eles, locls, '__mod__')), # mod
+            '+'   : oper('+',      5, lambda eles, locls: control._dofunc(eles, locls, '__add__')), # plus
+            '-'   : oper('-',      5, lambda eles, locls: control._dofunc(eles, locls, '__sub__')), # minus
+            'b<<' : oper('b<<',    6, lambda eles, locls: control._dofunc(eles, locls, '__lshift__')), # bitwise <<
+            'b>>' : oper('b<<',    6, lambda eles, locls: control._dofunc(eles, locls, '__rshift__')), # bitwise >>
+            'b&'  : oper('b&',     7, lambda eles, locls: control._dofunc(eles, locls, '__and__')), # bitwise &
+            'b^'  : oper('b^',     8, lambda eles, locls: control._dofunc(eles, locls, '__xor__')), # bitwise ^
+            'b|'  : oper('b|',     9, lambda eles, locls: control._dofunc(eles, locls, '__or__')), # bitwise |
+            '<'   : oper('<',     10, lambda eles, locls: control._dofunc(eles, locls, '__lt__')), # less than
+            '>'   : oper('>',     10, lambda eles, locls: control._dofunc(eles, locls, '__gt__')), # greater than
+            '<='  : oper('<=',    10, lambda eles, locls: control._dofunc(eles, locls, '__le__')), # less than or equal
+            '>='  : oper('>=',    10, lambda eles, locls: control._dofunc(eles, locls, '__ge__')), # greater than or equal
+            '=='  : oper('==',    10, lambda eles, locls: control._dofunc(eles, locls, '__eq__')), # equal to
+            '!='  : oper('!=',    10, lambda eles, locls: control._dofunc(eles, locls, '__neq__')), # not equal to
+            '&&'  : oper('&&',    11, lambda eles, locls: control._dofunc(eles, locls, '@and')), # boolean and
+            '||'  : oper('||',    12, lambda eles, locls: control._dofunc(eles, locls, '@or')), # booleon or
             #assignment operators
             # all notes are in form of "x OPERATOR y" like 'x <- y'
-            '<-'   : oper('<-',   13, lambda eles, locls: control.test(eles, locls)),#locls.__setitem__(eles[0], eles[1])), # x = y
-            '<?-'  : oper('<?-',  13, lambda eles, locls: None), # x = bool(y) ? y : None
-            '<+-'  : oper('<+-',  13, lambda eles, locls: None), # x += y
-            '<--'  : oper('<--',  13, lambda eles, locls: None), # x -= y
-            '<*-'  : oper('<*-',  13, lambda eles, locls: None), # x *= y
-            '</-'  : oper('</-',  13, lambda eles, locls: None), # x /= y
-            '<**-' : oper('<**-', 13, lambda eles, locls: None), # x **= y
-            '<%-'  : oper('<%-',  13, lambda eles, locls: None), # x %= y
-            '<&-'  : oper('<&-',  13, lambda eles, locls: None), # x &= y
-            '<|-'  : oper('<|-',  13, lambda eles, locls: None), # x |= y
-            '<^-'  : oper('<^-',  13, lambda eles, locls: None), # x ^= y
-            '<<-'  : oper('<<-',  13, lambda eles, locls: None), # x <<= y
-            '<>-'  : oper('<>-',  13, lambda eles, locls: None), # x >>= y
+            '<-'   : oper('<-',   13, lambda eles, locls: control._dofunc(eles, locls, '@<-')), # x = y
+            '<?-'  : oper('<?-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<?-')), # x = bool(y) ? y : None
+            '<+-'  : oper('<+-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<+-')), # x += y
+            '<--'  : oper('<--',  13, lambda eles, locls: control._dofunc(eles, locls, '@<--')), # x -= y
+            '<*-'  : oper('<*-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<*-')), # x *= y
+            '</-'  : oper('</-',  13, lambda eles, locls: control._dofunc(eles, locls, '@</-')), # x /= y
+            '<**-' : oper('<**-', 13, lambda eles, locls: control._dofunc(eles, locls, '@<**-')), # x **= y
+            '<%-'  : oper('<%-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<%-')), # x %= y
+            '<&-'  : oper('<&-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<&-')), # x &= y
+            '<|-'  : oper('<|-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<|-')), # x |= y
+            '<^-'  : oper('<^-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<^-')), # x ^= y
+            '<<-'  : oper('<<-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<<-')), # x <<= y
+            '<>-'  : oper('<>-',  13, lambda eles, locls: control._dofunc(eles, locls, '@<>-')), # x >>= y
             #inverted assignment operators
             # all notes are in form of "x OPERATOR y" like 'x -> y'
-            '->'   : oper('->',   13, lambda eles, locls: None), # y = x
-            '-?>'  : oper('-?>',  13, lambda eles, locls: None), # y = bool(x) ? x : None
-            '-+>'  : oper('-+>',  13, lambda eles, locls: None), # y += x
-            '-->'  : oper('-->',  13, lambda eles, locls: None), # y -= x 
-            '-*>'  : oper('-*>',  13, lambda eles, locls: None), # y *= x 
-            '-/>'  : oper('-/>',  13, lambda eles, locls: None), # y /= x 
-            '-**>' : oper('-**>', 13, lambda eles, locls: None), # y **= x 
-            '-%>'  : oper('-%>',  13, lambda eles, locls: None), # y %= x 
-            '-&>'  : oper('-&>',  13, lambda eles, locls: None), # y &= x 
-            '-|>'  : oper('-|>',  13, lambda eles, locls: None), # y |= x 
-            '-^>'  : oper('-^>',  13, lambda eles, locls: None), # y ^= x 
-            '-<>'  : oper('-<>',  13, lambda eles, locls: None), # y <<= x 
-            '->>'  : oper('->>',  13, lambda eles, locls: None)  # y >>= x 
+            '->'   : oper('->',   13, lambda eles, locls: control._dofunc(eles, locls, '@->' )), # y = x
+            '-?>'  : oper('-?>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-?>')), # y = bool(x) ? x : None
+            '-+>'  : oper('-+>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-+>')), # y += x
+            '-->'  : oper('-->',  13, lambda eles, locls: control._dofunc(eles, locls, '@-->')), # y -= x 
+            '-*>'  : oper('-*>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-*>')), # y *= x 
+            '-/>'  : oper('-/>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-/>')), # y /= x 
+            '-**>' : oper('-**>', 13, lambda eles, locls: control._dofunc(eles, locls, '@-**>')), # y **= x 
+            '-%>'  : oper('-%>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-%>')), # y %= x 
+            '-&>'  : oper('-&>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-&>')), # y &= x 
+            '-|>'  : oper('-|>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-|>')), # y |= x 
+            '-^>'  : oper('-^>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-^>')), # y ^= x 
+            '-<>'  : oper('-<>',  13, lambda eles, locls: control._dofunc(eles, locls, '@-<>')), # y <<= x 
+            '->>'  : oper('->>',  13, lambda eles, locls: control._dofunc(eles, locls, '@->>'))  # y >>= x 
              },\
         'unary':{
             'l':{'~':oper('~', 1, lambda x: None)},
@@ -284,9 +326,15 @@ class wfile:
             s = fixtkns(group(args = line[0:fhp]))
             e = fixtkns(group(args = line[fhp + 1:]))
             if s != None:
-                ret += s
+                if len(s) == 1 and not s.val and not s.hasparens():
+                    ret.append(s[0])
+                else:
+                    ret.append(s)
             if e != None:
-                ret += e
+                if len(e) == 1 and not e.val and not e.hasparens():
+                    ret.append(e[0])
+                else:
+                    ret.append(e)
             return ret
 
         return group(args = [fixtkns(compresstokens(group(args = line))) for line in linetokens])
@@ -296,6 +344,7 @@ class wfile:
         locls = {}
         for line in self:
             line.eval(locls)
+        del locls['$']
         return locls
 
 if __name__ == '__main__':
