@@ -195,11 +195,11 @@ class control:
     }
     for delim in alldelims:
         opers['unary']['l'][str(delim)] = oper(str(delim), 14, lambda x, y: y)
-    funcs = {
+    funcs = { #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
         'for': lambda eles, locls: control._doFunc(eles, locls, 'for'),
-        'quit': lambda eles, locls: control._doFunc(eles, locls, 'quit'),
         'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
+        'abort': lambda eles, locls: control._doFunc(eles, locls, 'abort'),
         'displ': lambda eles, locls: control._doFunc(eles, locls, 'displ'),
     }
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
@@ -207,15 +207,24 @@ class control:
 
     @staticmethod
     def _doFunc(eles, locls, funcname):
-        if __debug__:
-            assert eles[0].val == funcname, 'this shouldn\'t break'
         if funcname == 'disp' or funcname == 'displ':
+            if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\'t break'
             eles[1].eval(locls)
             print(locls['$'], end = '\n' if funcname == 'displ' else '') #keep this here!
-        elif funcname == 'quit':
-            print(eles[1])
+        elif funcname == 'abort':
+            if len(eles) == 0:
+                locls['$'] = ''
+            else:
+                if __debug__:
+                    assert eles[0].val == funcname, 'this shouldn\'t break'
+                eles[1].eval(locls)
+            if __debug__:
+                assert '$' in locls
+            quit('Aborting!' + ('' if locls['$'] == '' else ' Message: \'{}\''.format(str(locls['$']))))
         elif funcname == 'if':
             if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\'t break'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0].eval(locls) # evaluates the condition
             # if len(eles[1])
@@ -228,6 +237,7 @@ class control:
                 eles[1][1][1].eval(locls)
         elif funcname == 'for':
             if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\'t break'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0][0].eval(locls) # evaluates the condition
             while True:

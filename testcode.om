@@ -1,3 +1,4 @@
 1 -> a;
-n -> b;
-quit;
+100 -> b;
+abort:b;
+displ:1;
