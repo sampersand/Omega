@@ -332,7 +332,27 @@ if __name__ == '__main__':
 
 
 group(val = '',
-      args = [group(val = 'a', args = [], parens = ['', '']), group(val = '<-', args = [], parens = ['', '']), group(val = '', args = [], parens = ('[', ']')), group(val = '', args = ['1', '+', '2'], parens = ('(', ')'))], parens = ['', ''])
+      args = [
+        group(val = 'a',
+              args = [],
+              parens = ['', '']),
+        group(val = '<-',
+              args = [],
+              parens = ['', '']),
+        group(val = 'arary',
+              args = [],
+              parens = ['', '']),
+        group(val = '',
+              args = ['position'],
+              parens = ('[', ']')),
+        group(val = '+',
+              args = [],
+              parens = ['', '']),
+        group(val = '',
+              args = ['1', '+', '2'],
+              parens = ('(', ')'))
+        ],
+      parens = ['', ''])
 
 
 """
