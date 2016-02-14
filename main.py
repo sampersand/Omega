@@ -91,11 +91,12 @@ class control:
     datadef = '@'
     nbwhitespace = ' \t\x0b\x0c'
     whitespace = nbwhitespace + linebreak
+    alldelims = ',|' + endline
+    allquotes = '\'\"`'
     parens = {'l':'([{',
               'r':')]}'}
-    allparens = ''.join(list(parens.values()))
-    alldelims = ',|' + endline
-    punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims #stuff used to break apart things, ignoring ._
+    allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
+    punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
     consts = {
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
         'T': True, 'F': False, 'N':None, #these can be overriden
@@ -358,8 +359,10 @@ class wfile:
             elif char in control.linebreak:
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns
                     # ret += char
-                data &= 0b10
+                data &= 0b10 #remove comments
             else:
+                if data & 0b10:
+                    ret += control.escape
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
@@ -372,9 +375,11 @@ class wfile:
             for oper in control.sortedopers:
                 if oper in rawt:
                     par = rawt.partition(oper)
+                    if rawt[rawt.index(oper) - 1] in control.escape:
+                        return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             for punc in control.punctuation + control.endline:
-                if punc in rawt:
+                if punc in rawt and rawt[rawt.index(punc) - 1] not in control.escape:
                     par = rawt.partition(punc)
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
@@ -382,13 +387,16 @@ class wfile:
             
 
         ret = []
-        for token in tokens:
+
+        for token in tokens: #clear empty lines
             if not token:
                 continue
             else:
                 ret.append(token)
+
+        #@define stuff
         linep = 0
-        while linep < len(ret):
+        while linep < len(ret): 
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
