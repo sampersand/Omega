@@ -26,7 +26,8 @@ class group(list):
     def __repr__(self):
         return 'group(val = {}, args = {}, parens = {})'.format(repr(self.val), super().__repr__(), repr(self.parens))
     def __str__(self):
-        return str(self.val) + str(self.parens[0]) + str([str(x) for x in self]) + str(self.parens[1])
+        
+        return ''.join((str(self.val), str(self.parens[0]), ''.join(str(x) for x in self), str(self.parens[1])))
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -237,7 +238,7 @@ class wfile:
             fhp = findhighest(line)
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
-            ret = group(val = line[fhp].val, parens = line[fhp].parens)
+            ret = group(val = line[fhp].val, parens = line.parens)
             s = fixtkns(line[0:fhp])
             e = fixtkns(line[fhp + 1:])
             if s != None:
