@@ -23,17 +23,20 @@ class group(list):
             assert len(parens) == 2, parens
         self.val = val
         self.parens = parens
+
     def __repr__(self):
         return 'group(val = {}, args = {}, parens = {})'.format(repr(self.val), super().__repr__(), repr(self.parens))
+
     def __str__(self):
-        if not self and not self.parens[0] and not self.parens[1]:
-            return str(self.val)
+        if not self:
+            return ''.join((str(self.parens[0]), str(self.val), str(self.parens[1])))
         if self.val in control.opers['binary']:
             if __debug__:
                 assert len(self) == 2, repr(self)
                 assert len(self.parens) == 2, repr(self)
-            return ' '.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
+            return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -205,12 +208,11 @@ class wfile:
             for elep in range(len(linegrp)):
                 ele = linegrp[elep].val
                 if ele in control.allopers and (highest == None or
-                        control.allopers[ele] > control.allopers[linetokens[highest].val]):
+                        control.allopers[ele] > control.allopers[linegrp[highest].val]):
                     highest = elep
             if __debug__:
-                assert highest != None, 'no highest for ' + str(linetokens)
+                assert highest != None, 'no highest for ' + str(linegrp)
             return highest
-
         def compresstokens(linegrp): #this is non-stable
             ret = group(parens = linegrp.parens) #universe
             while linegrp:
@@ -232,25 +234,29 @@ class wfile:
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
             return ret
-
         def fixtkns(line):
+            print('line:',line)
             if not line:
+                print('returning position a:',line, line)
                 return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
-                    return line[0]
+                    # print('returning position b:',line[0], line)
+                    return line
                 else:
+                    print('returning position c:',line[0], line)
                     return fixtkns(line[0])
             fhp = findhighest(line)
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
             ret = group(val = line[fhp].val, parens = line.parens)
-            s = fixtkns(line[0:fhp])
-            e = fixtkns(line[fhp + 1:])
+            s = fixtkns(group(args = line[0:fhp]))
+            e = fixtkns(group(args = line[fhp + 1:]))
             if s != None:
                 ret.append(s)
             if e != None:
                 ret.append(e)
+            print('returning position d', ret, line)
             return ret
             """
                 private static TokenNode condense(final Collection<TokenNode> line){
@@ -294,8 +300,8 @@ class wfile:
             #                  args = [fixtkns(line[0:highest]), fixtkns(line[highest + 1:])],
             #                  parens = oper.parens)
             # return None
-
-        return group('',list(fixtkns(compresstokens(group('',line))) for line in linetokens))
+        # assert 0, '\n'.join([str(fixtkns(compresstokens(group(args = line)))) for line in linetokens])
+        return group(args = [fixtkns(compresstokens(group(args = line))) for line in linetokens])
     def __str__(self):
         return str(self.compressedtokens)
 
