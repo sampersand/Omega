@@ -7,7 +7,9 @@ if:expr:{
     0 -> a,
     displ:$,
     if:[a!]:{
-        displ:1000
+        displ:1000;
     }
 };
+;;
 displ:T!
+;;

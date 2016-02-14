@@ -321,17 +321,26 @@ class wfile:
         import copy
         self.lines = wfile._compresstokens(copy.deepcopy(self.tokens))
     
-    def __iter__(self):
-        return iter(self.lines)
-    
     def __str__(self):
-        ret = 'file \'{}\':\n==[start]==\n'.format(self.filepath)
-        pos = 1
-        for line in self.lines:
-            ret += '\n{}: \t{}'.format(pos, line)
-            pos+=1
-        return ret + '\n\n==[ end ]=='
-        # return 'file \'{}\':\n>>\t{}'.format(self.filepath, '\n\t'.join(str(line) for line in self.lines))
+        def getl(linep, l):
+            if not l:
+                assert str(l) == ';' #no other known case atm
+                return linep, ''
+            if __debug__:
+                assert l[0].val not in control.endline or not l[0].val, l[0].val # node structure should prevent this.
+            ret = ''
+            if l[0]:
+                ret = '\n{}:  \t{}'.format(linep, l[0])
+                linep += 1
+            if l[1].val not in control.endline:
+                ret += '\n{}:  \t{}'.format(linep, l[1])
+                linep += 1
+            else:
+                e = getl(linep, l[1])
+                ret += e[1]
+                linep += e[0]
+            return linep, ret
+        return 'file \'{}\':\n==[start]==\n{}\n\n==[ end ]=='.format(self.filepath, getl(0, self.lines)[1])
 
     @staticmethod
     def _striptext(rawt):
@@ -369,20 +378,18 @@ class wfile:
         tokens = [token.strip(control.nbwhitespace) for token in tokenize(rawt)]
             
 
-        ret = [[]]
+        ret = []
         for token in tokens:
             if not token:
                 continue
-            # if token in control.endline:
-                # ret.append([])
             else:
-                ret[-1].append(token)
+                ret.append(token)
         linep = 0
         while linep < len(ret):
-            if ret[linep] and ret[linep][0] in control.datadef:
+            if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        return [l for l in ret if l]
+        return ret
 
     @staticmethod
     def _compresstokens(linetokens):
@@ -445,14 +452,12 @@ class wfile:
                 else:
                     ret.append(e)
             return ret
-
-        return group(args = [fixtkns(compresstokens(group(args = line))) for line in linetokens])
+        return fixtkns(compresstokens(group(args = linetokens)))
     
 
     def eval(self):
         locls = {}
-        for line in self:
-            line.eval(locls)
+        self.lines.eval(locls)
         if '$' in locls:
             del locls['$']
         return locls
