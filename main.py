@@ -56,8 +56,19 @@ class group(list):
                 if __debug__:
                     assert len(self) == 1 #expects 1 element (in parens)
                 self[0].eval(locls)
+            elif self.val in locls:
+                locls['$'] = locls[self.val]
             else:
-                locls['$'] = locls[self.val] if self.val in locls else float(self.val)
+                if self.val in control.consts:
+                    locls['$'] = control.consts[self.val]
+                else:
+                    try:
+                        locls['$'] = int(self.val)
+                    except ValueError:
+                        try:
+                            locls['$'] = float(self.val)
+                        except ValueError:
+                            locls['$'] = complex(self.val) #will crash if this doesnt succeed
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -67,7 +78,85 @@ class control:
     parens = {'l':'([{','r':')]}'}
     allparens = ''.join(list(parens.values()))
     alldelims = ',:'
+    import math
+    from random import random
+    consts = {
+        'pi': math.pi,  'PI': math.pi,    'π': math.pi,   'Π': math.pi,
+        'e': math.e,    'E':  math.e,
+        'k': 8.9875517873681764E9, 'K': 8.9875517873681764E9,
+        'i': complex(0, 1), 'j':complex(0,1),
+        'nan':float('nan'), 'NAN': float('nan'),
+        'inf':float('inf'), '∞': float('inf'),
+        'rand':random(),
+        '½': 1 / 2,
+        '⅓': 1 / 3,
+        '⅔': 2 / 3,
+        '¼': 1 / 4,
+        '¾': 3 / 4,
+        '⅕': 1 / 5,
+        '⅖': 2 / 5,
+        '⅗': 3 / 5,
+        '⅘': 4 / 5,
+        '⅙': 1 / 6,
+        '⅚': 5 / 6,
+        '⅐': 1 / 7,
+        '⅛': 1 / 8,
+        '⅜': 3 / 8,
+        '⅝': 5 / 8,
+        '⅞': 7 / 8,
+        '⅑': 1 / 9,
+        '⅒': 1/ 10,
+
+    }
+    del math, random
     punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims#stuff used to break apart things, ignoring ._
+    def _dofunc(eles, locls, func):
+        if func[0] == '@':
+            func = func[1:]
+            if func == 'or' or func == 'and':
+                eles[0].eval(locls)
+                element = locls['$']
+                eles[1].eval(locls)
+                locls['$'] = (element or locls['$']) if func == 'or' else (element and locls['$'])
+            else:
+                # if func in ['<-', '->', '<?-', '->':
+                if func in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
+                    eles[1].eval(locls)
+                    value =locls['$']
+                    key = eles[0].val
+                else:
+                    eles[0].eval(locls)
+                    value =locls['$']
+                    key = eles[1].val
+
+                if __debug__:
+                    assert func == '<-'  or\
+                           func == '->'  or\
+                           func == '<?-' or\
+                           func == '-?>' or\
+                           key in locls, '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, func)
+                    if   func == '<-'   or func == '->'  : locls[key] = value
+                    elif func == '<?-'  or func == '-?>' :
+                        locls[key] = value if value else (locls[key] if key in locls else None)
+                    elif func == '<+-'  or func == '-+>' : locls[key] += value
+                    elif func == '<--'  or func == '-->' : locls[key] = value
+                    elif func == '<*-'  or func == '-*>' : locls[key] = value
+                    elif func == '</-'  or func == '-/>' : locls[key] = value
+                    elif func == '<**-' or func == '-**>': locls[key] = value
+                    elif func == '<%-'  or func == '-%>' : locls[key] = value
+                    elif func == '<&-'  or func == '-&>' : locls[key] = value
+                    elif func == '<|-'  or func == '-|>' : locls[key] = value
+                    elif func == '<^-'  or func == '-^>' : locls[key] = value
+                    elif func == '<<-'  or func == '-<>' : locls[key] = value
+                    elif func == '<>-'  or func == '->>' : locls[key] = value
+        else:
+            eles[0].eval(locls)
+            ret = locls['$']
+            for ele in eles[1:]:
+                ele.eval(locls)
+                print(locls)
+                ret = getattr(ret, func)(locls['$'])
+            locls['$'] = ret# x = y
     """
                 1   ()   []   ->   .   ::
                 2   !   ~   -   +   *   &   sizeof   type cast   ++   --  
@@ -104,53 +193,10 @@ class control:
                     x <%-  y     x <&- y     x <|- y     x <^- y     x <<<- y    x <>>- y
                     And their inverses
             """
-    def _dofunc(eles, locls, func):
-        if func[0] == '@':
-            func = func[1:]
-            if func == 'or' or func == 'and':
-                eles[0].eval(locls)
-                element = locls['$']
-                eles[1].eval(locls)
-                locls['$'] = (element or locls['$']) if func == 'or' else (element and locls['$'])
-            else:
-                # if func in ['<-', '->', '<?-', '->':
-                if func in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
-                    eles[1].eval(locls)
-                    value =locls['$']
-                    key = eles[0].val
-                else:
-                    eles[0].eval(locls)
-                    value =locls['$']
-                    key = eles[1].val
-
-                if __debug__:
-                    assert func == '<-' or func == '->' or key in locls,\
-                        '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, func)
-                    if   func == '<-'   or func == '->'  : locls[key] = value
-                    elif func == '<?-'  or func == '-?>' : locls[key] = value if value else locls[key]
-                    elif func == '<+-'  or func == '-+>' : locls[key] += value
-                    elif func == '<--'  or func == '-->' : locls[key] = value
-                    elif func == '<*-'  or func == '-*>' : locls[key] = value
-                    elif func == '</-'  or func == '-/>' : locls[key] = value
-                    elif func == '<**-' or func == '-**>': locls[key] = value
-                    elif func == '<%-'  or func == '-%>' : locls[key] = value
-                    elif func == '<&-'  or func == '-&>' : locls[key] = value
-                    elif func == '<|-'  or func == '-|>' : locls[key] = value
-                    elif func == '<^-'  or func == '-^>' : locls[key] = value
-                    elif func == '<<-'  or func == '-<>' : locls[key] = value
-                    elif func == '<>-'  or func == '->>' : locls[key] = value
-        else:
-            eles[0].eval(locls)
-            ret = locls['$']
-            for ele in eles[1:]:
-                ele.eval(locls)
-                print(locls)
-                ret = getattr(ret, func)(locls['$'])
-            locls['$'] = ret# x = y
     opers = {
         'binary':{
             ':'   : oper(':',      0, lambda eles, locls: control._dofunc(eles, locls, ...)), # association
-            '**'  : oper('**',     3, lambda eles, locls: control._dofunc(eles, locls, '__pow__')), # power of
+            '**'  : oper('**',     3, lambda eles, locls: control._dofunc(eles, locls, '**')), # power of
             '*'   : oper('*',      4, lambda eles, locls: control._dofunc(eles, locls, '__mul__')), # mult
             '/'   : oper('/',      4, lambda eles, locls: control._dofunc(eles, locls, '__div__')), # div
             '%'   : oper('%',      4, lambda eles, locls: control._dofunc(eles, locls, '__mod__')), # mod
