@@ -50,15 +50,17 @@ class group(list):
     def isnull(self):
         return not self and not self.hasparens() and not self.val
     def eval(self, locls):
+        if self.isnull():
+            locls['$'] = None
         # print(self.val, self.val in control.funcs)
-        if self.val in control.allopers:
-            control.allopers[self.val].func(self, locls)
+        elif self.val in control.allopers:
+            control.evaloper(self, locls)
         elif self.val in control.funcs:
             control.funcs[self.val](self, locls)
         else:
             if self.val == '':
                 if __debug__:
-                    assert len(self) == 1 #expects 1 element (in parens)
+                    assert len(self) == 1, self #expects 1 element (in parens)
                 self[0].eval(locls)
             elif self.val in locls:
                 locls['$'] = locls[self.val]
@@ -122,61 +124,63 @@ class control:
     }
     opers = {
         'binary':{
-            ':'  : oper(':',     0, lambda eles, locls: control._doOper(eles, locls, '@:')), # association
-            '**'  : oper('**',     3, lambda eles, locls: control._doOper(eles, locls, '**' )), # power of
-            '*'   : oper('*',      4, lambda eles, locls: control._doOper(eles, locls, '*'  )), # mult
-            '/'   : oper('/',      4, lambda eles, locls: control._doOper(eles, locls, '/'  )), # div
-            '%'   : oper('%',      4, lambda eles, locls: control._doOper(eles, locls, '%'  )), # mod
-            '+'   : oper('+',      5, lambda eles, locls: control._doOper(eles, locls, '+'  )), # plus
-            '-'   : oper('-',      5, lambda eles, locls: control._doOper(eles, locls, '-'  )), # minus
-            'b<<' : oper('b<<',    6, lambda eles, locls: control._doOper(eles, locls, 'b<<')), # bitwise <<
-            'b>>' : oper('b<<',    6, lambda eles, locls: control._doOper(eles, locls, 'b>>')), # bitwise >>
-            'b&'  : oper('b&',     7, lambda eles, locls: control._doOper(eles, locls, 'b&' )), # bitwise &
-            'b^'  : oper('b^',     8, lambda eles, locls: control._doOper(eles, locls, 'b^' )), # bitwise ^
-            'b|'  : oper('b|',     9, lambda eles, locls: control._doOper(eles, locls, 'b|' )), # bitwise |
-            '<'   : oper('<',     10, lambda eles, locls: control._doOper(eles, locls, '<'  )), # less than
-            '>'   : oper('>',     10, lambda eles, locls: control._doOper(eles, locls, '>'  )), # greater than
-            '<='  : oper('<=',    10, lambda eles, locls: control._doOper(eles, locls, '<=' )), # less than or equal
-            '>='  : oper('>=',    10, lambda eles, locls: control._doOper(eles, locls, '>=' )), # greater than or equal
-            '=='  : oper('==',    10, lambda eles, locls: control._doOper(eles, locls, '==' )), # equal to
-            '='   : oper('=',     10, lambda eles, locls: control._doOper(eles, locls, '='  )), # equal to
-            '!='  : oper('!=',    10, lambda eles, locls: control._doOper(eles, locls, '!=' )), # not equal to
-            '&&'  : oper('&&',    11, lambda eles, locls: control._doOper(eles, locls, '@and')), # boolean and
-            '||'  : oper('||',    12, lambda eles, locls: control._doOper(eles, locls, '@or')), # booleon or
+            ':'   : oper(':',      0, None), # association
+            '**'  : oper('**',     3, lambda x, y: x ** y), # power of
+            '*'   : oper('*',      4, lambda x, y: x *  y), # mult
+            '/'   : oper('/',      4, lambda x, y: x /  y), # div
+            '%'   : oper('%',      4, lambda x, y: x %  y), # mod
+            '+'   : oper('+',      5, lambda x, y: x +  y), # plus
+            '-'   : oper('-',      5, lambda x, y: x -  y), # minus
+            'b<<' : oper('b<<',    6, lambda x, y: x << y), # bitwise <<
+            'b>>' : oper('b<<',    6, lambda x, y: x >> y), # bitwise >>
+            'b&'  : oper('b&',     7, lambda x, y: x &  y), # bitwise &
+            'b^'  : oper('b^',     8, lambda x, y: x ^  y), # bitwise ^
+            'b|'  : oper('b|',     9, lambda x, y: x |  y), # bitwise |
+            '<'   : oper('<',     10, lambda x, y: x <  y), # less than
+            '>'   : oper('>',     10, lambda x, y: x >  y), # greater than
+            '<='  : oper('<=',    10, lambda x, y: x <= y), # less than or equal
+            '>='  : oper('>=',    10, lambda x, y: x >= y), # greater than or equal
+            '=='  : oper('==',    10, lambda x, y: x == y), # equal to
+            '='   : oper('=',     10, lambda x, y: x == y), # equal to
+            '!='  : oper('!=',    10, lambda x, y: x != y), # not equal to
+            '&&'  : oper('&&',    11, None), # boolean and
+            '||'  : oper('||',    12, None), # booleon or
             #assignment operators
             # all notes are in form of "x OPERATOR y" like 'x <- y'
-            '<-'   : oper('<-',   13, lambda eles, locls: control._doOper(eles, locls, '@<-')), # x = y
-            '<?-'  : oper('<?-',  13, lambda eles, locls: control._doOper(eles, locls, '@<?-')), # x = bool(y) ? y : None
-            '<+-'  : oper('<+-',  13, lambda eles, locls: control._doOper(eles, locls, '@<+-')), # x += y
-            '<--'  : oper('<--',  13, lambda eles, locls: control._doOper(eles, locls, '@<--')), # x -= y
-            '<*-'  : oper('<*-',  13, lambda eles, locls: control._doOper(eles, locls, '@<*-')), # x *= y
-            '</-'  : oper('</-',  13, lambda eles, locls: control._doOper(eles, locls, '@</-')), # x /= y
-            '<**-' : oper('<**-', 13, lambda eles, locls: control._doOper(eles, locls, '@<**-')), # x **= y
-            '<%-'  : oper('<%-',  13, lambda eles, locls: control._doOper(eles, locls, '@<%-')), # x %= y
-            '<&-'  : oper('<&-',  13, lambda eles, locls: control._doOper(eles, locls, '@<&-')), # x &= y
-            '<|-'  : oper('<|-',  13, lambda eles, locls: control._doOper(eles, locls, '@<|-')), # x |= y
-            '<^-'  : oper('<^-',  13, lambda eles, locls: control._doOper(eles, locls, '@<^-')), # x ^= y
-            '<<-'  : oper('<<-',  13, lambda eles, locls: control._doOper(eles, locls, '@<<-')), # x <<= y
-            '<>-'  : oper('<>-',  13, lambda eles, locls: control._doOper(eles, locls, '@<>-')), # x >>= y
+            '<-'   : oper('<-',   13, None), # x = y
+            '<?-'  : oper('<?-',  13, None), # x = bool(y) ? y : None
+            '<+-'  : oper('<+-',  13, None), # x += y
+            '<--'  : oper('<--',  13, None), # x -= y
+            '<*-'  : oper('<*-',  13, None), # x *= y
+            '</-'  : oper('</-',  13, None), # x /= y
+            '<**-' : oper('<**-', 13, None), # x **= y
+            '<%-'  : oper('<%-',  13, None), # x %= y
+            '<&-'  : oper('<&-',  13, None), # x &= y
+            '<|-'  : oper('<|-',  13, None), # x |= y
+            '<^-'  : oper('<^-',  13, None), # x ^= y
+            '<<-'  : oper('<<-',  13, None), # x <<= y
+            '<>-'  : oper('<>-',  13, None), # x >>= y
             #inverted assignment operators
             # all notes are in form of "x OPERATOR y" like 'x -> y'
-            '->'   : oper('->',   13, lambda eles, locls: control._doOper(eles, locls, '@->' )), # y = x
-            '-?>'  : oper('-?>',  13, lambda eles, locls: control._doOper(eles, locls, '@-?>')), # y = bool(x) ? x : None
-            '-+>'  : oper('-+>',  13, lambda eles, locls: control._doOper(eles, locls, '@-+>')), # y += x
-            '-->'  : oper('-->',  13, lambda eles, locls: control._doOper(eles, locls, '@-->')), # y -= x 
-            '-*>'  : oper('-*>',  13, lambda eles, locls: control._doOper(eles, locls, '@-*>')), # y *= x 
-            '-/>'  : oper('-/>',  13, lambda eles, locls: control._doOper(eles, locls, '@-/>')), # y /= x 
-            '-**>' : oper('-**>', 13, lambda eles, locls: control._doOper(eles, locls, '@-**>')), # y **= x 
-            '-%>'  : oper('-%>',  13, lambda eles, locls: control._doOper(eles, locls, '@-%>')), # y %= x 
-            '-&>'  : oper('-&>',  13, lambda eles, locls: control._doOper(eles, locls, '@-&>')), # y &= x 
-            '-|>'  : oper('-|>',  13, lambda eles, locls: control._doOper(eles, locls, '@-|>')), # y |= x 
-            '-^>'  : oper('-^>',  13, lambda eles, locls: control._doOper(eles, locls, '@-^>')), # y ^= x 
-            '-<>'  : oper('-<>',  13, lambda eles, locls: control._doOper(eles, locls, '@-<>')), # y <<= x 
-            '->>'  : oper('->>',  13, lambda eles, locls: control._doOper(eles, locls, '@->>'))  # y >>= x 
+            '->'   : oper('->',   13, None), # y = x
+            '-?>'  : oper('-?>',  13, None), # y = bool(x) ? x : None
+            '-+>'  : oper('-+>',  13, None), # y += x
+            '-->'  : oper('-->',  13, None), # y -= x 
+            '-*>'  : oper('-*>',  13, None), # y *= x 
+            '-/>'  : oper('-/>',  13, None), # y /= x 
+            '-**>' : oper('-**>', 13, None), # y **= x 
+            '-%>'  : oper('-%>',  13, None), # y %= x 
+            '-&>'  : oper('-&>',  13, None), # y &= x 
+            '-|>'  : oper('-|>',  13, None), # y |= x 
+            '-^>'  : oper('-^>',  13, None), # y ^= x 
+            '-<>'  : oper('-<>',  13, None), # y <<= x 
+            '->>'  : oper('->>',  13, None)  # y >>= x 
              },\
         'unary':{
-            'l':{'~':oper('~', 1, lambda eles, locls: control._doOper(eles, locls, '@~'))},
-            'r':{'!':oper('!', 2, lambda x: None)}
+            'l':{'~':oper('~', 1, lambda x, y: ~y),
+                 '+':oper('+', 1, lambda x, y: +y),
+                 '-':oper('-', 1, lambda x, y: -y)},
+            'r':{'!':oper('!', 2, lambda x, y: None)}
         }
     }
     funcs = {
@@ -216,93 +220,70 @@ class control:
 
         else:
             raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
+    
     @staticmethod
-    def _doOper(eles, locls, funcname):
-        if funcname[0] == '@':
-            funcname = funcname[1:]
-            if funcname == ':':
-                if __debug__:
-                    assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
-                control.funcs[eles[0].val](eles, locls)
-            elif funcname == 'or' or funcname == 'and':
-                eles[0].eval(locls)
-                element = locls['$']
-                eles[1].eval(locls)
-                locls['$'] = (element or locls['$']) if funcname == 'or' else (element and locls['$'])
-            elif funcname in control.opers['unary']['l']:
-                if __debug__:
-                    assert eles[0].isnull(),eles #should be (nothing, item)
-                eles[1].eval(locls)
-                locls['$'] = ~locls['$']
-            else:
-                # if funcname in ['<-', '->', '<?-', '->':
-                if funcname in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
-                    eles[1].eval(locls)
-                    value =locls['$']
-                    key = eles[0].val
-                else:
-                    eles[0].eval(locls)
-                    value =locls['$']
-                    key = eles[1].val
-
-                if __debug__:
-                    assert funcname == '<-'  or\
-                           funcname == '->'  or\
-                           funcname == '<?-' or\
-                           funcname == '-?>' or\
-                           key in locls, '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, funcname)
-                    if   funcname == '<-'   or funcname == '->'  : locls[key] = value
-                    elif funcname == '<?-'  or funcname == '-?>' :
-                        locls[key] = value if value else (locls[key] if key in locls else None)
-                    elif funcname == '<+-'  or funcname == '-+>' : locls[key] += value
-                    elif funcname == '<--'  or funcname == '-->' : locls[key] = value
-                    elif funcname == '<*-'  or funcname == '-*>' : locls[key] = value
-                    elif funcname == '</-'  or funcname == '-/>' : locls[key] = value
-                    elif funcname == '<**-' or funcname == '-**>': locls[key] = value
-                    elif funcname == '<%-'  or funcname == '-%>' : locls[key] = value
-                    elif funcname == '<&-'  or funcname == '-&>' : locls[key] = value
-                    elif funcname == '<|-'  or funcname == '-|>' : locls[key] = value
-                    elif funcname == '<^-'  or funcname == '-^>' : locls[key] = value
-                    elif funcname == '<<-'  or funcname == '-<>' : locls[key] = value
-                    elif funcname == '<>-'  or funcname == '->>' : locls[key] = value
+    def _specialoper(eles, locls):
+        name = eles.val
+        if name == ':':
+            if __debug__:
+                assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
+            control.funcs[eles[0].val](eles, locls)
+        elif name == 'or' or name == 'and':
+            eles[0].eval(locls)
+            element = locls['$']
+            eles[1].eval(locls)
+            locls['$'] = (element or locls['$']) if name == 'or' else (element and locls['$'])
+        # elif name in control.opers['unary']['l']:
+        #     if __debug__:
+        #         assert eles[0].isnull(),eles #should be (nothing, item)
+        #     eles[1].eval(locls)
+        #     locls['$'] = ~locls['$']
         else:
-            funcs = {
-            """
+            if name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
+                eles[1].eval(locls)
+                value =locls['$']
+                key = eles[0].val
+            else:
+                eles[0].eval(locls)
+                value =locls['$']
+                key = eles[1].val
+
+            if __debug__:
+                assert name == '<-'  or\
+                       name == '->'  or\
+                       name == '<?-' or\
+                       name == '-?>' or\
+                       key in locls, '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, name)
+                if   name == '<-'   or name == '->'  : locls[key] = value
+                elif name == '<?-'  or name == '-?>' :
+                    locls[key] = value if value else (locls[key] if key in locls else None)
+                elif name == '<+-'  or name == '-+>' : locls[key] += value
+                elif name == '<--'  or name == '-->' : locls[key] = value
+                elif name == '<*-'  or name == '-*>' : locls[key] = value
+                elif name == '</-'  or name == '-/>' : locls[key] = value
+                elif name == '<**-' or name == '-**>': locls[key] = value
+                elif name == '<%-'  or name == '-%>' : locls[key] = value
+                elif name == '<&-'  or name == '-&>' : locls[key] = value
+                elif name == '<|-'  or name == '-|>' : locls[key] = value
+                elif name == '<^-'  or name == '-^>' : locls[key] = value
+                elif name == '<<-'  or name == '-<>' : locls[key] = value
+                elif name == '<>-'  or name == '->>' : locls[key] = value
 
 
-
-
-
-            this here can be used for ~ and !. aka, instead of opers all pointing here, make it a little better :)
-
-
-
-
-            """
-                '**'  : lambda a, b: a ** b,
-                '*'   : lambda a, b: a * b,
-                '/'   : lambda a, b: a /  b,
-                '%'   : lambda a, b: a %  b,
-                '+'   : lambda a, b: a + b,
-                '-'   : lambda a, b: a -  b,
-                'b<<' : lambda a, b: a << b,
-                'b>>' : lambda a, b: a >> b,
-                'b&'  : lambda a, b: a & b,
-                'b^'  : lambda a, b: a ^ b,
-                'b|'  : lambda a, b: a | b,
-                '<'   : lambda a, b: a <  b,
-                '>'   : lambda a, b: a >  b,
-                '<='  : lambda a, b: a <= b,
-                '>='  : lambda a, b: a >= b,
-                '=='  : lambda a, b: a == b,
-                '='   : lambda a, b: a == b,
-                '!='  : lambda a, b: a != b,
-            }
+    @staticmethod
+    def evaloper(eles, locls):
+        if eles.val not in control.allopers:
+            raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.val))
+        oper = control.allopers[eles.val]
+        if oper.func == None:
+            control._specialoper(eles, locls)
+        else:
             eles[0].eval(locls)
             ret = locls['$']
+            name = eles.val
             for ele in eles[1:]:
                 ele.eval(locls)
-                ret = funcs[funcname](ret, locls['$'])
+                ret = control.allopers[name].func(ret, locls['$'])
             locls['$'] = ret# x = y
 
 class wfile:
