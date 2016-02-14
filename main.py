@@ -88,7 +88,7 @@ class control:
               'r':')]}'}
     allparens = ''.join(list(parens.values()))
     alldelims = ',|'
-    punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims#stuff used to break apart things, ignoring ._
+    punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims #stuff used to break apart things, ignoring ._
     consts = {
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
         'T': True, 'F': False, 'N':None, #these can be overriden
@@ -370,19 +370,24 @@ class wfile:
             ret = group(parens = linegrp.parens) #universe
             while linegrp:
                 ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
-                if ele not in control.allparens:
+                if ele not in control.allparens and ele not in control.alldelims:
                     ret.append(group(ele))
-                else:
+                el
                     toappend = group()
-                    parens = 1
-                    while parens > 0 and linegrp:
+                    isdelim = ele in control.alldelims
+                    parens = isdelim
+                    while parens > (~isdelim + 1) and linegrp:
                         toappend.append(linegrp.pop(0))
                         if toappend[-1] in control.parens['l']:
                             parens += 1
                         if toappend[-1] in control.parens['r']:
                             parens -= 1
+                        if parens == 0 and isdelim:
+                            break
                     if __debug__:
-                        assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
+                        print(toappend, ~isdelim + 1)
+                        # assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
+                        assert toappend[-1] in control.allparens or toappend[-1] in control.alldelims, toappend
                     toappend.parens = (ele, toappend.pop())
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
