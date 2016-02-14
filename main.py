@@ -326,7 +326,7 @@ class wfile:
     def __str__(self):
         def getl(linep, l):
             if not l:
-                assert str(l) == ';', str(l) #no other known case atm
+                assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
                 print(l[0])
