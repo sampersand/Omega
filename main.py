@@ -103,6 +103,7 @@ class control:
     consts = {
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
         'T': True, 'F': False, 'N':None, #these can be overriden
+        't': True, 'f': False, 'n':None, #these can be overriden
         'pi': math.pi,  'PI': math.pi,      'π': math.pi,   'Π': math.pi,
         'e': math.e,    'E':  math.e,
         'k': 8.9875517873681764E9, 'K': 8.9875517873681764E9,
@@ -197,6 +198,7 @@ class control:
     funcs = {
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
         'for': lambda eles, locls: control._doFunc(eles, locls, 'for'),
+        'quit': lambda eles, locls: control._doFunc(eles, locls, 'quit'),
         'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
         'displ': lambda eles, locls: control._doFunc(eles, locls, 'displ'),
     }
@@ -210,16 +212,18 @@ class control:
         if funcname == 'disp' or funcname == 'displ':
             eles[1].eval(locls)
             print(locls['$'], end = '\n' if funcname == 'displ' else '') #keep this here!
+        elif funcname == 'quit':
+            print(eles[1])
         elif funcname == 'if':
             if __debug__:
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0].eval(locls) # evaluates the condition
             # if len(eles[1])
             if locls['$']:
-                if len(eles[1][1]) == 2:
-                    eles[1][1].eval(locls)
-                else:
-                    eles[1][1][0].eval(locls)
+                # if len(eles[1][1]) == 2:
+                    # eles[1][1][1].eval(locls)
+                # else:
+                eles[1][1][0].eval(locls)
             elif len(eles[1][1]) == 2:
                 eles[1][1][1].eval(locls)
         elif funcname == 'for':
@@ -356,14 +360,16 @@ class wfile:
         ret = ''
         data = 0b00 # 0b10 = escaped, 0b01 = commented
         for char in rawt:
+            # print(char, char in control.linebreak, ret)
             if char in control.escape  and not data & 0b10:
                 data ^= 0b10
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
             elif char in control.linebreak:
+                continue
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns
                     # ret += char
-                data &= 0b10 #remove comments
+                # data &= 0b10 #remove comments
             else:
                 if data & 0b10:
                     ret += control.escape

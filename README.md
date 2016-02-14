@@ -1,5 +1,5 @@
 #General Notes
-TODO: this
+<ul> Comments are multi-line. That is, when an unescaped '#' is found, no text will be registered until another unescaped '#' is found</ul>
 #Assignment
 <ul>a -> b</ul>
 <ul>b <- a</ul>
