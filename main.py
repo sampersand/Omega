@@ -235,16 +235,13 @@ class wfile:
                     ret.append(toappend)
             return ret
         def fixtkns(line):
-            print('line:',line)
+            #combine tokens using order of operations
             if not line:
-                print('returning position a:',line, line)
                 return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
-                    # print('returning position b:',line[0], line)
                     return line
                 else:
-                    print('returning position c:',line[0], line)
                     return fixtkns(line[0])
             fhp = findhighest(line)
             if __debug__:
@@ -256,58 +253,15 @@ class wfile:
                 ret.append(s)
             if e != None:
                 ret.append(e)
-            print('returning position d', ret, line)
             return ret
-            """
-                private static TokenNode condense(final Collection<TokenNode> line){
-                    if(line.size() == 0)
-                        return null;
-                    if(line.size() == 1)
-                        if(line.get(0).size() == 0)
-                            return line.get(0);
-                        else
-                            return new TokenNode(line.get(0)){{
-                                add(condense(new Collection<TokenNode>().addAllE(line.get(0).elements)));
-                            }};
 
-                    int fhp = firstHighPriority(line);
-                    if(fhp == -1)
-                        return new TokenNode(new Token()){{
-                            line.forEach(e -> add(condense(new Collection<TokenNode>().addE(e))));
-                        }};
-                    TokenNode u = condense(new Collection<TokenNode>().addE(line.get(fhp)));
-                    TokenNode s = condense(new Collection<TokenNode>().addAllE(line.subList(0, fhp)));
-                    TokenNode e = condense(new Collection<TokenNode>().addAllE(line.subList(fhp + 1)));
-                    if(s != null)
-                        u.add(s);
-                    if(e != null)
-                        u.add(e);
-                    return u;
-                }
-            """
-            #order of operations
-            # if len(line) <= 1:
-            #     return line
-            # highest = findhighest(line)
-            # oper = line[highest]
-            # if oper.val in control.opers['binary']:
-            #     if __debug__:
-            #         assert len(line) > 2, 'binary operator \'{}\' in {} needs to have 3+ elements!'.format(oper, line)
-            #     # print('fixtknsret:',group(val = oper.val,
-            #     #              args = [fixtkns(line[0:highest]), fixtkns(line[highest + 1:])],
-            #     #              parens = oper.parens))
-            #     return group(val = oper.val,
-            #                  args = [fixtkns(line[0:highest]), fixtkns(line[highest + 1:])],
-            #                  parens = oper.parens)
-            # return None
-        # assert 0, '\n'.join([str(fixtkns(compresstokens(group(args = line)))) for line in linetokens])
         return group(args = [fixtkns(compresstokens(group(args = line))) for line in linetokens])
     def __str__(self):
         return str(self.compressedtokens)
 
 if __name__ == '__main__':
     f = wfile('testcode.wc')
-    print(f)
+    print(repr(f.compressedtokens))
 
 """
 @f1(arg)
