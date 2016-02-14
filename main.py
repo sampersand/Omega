@@ -4,22 +4,40 @@ class oper:
         self.priority = priority
         self.func = func
     def __repr__(self):
-        return 'oper({}, {}, {})'.format(self.value, self.priority, self.func)
+        return 'oper({},{},{})'.format(self.value, self.priority, self.func)
     def __str__(self):
         return self.value
     def __lt__(self, other):
         return self.priority < other.priority
-class group:
-    def __init__(self, val, *args):
+
+class group(list):
+    def __new__(self, val = '', args = [], parens = ['','']):
+        return super().__new__(self, args)
+
+    def __init__(self, val = '', args = [], parens = ['','']):
+        super().__init__(args)
+        if __debug__:
+            assert isinstance(val, str)
+            assert isinstance(args, list)
+            assert isinstance(parens, list)
         self.val = val
-        self.args = args
+        self.parens = parens
+    def __repr__(self):
+        return 'group(val = {}, args = {}, parens = {})'.format(repr(self.val), super().__repr__(), repr(self.parens))
+
+    def __str__(self):
+        return str(self.val) + str(self.parens[0]) + super().__str__() + str(self.parens[1])
+
 class control:
     endline = '\n\r;'
     comment = '#'
     escape = '\\'
     nbwhitespace = ' \t\x0b\x0c'
     whitespace = nbwhitespace + endline
-    punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~' #stuff used to break apart things, ignoring ._
+    parens = {'l':'([{','r':')]}'}
+    allparens = ''.join(list(parens.values()))
+    alldelims = ',:'
+    punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims#stuff used to break apart things, ignoring ._
     """
                 1   ()   []   ->   .   ::
                 2   !   ~   -   +   *   &   sizeof   type cast   ++   --  
@@ -55,7 +73,6 @@ class control:
                     x <%-  y     x <&- y     x <|- y     x <^- y     x <<<- y    x <>>- y
                     And their inverses
             """
-        
     opers = {
         'binary':{
             '**'  : oper('**',     2, lambda eles: None), # power of
@@ -113,8 +130,10 @@ class control:
             'r':{'!':oper('!', 1, lambda x: None)}
         }
     }
+
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
+
 class wfile:
     def __init__(self, filepath, encoding = 'utf-8'):
         self.filepath = filepath
@@ -122,7 +141,8 @@ class wfile:
         with codecs.open(filepath, 'r', encoding) as f:
             self.striptext = wfile._striptext(f.read())
         self.tokens = wfile._tokenize(self.striptext)
-        self.compressedtokens = wfile._compresstokens(self.tokens)
+        import copy
+        self.compressedtokens = wfile._compresstokens(copy.deepcopy(self.tokens))
 
     @staticmethod
     def _striptext(rawt):
@@ -135,7 +155,7 @@ class wfile:
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
             elif char in control.endline:
-                if not data & 0b10 and ret[-1] not in control.endline: #so no duplicate \ns
+                if not data & 0b10 and (not ret or ret[-1] not in control.endline): #so no duplicate \ns
                     ret += char
                 data &= 0b10
             else:
@@ -175,31 +195,100 @@ class wfile:
                 assert linetokens
             highest = None
             for elep in range(len(linetokens)):
-                ele = linetokens[elep]
+                ele = linetokens[elep].val
                 if ele in control.allopers and (highest == None or
                                                 control.allopers[ele] > control.allopers[linetokens[highest]]):
                     highest = elep
             if __debug__:
-                assert highest != None
+                assert highest != None, 'no highest for ' + str(linetokens)
             return highest
 
+        def compresstokens(line): #this is non-stable
+            ret = group() #universe
+            while line:
+                ele = line.pop(0) #pop(0) is inefficient for list. update this in the future
+                if ele not in control.allparens:
+                    ret.append(group(ele))
+                else:
+                    toappend = group()
+                    parens = 1
+                    while parens > 0 and line:
+                        toappend.append(line.pop(0))
+                        if toappend[-1] in control.parens['l']:
+                            parens += 1
+                        if toappend[-1] in control.parens['r']:
+                            parens -= 1
+                    if __debug__:
+                        assert toappend[-1] in control.allparens #the last element should be in allparens
+                    toappend.parens = (ele, toappend.pop())
+                    ret.append(toappend)
+            return ret
+            """
+                    int pos = 0;
+                    TokenNode node = clone();
+                    while(pos < pTokens.size()) {
+                        Token t = pTokens.get(pos);
+                        if(t.isConst() || t.isBinOper() || t.isUNL() || t.isUNR())
+                            node.add(new TokenNode(t));
+                        else if(t.isFunc() || t.isDelim()) {
+
+                            Collection<Token> passTokens = new Collection<Token>();
+                            String[] toAddParens = new String[]{"",""};
+                            int x = pos + 1;
+                            int paren = 0;
+                            do{
+                                if(Token.PAREN_L.contains(pTokens.get(x).val())) paren++;
+                                if(Token.PAREN_R.contains(pTokens.get(x).val())) paren--;
+                                if(t.isDelim() && Token.DELIM.contains(pTokens.get(x).val()) && paren == 0) break;
+                                x++;
+                            } while((t.isDelim() ? 0 <= paren : 0 < paren) && x < pTokens.size());
+                            for(Token tk : pTokens.subList(pos + 1, x))
+                                passTokens.add(tk);
+                            if(t.isFunc() && passTokens.get(passTokens.size()-1).isParen() && passTokens.get(0).isParen()){
+                                toAddParens[1] = pTokens.get(pos++ + passTokens.size()).val();
+                                toAddParens[0] = pTokens.get(pos).val();
+                                passTokens.remove(0);
+                                passTokens.remove(passTokens.size()-1);
+                                assert Token.PAREN_L.contains(toAddParens[0]) &&
+                                       Token.PAREN_R.contains(toAddParens[1]) : toAddParens[0]+" "+toAddParens[1];
+                                passTokens.add(0, new Token("", Token.Type.DELIM));
+                            }
+
+                            Object[] temp = new TokenNode(t).condeseNodes(passTokens);
+                            pos += (int)temp[0];// (x==pTokens.size()-1?1:0);
+                            ((TokenNode)temp[1]).parens = toAddParens;
+                            node.add((TokenNode)temp[1]);
+                        } else if(t.isParen()){
+                            if(Token.isParenL(t.val()) != null){
+                                assert node.parens[0].isEmpty() : "Uh oh! adding '"+t+"' to\n" + node.toFancyString();
+                                node.parens[0] = t.val();
+                            } else{
+                                assert node.parens[1].isEmpty() && !node.parens[0].isEmpty() : t+"\n"+toFancyString();
+                                node.parens[1] = t.val();
+                            }
+                        }
+                        pos++;
+                    }
+                    return new Object[]{pos, node.removeExtraFuncs()};
+                }"""
+
         def fixtokens(line):
+            assert 0, line
             if len(line) <= 1:
                 return line
             highest = findhighest(line)
             oper = line[highest]
-            if oper in control.opers['binary']:
+            if oper.val in control.opers['binary']:
                 if __debug__:
                     assert len(line) > 2, 'binary operator \'{}\' in {} needs to have 3+ elements!'.format(oper, line)
-                return group(oper, fixtokens(line[0:highest]), fixtokens(line[0:highest]), 
+                    # assert 0, str(oper) + str(line)
+                return group(oper.val, fixtokens(line[0:highest]), fixtokens(line[highest + 1:]))
             return None
-            
+
         ['a', '<-', '(', '1', '+', '2', ')']
-        return [fixtokens(line) for line in linetokens]
+        return group('',(fixtokens(compresstokens(line)) for line in linetokens))
     def __str__(self):
         return str(self.compressedtokens)
-        return str(vars(self))
-
 
 if __name__ == '__main__':
     f = wfile('testcode.wc')
@@ -240,10 +329,13 @@ if __name__ == '__main__':
 (
 *
 1, 234.5
+
+
+group(val = '',
+      args = [group(val = 'a', args = [], parens = ['', '']), group(val = '<-', args = [], parens = ['', '']), group(val = '', args = [], parens = ('[', ']')), group(val = '', args = ['1', '+', '2'], parens = ('(', ')'))], parens = ['', ''])
+
+
 """
-
-
-
 
 
 
