@@ -95,6 +95,9 @@ class control:
     allquotes = '\'\"`'
     parens = {'l':'([{',
               'r':')]}'}
+    @staticmethod
+    def invertparen(paren):
+        return {'(':')', ')':'(',   '[':']', ']':'[',   '{':'}','}':'{'}[paren]
     allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
     punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
     consts = {
@@ -241,6 +244,8 @@ class control:
     def _specialoper(eles, locls):
         name = eles.val
         if name == ':':
+            if eles[0].val in control.alldelims:
+                assert 0, str(eles) + " | " + eles[0]
             if __debug__:
                 assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
             control.funcs[eles[0].val](eles, locls)
@@ -330,7 +335,6 @@ class wfile:
                 assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
-                print(l[0])
                 assert l[0].val not in control.endline or not l[0].val, l[0].val # node structure should prevent this.
             ret = ''
             if l[0]:
@@ -424,13 +428,19 @@ class wfile:
                     ret.append(group(ele))
                 else:
                     toappend = group()
-                    parens = 1
-                    while parens > 0 and linegrp:
+                    parens = {str(ele):1}
+                    while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
-                        if toappend[-1] in control.parens['l']:
-                            parens += 1
-                        if toappend[-1] in control.parens['r']:
-                            parens -= 1
+                        if toappend[-1] in control.allparens:
+                            last = toappend[-1]
+                            if last in control.parens['l']:
+                                if last not in parens:
+                                    parens[last] = 0
+                                parens[last] += 1
+                            if last in control.parens['r']:
+                                if __debug__:
+                                    assert control.invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
+                                parens[control.invertparen(last)] -= 1
                     if __debug__:
                         assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (ele, toappend.pop())
