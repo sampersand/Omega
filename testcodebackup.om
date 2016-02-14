@@ -24,7 +24,6 @@
  #
 1 -> a;
 n -> b;
-quit;
 if:(0 = a):(t -> b);          displ:b; n -> b; #a != 0, no else, so skips to None#
 if:(0 = a):(t -> b):(f -> b); displ:b; n -> b; #a != 0, else sets to b, so b is False#
 if:(1 = a):(t -> b);          displ:b; n -> b; #a == 1, so sets b to True#

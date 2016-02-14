@@ -500,7 +500,12 @@ class wfile:
         return locls
 
 if __name__ == '__main__':
-    f = wfile('testcode.om')
+    import sys
+    if len(sys.argv) == 1:
+        filepath = 'testcode.om'
+    else:
+        filepath = sys.argv[1] #0 is 'main.py'
+    f = wfile(filepath)
     print(f)
     print('--')
     print(f.eval())
