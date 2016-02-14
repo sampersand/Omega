@@ -1,19 +1,18 @@
-
+class oper:
+    def __init__(self, value, priority, oper):
+        self.value = value
+        self.priority = priority
+        self.oper = oper
+class element:
+    pass
 class control:
     endline = '\n\r;'
     comment = '#'
     escape = '\\'
     nbwhitespace = ' \t\x0b\x0c'
     whitespace = nbwhitespace + endline
-    punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~._' #stuff used to break apart things
-    class oper(str):
-        def __new__(self, value, priority, oper):
-            return super().__new__(self, value)
-        def __init__(self, value, priority, oper):
-            self.priority = priority
-            self.oper = oper
-
-            """
+    punctuation = '!"#$%&\'()*+-,/:;<=>?@[\\]^`{|}~' #stuff used to break apart things, ignoring ._
+    """
                 1   ()   []   ->   .   ::
                 2   !   ~   -   +   *   &   sizeof   type cast   ++   --  
                 3   *   /   %
@@ -99,9 +98,7 @@ class control:
             '-|>'  : oper('-|>',  12, lambda eles: None), # y |= x 
             '-^>'  : oper('-^>',  12, lambda eles: None), # y ^= x 
             '-<>'  : oper('-<>',  12, lambda eles: None), # y <<= x 
-            '->>'  : oper('->>',  12, lambda eles: None), # y >>= x 
-
-
+            '->>'  : oper('->>',  12, lambda eles: None)  # y >>= x 
              },\
         'unary':{
             'l':{'~':oper('~', 0, lambda x: None)},
@@ -167,6 +164,8 @@ class wfile:
 
     @staticmethod
     def _compresstokens(tokens):
+        def findhighest(tokens):
+            pass
         def fixline(line):
             ret = []
             for line in tokens:
