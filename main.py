@@ -126,6 +126,7 @@ class control:
     opers = {
         'binary':{
             ':'   : oper(':',      0, None), # association
+            '??'   : oper(':',      0, None), # association
             '**'  : oper('**',     3, lambda x, y: x ** y), # power of
             '*'   : oper('*',      4, lambda x, y: x *  y), # mult
             '/'   : oper('/',      4, lambda x, y: x /  y), # div
@@ -197,23 +198,24 @@ class control:
     def _doFunc(eles, locls, funcname):
         if __debug__:
             assert eles[0].val == funcname, 'this shouldn\'t break'
-            assert eles.val == ':', 'this shouldn\'t break!'
         if funcname == 'disp':
             eles[1].eval(locls)
             print(locls['$']) #keep this here!
         elif funcname == 'if':
             if __debug__:
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-                assert eles[1].val == ':', 'this shouldn\'t break!'
             eles[1][0].eval(locls) # evaluates the condition
+            # if len(eles[1])
             if locls['$']:
-                eles[1][1][0].eval(locls)
+                if len(eles[1][1]) == 2:
+                    eles[1][1].eval(locls)
+                else:
+                    eles[1][1][0].eval(locls)
             elif len(eles[1][1]) == 2:
                 eles[1][1][1].eval(locls)
         elif funcname == 'for':
             if __debug__:
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-                assert eles[1].val == ':', 'this shouldn\'t break!'
             eles[1][0].eval(locls) # evaluates the condition
             if locls['$']:
                 eles[1][1][0].eval(locls)
