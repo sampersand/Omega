@@ -26,8 +26,14 @@ class group(list):
     def __repr__(self):
         return 'group(val = {}, args = {}, parens = {})'.format(repr(self.val), super().__repr__(), repr(self.parens))
     def __str__(self):
-        
-        return ''.join((str(self.val), str(self.parens[0]), ''.join(str(x) for x in self), str(self.parens[1])))
+        if not self and not self.parens[0] and not self.parens[1]:
+            return str(self.val)
+        if self.val in control.opers['binary']:
+            if __debug__:
+                assert len(self) == 2, repr(self)
+                assert len(self.parens) == 2, repr(self)
+            return ' '.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
+        return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
 class control:
     endline = '\n\r;'
     comment = '#'
