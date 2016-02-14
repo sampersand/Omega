@@ -92,7 +92,7 @@ class control:
     parens = {'l':'([{',
               'r':')]}'}
     allparens = ''.join(list(parens.values()))
-    alldelims = ',|'
+    alldelims = ',|' + endline
     punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims #stuff used to break apart things, ignoring ._
     consts = {
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
@@ -373,8 +373,8 @@ class wfile:
         for token in tokens:
             if not token:
                 continue
-            if token in control.endline:
-                ret.append([])
+            # if token in control.endline:
+                # ret.append([])
             else:
                 ret[-1].append(token)
         linep = 0
