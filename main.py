@@ -11,23 +11,22 @@ class oper:
         return self.priority < other.priority
 
 class group(list):
-    def __new__(self, val = '', args = [], parens = ['','']):
+    def __new__(self, val = '', args = [], parens = ('','')):
         return super().__new__(self, args)
 
-    def __init__(self, val = '', args = [], parens = ['','']):
+    def __init__(self, val = '', args = [], parens = ('','')):
         super().__init__(args)
         if __debug__:
-            assert isinstance(val, str)
-            assert isinstance(args, list)
-            assert isinstance(parens, list)
+            assert type(val) == str, val
+            assert type(args) == list, str(args) + str(type(args))
+            assert type(parens) == tuple, str(parens) + str(type(parens))
+            assert len(parens) == 2, parens
         self.val = val
         self.parens = parens
     def __repr__(self):
         return 'group(val = {}, args = {}, parens = {})'.format(repr(self.val), super().__repr__(), repr(self.parens))
-
     def __str__(self):
-        return str(self.val) + str(self.parens[0]) + super().__str__() + str(self.parens[1])
-
+        return str(self.val) + str(self.parens[0]) + str([str(x) for x in self]) + str(self.parens[1])
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -56,78 +55,80 @@ class control:
                 15  ,
                 --
                 mine:
-                0   b~x         -x          +x          ++x         --x
-                1   x!          x++         x--
-                2   x ** y
-                3   x * y       x / y       x %  y
-                4   x + y       x - y
-                5   x b<< y     x b>> y
-                6   x b& y
-                7   x b^ y
-                8   x b| y
-                9   x < y       x > y       x <= y      x >= y      ==     !=
-                10  x && y
-                11  x || y
-                12  x <-   y     x <?- y
+                0   :
+                1   b~x         -x          +x          ++x         --x
+                2   x!          x++         x--
+                3   x ** y
+                4   x * y       x / y       x %  y
+                5   x + y       x - y
+                6   x b<< y     x b>> y
+                7   x b& y
+                8   x b^ y
+                9   x b| y
+                10   x < y       x > y       x <= y      x >= y      ==     !=
+                11  x && y
+                12  x || y
+                13  x <-   y     x <?- y
                     x <+-  y     x <-- y     x <*- y     x </- y     x <**- y
                     x <%-  y     x <&- y     x <|- y     x <^- y     x <<<- y    x <>>- y
                     And their inverses
             """
     opers = {
         'binary':{
-            '**'  : oper('**',     2, lambda eles: None), # power of
-            '*'   : oper('*',      3, lambda eles: None), # mult
-            '/'   : oper('/',      3, lambda eles: None), # div
-            '%'   : oper('%',      3, lambda eles: None), # mod
-            '+'   : oper('+',      4, lambda eles: None), # plus
-            '-'   : oper('-',      4, lambda eles: None), # minus
-            'b<<' : oper('b<<',    5, lambda eles: None), # bitwise <<
-            'b>>' : oper('b<<',    5, lambda eles: None), # bitwise >>
-            'b&'  : oper('b&',     6, lambda eles: None), # bitwise &
-            'b^'  : oper('b^',     7, lambda eles: None), # bitwise ^
-            'b|'  : oper('b|',     8, lambda eles: None), # bitwise |
-            '<'   : oper('<',      9, lambda eles: None), # less than
-            '>'   : oper('>',      9, lambda eles: None), # greater than
-            '<='  : oper('<=',     9, lambda eles: None), # less than or equal
-            '>='  : oper('>=',     9, lambda eles: None), # greater than or equal
-            '=='  : oper('==',     9, lambda eles: None), # equal to
-            '!='  : oper('!=',     9, lambda eles: None), # not equal to
-            '&&'  : oper('&&',    10, lambda eles: None), # boolean and
-            '||'  : oper('||',    11, lambda eles: None), # booleon or
+            ':'   : oper(':',      0, lambda eles: None), # association
+            '**'  : oper('**',     3, lambda eles: None), # power of
+            '*'   : oper('*',      4, lambda eles: None), # mult
+            '/'   : oper('/',      4, lambda eles: None), # div
+            '%'   : oper('%',      4, lambda eles: None), # mod
+            '+'   : oper('+',      5, lambda eles: None), # plus
+            '-'   : oper('-',      5, lambda eles: None), # minus
+            'b<<' : oper('b<<',    6, lambda eles: None), # bitwise <<
+            'b>>' : oper('b<<',    6, lambda eles: None), # bitwise >>
+            'b&'  : oper('b&',     7, lambda eles: None), # bitwise &
+            'b^'  : oper('b^',     8, lambda eles: None), # bitwise ^
+            'b|'  : oper('b|',     9, lambda eles: None), # bitwise |
+            '<'   : oper('<',     10, lambda eles: None), # less than
+            '>'   : oper('>',     10, lambda eles: None), # greater than
+            '<='  : oper('<=',    10, lambda eles: None), # less than or equal
+            '>='  : oper('>=',    10, lambda eles: None), # greater than or equal
+            '=='  : oper('==',    10, lambda eles: None), # equal to
+            '!='  : oper('!=',    10, lambda eles: None), # not equal to
+            '&&'  : oper('&&',    11, lambda eles: None), # boolean and
+            '||'  : oper('||',    12, lambda eles: None), # booleon or
             #assignment operators
             # all notes are in form of "x OPERATOR y" like 'x <- y'
-            '<-'   : oper('<-',   12, lambda eles: None), # x = y
-            '<?-'  : oper('<?-',  12, lambda eles: None), # x = bool(y) ? y : None
-            '<+-'  : oper('<+-',  12, lambda eles: None), # x += y
-            '<--'  : oper('<--',  12, lambda eles: None), # x -= y
-            '<*-'  : oper('<*-',  12, lambda eles: None), # x *= y
-            '</-'  : oper('</-',  12, lambda eles: None), # x /= y
-            '<**-' : oper('<**-', 12, lambda eles: None), # x **= y
-            '<%-'  : oper('<%-',  12, lambda eles: None), # x %= y
-            '<&-'  : oper('<&-',  12, lambda eles: None), # x &= y
-            '<|-'  : oper('<|-',  12, lambda eles: None), # x |= y
-            '<^-'  : oper('<^-',  12, lambda eles: None), # x ^= y
-            '<<-'  : oper('<<-',  12, lambda eles: None), # x <<= y
-            '<>-'  : oper('<>-',  12, lambda eles: None), # x >>= y
+            '<-'   : oper('<-',   13, lambda eles: None), # x = y
+            '<?-'  : oper('<?-',  13, lambda eles: None), # x = bool(y) ? y : None
+            '<+-'  : oper('<+-',  13, lambda eles: None), # x += y
+            '<--'  : oper('<--',  13, lambda eles: None), # x -= y
+            '<*-'  : oper('<*-',  13, lambda eles: None), # x *= y
+            '</-'  : oper('</-',  13, lambda eles: None), # x /= y
+            '<**-' : oper('<**-', 13, lambda eles: None), # x **= y
+            '<%-'  : oper('<%-',  13, lambda eles: None), # x %= y
+            '<&-'  : oper('<&-',  13, lambda eles: None), # x &= y
+            '<|-'  : oper('<|-',  13, lambda eles: None), # x |= y
+            '<^-'  : oper('<^-',  13, lambda eles: None), # x ^= y
+            '<<-'  : oper('<<-',  13, lambda eles: None), # x <<= y
+            '<>-'  : oper('<>-',  13, lambda eles: None), # x >>= y
             #inverted assignment operators
             # all notes are in form of "x OPERATOR y" like 'x -> y'
-            '->'   : oper('->',   12, lambda eles: None), # y = x
-            '-?>'  : oper('-?>',  12, lambda eles: None), # y = bool(x) ? x : None
-            '-+>'  : oper('-+>',  12, lambda eles: None), # y += x
-            '-->'  : oper('-->',  12, lambda eles: None), # y -= x 
-            '-*>'  : oper('-*>',  12, lambda eles: None), # y *= x 
-            '-/>'  : oper('-/>',  12, lambda eles: None), # y /= x 
-            '-**>' : oper('-**>', 12, lambda eles: None), # y **= x 
-            '-%>'  : oper('-%>',  12, lambda eles: None), # y %= x 
-            '-&>'  : oper('-&>',  12, lambda eles: None), # y &= x 
-            '-|>'  : oper('-|>',  12, lambda eles: None), # y |= x 
-            '-^>'  : oper('-^>',  12, lambda eles: None), # y ^= x 
-            '-<>'  : oper('-<>',  12, lambda eles: None), # y <<= x 
-            '->>'  : oper('->>',  12, lambda eles: None)  # y >>= x 
+            '->'   : oper('->',   13, lambda eles: None), # y = x
+            '-?>'  : oper('-?>',  13, lambda eles: None), # y = bool(x) ? x : None
+            '-+>'  : oper('-+>',  13, lambda eles: None), # y += x
+            '-->'  : oper('-->',  13, lambda eles: None), # y -= x 
+            '-*>'  : oper('-*>',  13, lambda eles: None), # y *= x 
+            '-/>'  : oper('-/>',  13, lambda eles: None), # y /= x 
+            '-**>' : oper('-**>', 13, lambda eles: None), # y **= x 
+            '-%>'  : oper('-%>',  13, lambda eles: None), # y %= x 
+            '-&>'  : oper('-&>',  13, lambda eles: None), # y &= x 
+            '-|>'  : oper('-|>',  13, lambda eles: None), # y |= x 
+            '-^>'  : oper('-^>',  13, lambda eles: None), # y ^= x 
+            '-<>'  : oper('-<>',  13, lambda eles: None), # y <<= x 
+            '->>'  : oper('->>',  13, lambda eles: None)  # y >>= x 
              },\
         'unary':{
-            'l':{'~':oper('~', 0, lambda x: None)},
-            'r':{'!':oper('!', 1, lambda x: None)}
+            'l':{'~':oper('~', 1, lambda x: None)},
+            'r':{'!':oper('!', 2, lambda x: None)}
         }
     }
 
@@ -190,103 +191,104 @@ class wfile:
 
     @staticmethod
     def _compresstokens(linetokens):
-        def findhighest(linetokens):
+        def findhighest(linegrp):
             if __debug__:
-                assert linetokens
+                assert linegrp or linegrp.val, linegrp
             highest = None
-            for elep in range(len(linetokens)):
-                ele = linetokens[elep].val
+            for elep in range(len(linegrp)):
+                ele = linegrp[elep].val
                 if ele in control.allopers and (highest == None or
-                                                control.allopers[ele] > control.allopers[linetokens[highest]]):
+                        control.allopers[ele] > control.allopers[linetokens[highest].val]):
                     highest = elep
             if __debug__:
                 assert highest != None, 'no highest for ' + str(linetokens)
             return highest
 
-        def compresstokens(line): #this is non-stable
-            ret = group() #universe
-            while line:
-                ele = line.pop(0) #pop(0) is inefficient for list. update this in the future
+        def compresstokens(linegrp): #this is non-stable
+            ret = group(parens = linegrp.parens) #universe
+            while linegrp:
+                ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
                 if ele not in control.allparens:
                     ret.append(group(ele))
                 else:
                     toappend = group()
                     parens = 1
-                    while parens > 0 and line:
-                        toappend.append(line.pop(0))
+                    while parens > 0 and linegrp:
+                        toappend.append(linegrp.pop(0))
                         if toappend[-1] in control.parens['l']:
                             parens += 1
                         if toappend[-1] in control.parens['r']:
                             parens -= 1
                     if __debug__:
-                        assert toappend[-1] in control.allparens #the last element should be in allparens
+                        assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (ele, toappend.pop())
+                    toappend = compresstokens(toappend)
                     ret.append(toappend)
             return ret
-            """
-                    int pos = 0;
-                    TokenNode node = clone();
-                    while(pos < pTokens.size()) {
-                        Token t = pTokens.get(pos);
-                        if(t.isConst() || t.isBinOper() || t.isUNL() || t.isUNR())
-                            node.add(new TokenNode(t));
-                        else if(t.isFunc() || t.isDelim()) {
 
-                            Collection<Token> passTokens = new Collection<Token>();
-                            String[] toAddParens = new String[]{"",""};
-                            int x = pos + 1;
-                            int paren = 0;
-                            do{
-                                if(Token.PAREN_L.contains(pTokens.get(x).val())) paren++;
-                                if(Token.PAREN_R.contains(pTokens.get(x).val())) paren--;
-                                if(t.isDelim() && Token.DELIM.contains(pTokens.get(x).val()) && paren == 0) break;
-                                x++;
-                            } while((t.isDelim() ? 0 <= paren : 0 < paren) && x < pTokens.size());
-                            for(Token tk : pTokens.subList(pos + 1, x))
-                                passTokens.add(tk);
-                            if(t.isFunc() && passTokens.get(passTokens.size()-1).isParen() && passTokens.get(0).isParen()){
-                                toAddParens[1] = pTokens.get(pos++ + passTokens.size()).val();
-                                toAddParens[0] = pTokens.get(pos).val();
-                                passTokens.remove(0);
-                                passTokens.remove(passTokens.size()-1);
-                                assert Token.PAREN_L.contains(toAddParens[0]) &&
-                                       Token.PAREN_R.contains(toAddParens[1]) : toAddParens[0]+" "+toAddParens[1];
-                                passTokens.add(0, new Token("", Token.Type.DELIM));
-                            }
-
-                            Object[] temp = new TokenNode(t).condeseNodes(passTokens);
-                            pos += (int)temp[0];// (x==pTokens.size()-1?1:0);
-                            ((TokenNode)temp[1]).parens = toAddParens;
-                            node.add((TokenNode)temp[1]);
-                        } else if(t.isParen()){
-                            if(Token.isParenL(t.val()) != null){
-                                assert node.parens[0].isEmpty() : "Uh oh! adding '"+t+"' to\n" + node.toFancyString();
-                                node.parens[0] = t.val();
-                            } else{
-                                assert node.parens[1].isEmpty() && !node.parens[0].isEmpty() : t+"\n"+toFancyString();
-                                node.parens[1] = t.val();
-                            }
-                        }
-                        pos++;
-                    }
-                    return new Object[]{pos, node.removeExtraFuncs()};
-                }"""
-
-        def fixtokens(line):
-            assert 0, line
-            if len(line) <= 1:
+        def fixtkns(line):
+            if not line:
                 return line
-            highest = findhighest(line)
-            oper = line[highest]
-            if oper.val in control.opers['binary']:
-                if __debug__:
-                    assert len(line) > 2, 'binary operator \'{}\' in {} needs to have 3+ elements!'.format(oper, line)
-                    # assert 0, str(oper) + str(line)
-                return group(oper.val, fixtokens(line[0:highest]), fixtokens(line[highest + 1:]))
-            return None
+            if len(line) == 1: #if the line is literally a single element
+                if len(line[0]) == 0: #if the line is literally a single constant
+                    return line[0]
+                else:
+                    return fixtkns(line[0])
+            fhp = findhighest(line)
+            if __debug__:
+                assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
+            ret = group(val = line[fhp].val, parens = line[fhp].parens)
+            s = fixtkns(line[0:fhp])
+            e = fixtkns(line[fhp + 1:])
+            if s != None:
+                ret.append(s)
+            if e != None:
+                ret.append(e)
+            return ret
+            """
+                private static TokenNode condense(final Collection<TokenNode> line){
+                    if(line.size() == 0)
+                        return null;
+                    if(line.size() == 1)
+                        if(line.get(0).size() == 0)
+                            return line.get(0);
+                        else
+                            return new TokenNode(line.get(0)){{
+                                add(condense(new Collection<TokenNode>().addAllE(line.get(0).elements)));
+                            }};
 
-        ['a', '<-', '(', '1', '+', '2', ')']
-        return group('',(fixtokens(compresstokens(line)) for line in linetokens))
+                    int fhp = firstHighPriority(line);
+                    if(fhp == -1)
+                        return new TokenNode(new Token()){{
+                            line.forEach(e -> add(condense(new Collection<TokenNode>().addE(e))));
+                        }};
+                    TokenNode u = condense(new Collection<TokenNode>().addE(line.get(fhp)));
+                    TokenNode s = condense(new Collection<TokenNode>().addAllE(line.subList(0, fhp)));
+                    TokenNode e = condense(new Collection<TokenNode>().addAllE(line.subList(fhp + 1)));
+                    if(s != null)
+                        u.add(s);
+                    if(e != null)
+                        u.add(e);
+                    return u;
+                }
+            """
+            #order of operations
+            # if len(line) <= 1:
+            #     return line
+            # highest = findhighest(line)
+            # oper = line[highest]
+            # if oper.val in control.opers['binary']:
+            #     if __debug__:
+            #         assert len(line) > 2, 'binary operator \'{}\' in {} needs to have 3+ elements!'.format(oper, line)
+            #     # print('fixtknsret:',group(val = oper.val,
+            #     #              args = [fixtkns(line[0:highest]), fixtkns(line[highest + 1:])],
+            #     #              parens = oper.parens))
+            #     return group(val = oper.val,
+            #                  args = [fixtkns(line[0:highest]), fixtkns(line[highest + 1:])],
+            #                  parens = oper.parens)
+            # return None
+
+        return group('',list(fixtkns(compresstokens(group('',line))) for line in linetokens))
     def __str__(self):
         return str(self.compressedtokens)
 
@@ -355,6 +357,41 @@ group(val = '',
       parens = ['', ''])
 
 
+group(  val = '',
+        args = [
+            group(  val = '<-',
+                    args = [
+                        [
+                            group(  val = 'a',
+                                    args = [],
+                                    parens = ['', '']
+                            )
+                        ], 
+                        group(  val = '+',
+                                args = [
+                                    group(  val = ':',
+                                            args = [
+                                                [
+                                                    group(  val = 'array',
+                                                            args = [],
+                                                            parens = ['', '']
+                                                    )
+                                                ],
+                                                [
+                                                    group(  val = '',
+                                                            args = ['position'],
+                                                            parens = ('[', ']')
+                                                    )
+                                                ]
+                                            ],
+                                        parens = ['', '']
+                                    ),
+                                    [group(val = '',
+        args = ['1', '+', '2'],
+        parens = ('(', ')'))]],
+        parens = ['', ''])],
+        parens = ['', ''])],
+        parens = ['', ''])
 """
 
 
