@@ -86,6 +86,7 @@ class control:
     # endline = '\n\r;'
     comment = '#'
     escape = '\\'
+    datadef = '@'
     nbwhitespace = ' \t\x0b\x0c'
     whitespace = nbwhitespace + linebreak
     parens = {'l':'([{',
@@ -142,6 +143,7 @@ class control:
             '>='  : oper('>=',    10, lambda x, y: x >= y), # greater than or equal
             '=='  : oper('==',    10, lambda x, y: x == y), # equal to
             '='   : oper('=',     10, lambda x, y: x == y), # equal to
+            '<>'  : oper('<>',    10, lambda x, y: x != y), # equal to
             '!='  : oper('!=',    10, lambda x, y: x != y), # not equal to
             '&&'  : oper('&&',    11, None), # boolean and
             '||'  : oper('||',    12, None), # booleon or
@@ -198,7 +200,7 @@ class control:
             assert eles.val == ':', 'this shouldn\'t break!'
         if funcname == 'disp':
             eles[1].eval(locls)
-            print(locls['$'])
+            print(locls['$']) #keep this here!
         elif funcname == 'if':
             if __debug__:
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
@@ -228,18 +230,21 @@ class control:
             if __debug__:
                 assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
             control.funcs[eles[0].val](eles, locls)
-        elif name == 'or' or name == 'and':
+        elif name == '||' or name == '&&':
             eles[0].eval(locls)
             element = locls['$']
+            if name == '&&' and not element or name == '||' and element:
+                return element
             eles[1].eval(locls)
-            locls['$'] = (element or locls['$']) if name == 'or' else (element and locls['$'])
+            locls['$'] = (element or locls['$']) if name == '&&' else (element and locls['$'])
         # elif name in control.opers['unary']['l']:
         #     if __debug__:
         #         assert eles[0].isnull(),eles #should be (nothing, item)
         #     eles[1].eval(locls)
         #     locls['$'] = ~locls['$']
         else:
-            if name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']:
+            direc = name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']
+            if direc == 1:
                 eles[1].eval(locls)
                 value =locls['$']
                 key = eles[0].val
@@ -247,7 +252,6 @@ class control:
                 eles[0].eval(locls)
                 value =locls['$']
                 key = eles[1].val
-
             if __debug__:
                 assert name == '<-'  or\
                        name == '->'  or\
@@ -268,7 +272,8 @@ class control:
                 elif name == '<^-'  or name == '-^>' : locls[key] = value
                 elif name == '<<-'  or name == '-<>' : locls[key] = value
                 elif name == '<>-'  or name == '->>' : locls[key] = value
-
+            if direc == 0: #swap the return value
+                locls['$'] = locls[key]
 
     @staticmethod
     def evaloper(eles, locls):
@@ -285,6 +290,15 @@ class control:
                 ele.eval(locls)
                 ret = control.allopers[name].func(ret, locls['$'])
             locls['$'] = ret# x = y
+
+    @staticmethod
+    def applyrules(tokens):
+        print(tokens)
+        if __debug__:
+            assert tokens[0] == '@'
+            assert tokens[1] == 'define', tokens[1] #currently, only 'define' is defined.
+        assert 0, 'not implemented yet! todo: this'
+        # fixedtokens = 
 
 class wfile:
     def __init__(self, filepath, encoding = 'utf-8'):
@@ -341,7 +355,9 @@ class wfile:
                     par = rawt.partition(punc)
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
-        tokens = (token.strip(control.nbwhitespace) for token in tokenize(rawt))
+        tokens = [token.strip(control.nbwhitespace) for token in tokenize(rawt)]
+            
+
         ret = [[]]
         for token in tokens:
             if not token:
@@ -350,6 +366,11 @@ class wfile:
                 ret.append([])
             else:
                 ret[-1].append(token)
+        linep = 0
+        while linep < len(ret):
+            if ret[linep] and ret[linep][0] in control.datadef:
+                control.applyrules(ret.pop(0))
+            linep+=1
         return [l for l in ret if l]
 
     @staticmethod
