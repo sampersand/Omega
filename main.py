@@ -47,6 +47,8 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+    def isempty(self):
+        return self.isnull() or not self and not self.hasparens() and self.val in control.endline
     def isnull(self):
         return not self and not self.hasparens() and not self.val
     def eval(self, locls):
@@ -293,7 +295,7 @@ class control:
         oper = control.allopers[eles.val]
         if oper.func == None:
             control._specialoper(eles, locls)
-        else:
+        elif eles:
             eles[0].eval(locls)
             ret = locls['$']
             name = eles.val
@@ -324,9 +326,10 @@ class wfile:
     def __str__(self):
         def getl(linep, l):
             if not l:
-                assert str(l) == ';' #no other known case atm
+                assert str(l) == ';', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
+                print(l[0])
                 assert l[0].val not in control.endline or not l[0].val, l[0].val # node structure should prevent this.
             ret = ''
             if l[0]:

@@ -2,10 +2,12 @@
 #    disp:i,
 #    displ:j
 #}
+1 -> a;;;
+;; b <- a;b || a -?>c;
 1 -> expr;
 if:expr:{
-    0 -> a,
-    displ:$,
+    0 -> a;
+    displ:$;
     if:[a!]:{
         displ:1000;
     }
