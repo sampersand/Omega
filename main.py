@@ -183,7 +183,7 @@ class control:
             'l':{'~':oper('~', 1, lambda x, y: ~y),
                  'pos':oper('pos', 1, lambda x, y: +y),
                  'neg':oper('neg', 1, lambda x, y: -y)},
-            'r':{'!':oper('!', 2, lambda x, y: None)}
+            'r':{'!':oper('!', 2, lambda x, y: not x)}
         }
     }
     for delim in alldelims:

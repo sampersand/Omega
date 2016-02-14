@@ -1,4 +1,12 @@
-for:([0->j, 0->i] | i < 10| (1 -+> i, 2 -+> j)):{
-    disp:i,
-    displ:j
+#for:([0->j, 0->i] | i < 10| (1 -+> i, 2 -+> j)):{
+#    disp:i,
+#    displ:j
+#}
+1 -> expr,
+if:expr:{
+    0->a,
+    displ:$,
+    if:{!a}:{
+        displ:1000
+    }
 }
