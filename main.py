@@ -23,9 +23,20 @@ class group(list):
             assert len(parens) == 2, parens
         self.val = val
         self.parens = parens
+    def hasparens(self):
+        return bool(self.parens[0] or self.parens[1])
 
     def __repr__(self):
-        return 'group(val = {}, args = {}, parens = {})'.format(repr(self.val), super().__repr__(), repr(self.parens))
+        ret = 'group('
+        if self.val:
+            ret += 'val = ' + repr(self.val) + ', '
+        if self:
+            ret += 'args = ' + super().__repr__() + ', '
+        if self.hasparens():
+            ret += 'parens = ' + repr(self.parens)
+        if not self.hasparens() and (self.val or self):
+            ret = ret[:-2]
+        return ret + ')'
 
     def __str__(self):
         if not self:
@@ -36,7 +47,15 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
-
+    def eval(self, locls):
+        if self.val in control.allopers:
+            # print(self.val, repr(self))
+            control.allopers[self.val].func(self, locls)
+        else:
+            if self.val in locls:
+                print('self.val ({}) in locls ({}) !'.format(self.val, locls))
+                assert 0
+            return self.val
 class control:
     endline = '\n\r;'
     comment = '#'
@@ -83,58 +102,61 @@ class control:
                     x <%-  y     x <&- y     x <|- y     x <^- y     x <<<- y    x <>>- y
                     And their inverses
             """
+    def test(eles, locls):
+        print(repr(eles[0]), locls)
+        locls.__setitem__(eles[0], eles[1]) # x = y
     opers = {
         'binary':{
-            ':'   : oper(':',      0, lambda eles: None), # association
-            '**'  : oper('**',     3, lambda eles: None), # power of
-            '*'   : oper('*',      4, lambda eles: None), # mult
-            '/'   : oper('/',      4, lambda eles: None), # div
-            '%'   : oper('%',      4, lambda eles: None), # mod
-            '+'   : oper('+',      5, lambda eles: None), # plus
-            '-'   : oper('-',      5, lambda eles: None), # minus
-            'b<<' : oper('b<<',    6, lambda eles: None), # bitwise <<
-            'b>>' : oper('b<<',    6, lambda eles: None), # bitwise >>
-            'b&'  : oper('b&',     7, lambda eles: None), # bitwise &
-            'b^'  : oper('b^',     8, lambda eles: None), # bitwise ^
-            'b|'  : oper('b|',     9, lambda eles: None), # bitwise |
-            '<'   : oper('<',     10, lambda eles: None), # less than
-            '>'   : oper('>',     10, lambda eles: None), # greater than
-            '<='  : oper('<=',    10, lambda eles: None), # less than or equal
-            '>='  : oper('>=',    10, lambda eles: None), # greater than or equal
-            '=='  : oper('==',    10, lambda eles: None), # equal to
-            '!='  : oper('!=',    10, lambda eles: None), # not equal to
-            '&&'  : oper('&&',    11, lambda eles: None), # boolean and
-            '||'  : oper('||',    12, lambda eles: None), # booleon or
+            ':'   : oper(':',      0, lambda eles, locls: None), # association
+            '**'  : oper('**',     3, lambda eles, locls: None), # power of
+            '*'   : oper('*',      4, lambda eles, locls: None), # mult
+            '/'   : oper('/',      4, lambda eles, locls: None), # div
+            '%'   : oper('%',      4, lambda eles, locls: None), # mod
+            '+'   : oper('+',      5, lambda eles, locls: None), # plus
+            '-'   : oper('-',      5, lambda eles, locls: None), # minus
+            'b<<' : oper('b<<',    6, lambda eles, locls: None), # bitwise <<
+            'b>>' : oper('b<<',    6, lambda eles, locls: None), # bitwise >>
+            'b&'  : oper('b&',     7, lambda eles, locls: None), # bitwise &
+            'b^'  : oper('b^',     8, lambda eles, locls: None), # bitwise ^
+            'b|'  : oper('b|',     9, lambda eles, locls: None), # bitwise |
+            '<'   : oper('<',     10, lambda eles, locls: None), # less than
+            '>'   : oper('>',     10, lambda eles, locls: None), # greater than
+            '<='  : oper('<=',    10, lambda eles, locls: None), # less than or equal
+            '>='  : oper('>=',    10, lambda eles, locls: None), # greater than or equal
+            '=='  : oper('==',    10, lambda eles, locls: None), # equal to
+            '!='  : oper('!=',    10, lambda eles, locls: None), # not equal to
+            '&&'  : oper('&&',    11, lambda eles, locls: None), # boolean and
+            '||'  : oper('||',    12, lambda eles, locls: None), # booleon or
             #assignment operators
             # all notes are in form of "x OPERATOR y" like 'x <- y'
-            '<-'   : oper('<-',   13, lambda eles: None), # x = y
-            '<?-'  : oper('<?-',  13, lambda eles: None), # x = bool(y) ? y : None
-            '<+-'  : oper('<+-',  13, lambda eles: None), # x += y
-            '<--'  : oper('<--',  13, lambda eles: None), # x -= y
-            '<*-'  : oper('<*-',  13, lambda eles: None), # x *= y
-            '</-'  : oper('</-',  13, lambda eles: None), # x /= y
-            '<**-' : oper('<**-', 13, lambda eles: None), # x **= y
-            '<%-'  : oper('<%-',  13, lambda eles: None), # x %= y
-            '<&-'  : oper('<&-',  13, lambda eles: None), # x &= y
-            '<|-'  : oper('<|-',  13, lambda eles: None), # x |= y
-            '<^-'  : oper('<^-',  13, lambda eles: None), # x ^= y
-            '<<-'  : oper('<<-',  13, lambda eles: None), # x <<= y
-            '<>-'  : oper('<>-',  13, lambda eles: None), # x >>= y
+            '<-'   : oper('<-',   13, lambda eles, locls: control.test(eles, locls)),#locls.__setitem__(eles[0], eles[1])), # x = y
+            '<?-'  : oper('<?-',  13, lambda eles, locls: None), # x = bool(y) ? y : None
+            '<+-'  : oper('<+-',  13, lambda eles, locls: None), # x += y
+            '<--'  : oper('<--',  13, lambda eles, locls: None), # x -= y
+            '<*-'  : oper('<*-',  13, lambda eles, locls: None), # x *= y
+            '</-'  : oper('</-',  13, lambda eles, locls: None), # x /= y
+            '<**-' : oper('<**-', 13, lambda eles, locls: None), # x **= y
+            '<%-'  : oper('<%-',  13, lambda eles, locls: None), # x %= y
+            '<&-'  : oper('<&-',  13, lambda eles, locls: None), # x &= y
+            '<|-'  : oper('<|-',  13, lambda eles, locls: None), # x |= y
+            '<^-'  : oper('<^-',  13, lambda eles, locls: None), # x ^= y
+            '<<-'  : oper('<<-',  13, lambda eles, locls: None), # x <<= y
+            '<>-'  : oper('<>-',  13, lambda eles, locls: None), # x >>= y
             #inverted assignment operators
             # all notes are in form of "x OPERATOR y" like 'x -> y'
-            '->'   : oper('->',   13, lambda eles: None), # y = x
-            '-?>'  : oper('-?>',  13, lambda eles: None), # y = bool(x) ? x : None
-            '-+>'  : oper('-+>',  13, lambda eles: None), # y += x
-            '-->'  : oper('-->',  13, lambda eles: None), # y -= x 
-            '-*>'  : oper('-*>',  13, lambda eles: None), # y *= x 
-            '-/>'  : oper('-/>',  13, lambda eles: None), # y /= x 
-            '-**>' : oper('-**>', 13, lambda eles: None), # y **= x 
-            '-%>'  : oper('-%>',  13, lambda eles: None), # y %= x 
-            '-&>'  : oper('-&>',  13, lambda eles: None), # y &= x 
-            '-|>'  : oper('-|>',  13, lambda eles: None), # y |= x 
-            '-^>'  : oper('-^>',  13, lambda eles: None), # y ^= x 
-            '-<>'  : oper('-<>',  13, lambda eles: None), # y <<= x 
-            '->>'  : oper('->>',  13, lambda eles: None)  # y >>= x 
+            '->'   : oper('->',   13, lambda eles, locls: None), # y = x
+            '-?>'  : oper('-?>',  13, lambda eles, locls: None), # y = bool(x) ? x : None
+            '-+>'  : oper('-+>',  13, lambda eles, locls: None), # y += x
+            '-->'  : oper('-->',  13, lambda eles, locls: None), # y -= x 
+            '-*>'  : oper('-*>',  13, lambda eles, locls: None), # y *= x 
+            '-/>'  : oper('-/>',  13, lambda eles, locls: None), # y /= x 
+            '-**>' : oper('-**>', 13, lambda eles, locls: None), # y **= x 
+            '-%>'  : oper('-%>',  13, lambda eles, locls: None), # y %= x 
+            '-&>'  : oper('-&>',  13, lambda eles, locls: None), # y &= x 
+            '-|>'  : oper('-|>',  13, lambda eles, locls: None), # y |= x 
+            '-^>'  : oper('-^>',  13, lambda eles, locls: None), # y ^= x 
+            '-<>'  : oper('-<>',  13, lambda eles, locls: None), # y <<= x 
+            '->>'  : oper('->>',  13, lambda eles, locls: None)  # y >>= x 
              },\
         'unary':{
             'l':{'~':oper('~', 1, lambda x: None)},
@@ -153,7 +175,19 @@ class wfile:
             self.striptext = wfile._striptext(f.read())
         self.tokens = wfile._tokenize(self.striptext)
         import copy
-        self.compressedtokens = wfile._compresstokens(copy.deepcopy(self.tokens))
+        self.lines = wfile._compresstokens(copy.deepcopy(self.tokens))
+    
+    def __iter__(self):
+        return iter(self.lines)
+    
+    def __str__(self):
+        ret = 'file \'{}\':\n==[start]==\n'.format(self.filepath)
+        pos = 1
+        for line in self.lines:
+            ret += '\n{}: \t{}'.format(pos, line)
+            pos+=1
+        return ret + '\n\n==[ end ]=='
+        # return 'file \'{}\':\n>>\t{}'.format(self.filepath, '\n\t'.join(str(line) for line in self.lines))
 
     @staticmethod
     def _striptext(rawt):
@@ -250,18 +284,25 @@ class wfile:
             s = fixtkns(group(args = line[0:fhp]))
             e = fixtkns(group(args = line[fhp + 1:]))
             if s != None:
-                ret.append(s)
+                ret += s
             if e != None:
-                ret.append(e)
+                ret += e
             return ret
 
         return group(args = [fixtkns(compresstokens(group(args = line))) for line in linetokens])
-    def __str__(self):
-        return str(self.compressedtokens)
+    
+
+    def eval(self):
+        locls = {}
+        for line in self:
+            line.eval(locls)
+        return locls
 
 if __name__ == '__main__':
     f = wfile('testcode.wc')
-    print(repr(f.compressedtokens))
+    print(f)
+    print('--')
+    print(f.eval())
 
 """
 @f1(arg)
@@ -269,103 +310,6 @@ if __name__ == '__main__':
    def func(): pass
 
 """
-
-
-
-
-
-
-
-"""
-('1,234.5', '*', '(', '1e4', '-', '2.4', ')', '-?>', 'b')
-1,234.5
---
-*
-1,234.5
---
-(
-*
-1,234.5
---
-1e4
-(
-*
-1, 234.5
---
-2.4
--
-1e4
-(
-*
-1, 234.5
-
-
-group(val = '',
-      args = [
-        group(val = 'a',
-              args = [],
-              parens = ['', '']),
-        group(val = '<-',
-              args = [],
-              parens = ['', '']),
-        group(val = 'arary',
-              args = [],
-              parens = ['', '']),
-        group(val = '',
-              args = ['position'],
-              parens = ('[', ']')),
-        group(val = '+',
-              args = [],
-              parens = ['', '']),
-        group(val = '',
-              args = ['1', '+', '2'],
-              parens = ('(', ')'))
-        ],
-      parens = ['', ''])
-
-
-group(  val = '',
-        args = [
-            group(  val = '<-',
-                    args = [
-                        [
-                            group(  val = 'a',
-                                    args = [],
-                                    parens = ['', '']
-                            )
-                        ], 
-                        group(  val = '+',
-                                args = [
-                                    group(  val = ':',
-                                            args = [
-                                                [
-                                                    group(  val = 'array',
-                                                            args = [],
-                                                            parens = ['', '']
-                                                    )
-                                                ],
-                                                [
-                                                    group(  val = '',
-                                                            args = ['position'],
-                                                            parens = ('[', ']')
-                                                    )
-                                                ]
-                                            ],
-                                        parens = ['', '']
-                                    ),
-                                    [group(val = '',
-        args = ['1', '+', '2'],
-        parens = ('(', ')'))]],
-        parens = ['', ''])],
-        parens = ['', ''])],
-        parens = ['', ''])
-"""
-
-
-
-
-
-
 
 
 
