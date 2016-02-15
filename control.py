@@ -131,13 +131,12 @@ class control:
     @staticmethod
     def invertparen(paren):
         return {'(':')', ')':'(',   '[':']', ']':'[',   '{':'}','}':'{'}[paren]
-
     @staticmethod
     def _doFunc(eles, locls, funcname):
         if 'disp' in funcname:
             if __debug__:
                 if len(eles) != 0:
-                    assert eles[0].val == funcname, 'this shouldn\'t break'
+                    assert eles[0].basestr == funcname, 'this shouldn\'t break'
             if len(eles) == 0:
                 print(end = '' if funcname == 'disp' else '\n')
             elif len(eles[1]) == 0:
@@ -160,14 +159,14 @@ class control:
                 locls['$'] = ''
             else:
                 if __debug__:
-                    assert eles[0].val == funcname, 'this shouldn\'t break'
+                    assert eles[0].basestr == funcname, 'this shouldn\'t break'
                 eles[1].eval(locls)
             if __debug__:
                 assert '$' in locls
             quit('Aborting!' + ('' if locls['$'] == '' else ' Message: \'{}\''.format(str(locls['$']))))
         elif funcname == 'if':
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\'t break'
+                assert eles[0].basestr == funcname, 'this shouldn\'t break'
                 assert len(eles) in (3, 4), 'can only have if:(cond):(if true)[:(if false)];'
             eles[1].eval(locls) # evaluates the condition
             if locls['$']:
@@ -176,7 +175,7 @@ class control:
                 eles[3].eval(locls)
         elif funcname == 'for':
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\'t break'
+                assert eles[0].basestr == funcname, 'this shouldn\'t break'
                 assert len(eles) == 3, 'can only have for:(...):{ expression };'
                 assert len(eles[1]) == 3, 'can only have (initialize; condition; increment)'
             eles[1][0].eval(locls) # initializes the for loop the condition
@@ -191,12 +190,13 @@ class control:
     
     @staticmethod
     def _specialoper(eles, locls):
-        name = eles.val
+        from group import group
+        name = eles.basestr
         if name in control.alldelims:
             if name in control.delims['arraysep']:
                 eles[0].eval(locls)
                 ret = []
-                name = eles.val
+                name = eles.basestr
                 for ele in eles:
                     ele.eval(locls)
                     ret.append(locls['$'])
@@ -205,14 +205,14 @@ class control:
             else:
                 raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
         elif name == ':':
-            if eles[0].val in control.alldelims:
+            if eles[0].base in control.alldelims:
                 assert 0, str(eles) + " | " + eles[0]
-            if eles[0].val in locls:
-                locls[eles[0].val].eval(eles[1])
+            if eles[0].base in locls:
+                locls[eles[0].base].eval(eles[1])
             else:
                 if __debug__:
-                    assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
-                control.funcs[eles[0].val](eles, locls)
+                    assert eles[0].base in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].base)
+                control.funcs[eles[0].base](eles, locls)
         elif name == '||' or name == '&&':
             eles[0].eval(locls)
             element = locls['$']
@@ -225,11 +225,11 @@ class control:
             if direc == 1:
                 eles[1].eval(locls)
                 value =locls['$']
-                key = eles[0].val
+                key = eles[0].base
             else:
                 eles[0].eval(locls)
                 value =locls['$']
-                key = eles[1].val
+                key = eles[1].base
             if __debug__:
                 assert name == '<-'  or\
                        name == '->'  or\
@@ -255,15 +255,15 @@ class control:
 
     @staticmethod
     def evaloper(eles, locls):
-        if eles.val not in control.allopers:
-            raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.val))
-        oper = control.allopers[eles.val]
+        if eles.base not in control.allopers:
+            raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.base))
+        oper = control.allopers[eles.base]
         if oper.func == None:
             control._specialoper(eles, locls)
         elif eles:
             eles[0].eval(locls)
             ret = locls['$']
-            name = eles.val
+            name = eles.base
             for ele in eles[1:]:
                 ele.eval(locls)
                 ret = control.allopers[name].func(ret, locls['$'])

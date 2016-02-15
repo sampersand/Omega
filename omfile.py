@@ -16,13 +16,14 @@ class omfile:
                 assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
-                assert l[0].val not in control.delims['endline'][0] or not l[0].val, l[0].val # node structure should prevent this.
+                # node structure should prevent this.
+                assert l[0].basestr not in control.delims['endline'][0] or not l[0].basestr, l[0].base
             ret = ''
             if l[0]:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
             if len(l) > 1:
-                if l[1].val not in control.delims['endline'][0]:
+                if l[1].basestr not in control.delims['endline'][0]:
                     ret += '\n{}:  \t{}'.format(linep, l[1])
                     linep += 1
                 else:
@@ -97,7 +98,8 @@ class omfile:
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        return ret
+        from omobj import omobj
+        return [omobj(v) for v in ret]
 
     @staticmethod
     def _compresstokens(linetokens):
@@ -105,15 +107,15 @@ class omfile:
             ret = group(parens = linegrp.parens) #universe
             while linegrp:
                 ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
-                if ele not in control.allparens:
-                    ret.append(group(ele))
+                if str(ele) not in control.allparens:
+                    ret.append(group(base = ele))
                 else:
                     toappend = group()
                     parens = {str(ele):1}
                     while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
-                        if toappend[-1] in control.allparens:
-                            last = toappend[-1]
+                        if str(toappend[-1]) in control.allparens:
+                            last = str(toappend[-1])
                             if last in control.parens['l']:
                                 if last not in parens:
                                     parens[last] = 0
@@ -123,19 +125,21 @@ class omfile:
                                     assert control.invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
                                 parens[control.invertparen(last)] -= 1
                     if __debug__:
-                        assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
-                    toappend.parens = (ele, toappend.pop())
+                        assert str(toappend[-1]) in control.allparens, toappend #the last element should be in allparens
+                    toappend.parens = (str(ele), str(toappend.pop()))
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
+
             return ret
         def findhighest(linegrp):
             if __debug__:
-                assert linegrp or linegrp.val, linegrp
+                assert linegrp or linegrp.base, linegrp
+                #change this in the future when boolean for linegrp changes
             highest = None
             for elep in range(len(linegrp)):
-                ele = linegrp[elep].val
+                ele = linegrp[elep].basestr
                 if ele in control.allopers and (highest == None or
-                        control.allopers[ele] > control.allopers[linegrp[highest].val]):
+                        control.allopers[ele] > control.allopers[linegrp[highest].basestr]):
                     highest = elep
             if __debug__:
                 if not highest:
@@ -154,36 +158,20 @@ class omfile:
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
 
-            ret = group(val = line[fhp].val, parens = line.parens)
+            ret = group(base = line[fhp].base, parens = line.parens)
             current = group()
             while line:
-                e = line.pop(0)
-                if e.val == ret.val:
+                e = line.pop() #was formerly .pop(0)
+                if e.base == ret.base:
                     if current:
                         ret.append(fixtkns(current))
-                        ##TODO: REMOVE
-                        # e = fixtkns(current)
-                        # print(repr(e))
-                        # ret.append(e)
                     current = group()
                 else:
                     current.append(e)
             if current:
                 ret.append(fixtkns(current))
+            print(repr(ret))
             return ret
-            # s = fixtkns(group(args = line[0:fhp]))
-            # e = fixtkns(group(args = line[fhp + 1:]))
-            # if s != None:
-            #     if len(s) == 1 and not s.val and not s.hasparens():
-            #         ret.append(s[0])
-            #     else:
-            #         ret.append(s)
-            # if e != None:
-            #     if len(e) == 1 and not e.val and not e.hasparens():
-            #         ret.append(e[0])
-            #     else:
-            #         ret.append(e)
-            # return ret
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):

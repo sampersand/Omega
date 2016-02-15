@@ -1,11 +1,20 @@
-class oper:
-    def __init__(self, value, priority, func):
-        self.value = value
+class omobj:
+    def __init__(self, base):
+        self.base = base
+    def __str__(self):
+        return str(self.base)
+    def __repr__(self):
+        return repr(self.base)
+    def __bool__(self):
+        return bool(str(self))
+class oper(omobj):
+    def __init__(self, base, priority, func):
+        super().__init__(base)
         self.priority = priority
         self.func = func
     def __repr__(self):
-        return 'oper({},{},{})'.format(self.value, self.priority, self.func)
+        return 'oper({},{},{})'.format(self.base, self.priority, self.func)
     def __str__(self):
-        return self.value
+        return self.base
     def __lt__(self, other):
         return self.priority < other.priority

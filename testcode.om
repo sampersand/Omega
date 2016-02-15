@@ -1,10 +1,12 @@
-#[1, 1, 2, 3, [5, 8, 13]]->array;
-2 -> a, 1 -> b;
-if:(a=2):(1->b):{2}
-disp:$;
-dispc:('a:', a, 1, 2);
-dispc:('b:', b, 2, 3);
-displ:(array);#
-[99,123,134]->array;
-array:[i] -> a
-#for:(0->i, i < 3, 1-+>i):{dispc:([array:[i]])};
+# [1, 1, 2, 3, [5, 8, 13]]->array;
+##2 -> a, 1 -> b;
+##if:(a=2):(1->b):{2}
+##disp:$;
+##dispc:('a:', a, 1, 2);
+##dispc:('b:', b, 2, 3);
+##displ:(array);
+##for:(0->i, i < 3, 1-+>i):{dispc:([array:[i]])};
+ #
+#[99,123,134] -> array;
+array:[i] -> a#
+(1 + 2) * 3 -> a
