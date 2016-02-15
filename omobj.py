@@ -1,12 +1,16 @@
 class omobj:
-    def __init__(self, base):
+    def __init__(self, base, evalfunc = None):
         self.base = base
+        self.evalfunc = evalfunc
     def __str__(self):
         return str(self.base)
     def __repr__(self):
         return repr(self.base)
     def __bool__(self):
         return bool(str(self))
+    def eval(self, locls):
+        print('attempting to eval',locls)
+        return None
 class oper(omobj):
     def __init__(self, base, priority, func):
         super().__init__(base)

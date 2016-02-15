@@ -48,36 +48,36 @@ class group(list):
         from control import control
         if self.isnull():
             locls['$'] = None
-        elif self.base in control.allopers:
+        elif self.basestr in control.allopers:
             control.evaloper(self, locls)
-        elif self.base in control.funcs:
-            control.funcs[self.base](self, locls)
+        elif self.basestr in control.funcs:
+            control.funcs[self.basestr](self, locls)
         else:
-            if self.base == '':
+            if self.basestr == '':
                 if __debug__:
                     assert len(self) == 1, self #expects 1 element (in parens)
                 self[0].eval(locls)
-            elif self.base in locls:
-                locls['$'] = locls[self.base]
+            elif self.basestr in locls:
+                locls['$'] = locls[self.basestr]
             else:
-                if self.base in control.consts:
-                    locls['$'] = control.consts[self.base]
+                if self.basestr in control.consts:
+                    locls['$'] = control.consts[self.basestr]
                 else:
-                    if self.base == 'locals' or self.base == 'locls':
+                    if self.basestr == 'locals' or self.basestr == 'locls':
                         locls['$'] = str(locls)
                     else:
-                        if self.base[0] in control.allquotes:
+                        if self.basestr[0] in control.allquotes:
                             if __debug__:
-                                assert self.base[-1] in control.allquotes
-                            locls['$'] = self.base
+                                assert self.basestr[-1] in control.allquotes
+                            locls['$'] = self.basestr
                         else:
                             try:
-                                locls['$'] = int(self.base)
+                                locls['$'] = int(self.basestr)
                             except ValueError:
                                 try:
-                                    locls['$'] = float(self.base)
+                                    locls['$'] = float(self.basestr)
                                 except ValueError:
                                     try:
-                                        locls['$'] = complex(self.base)
+                                        locls['$'] = complex(self.basestr)
                                     except ValueError:
-                                        raise SyntaxError('No known way to deal with \'{}\''.format(self.base))
+                                        raise SyntaxError('No known way to deal with \'{}\''.format(self.basestr))
