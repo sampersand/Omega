@@ -544,9 +544,12 @@ if __name__ == '__main__':
             if sys.argv[1] == '/Users/westerhack/code/python/Omega/main.py':
                 filepath = 'testcode.om'
     f = wfile(filepath)
-    # print(f)
-    # print('--')
-    f.eval()
+    if __debug__:
+        print(f)
+        print('--')
+    evald = f.eval()
+    if __debug__:
+        print(evald)
 
 """
 @f1(arg)

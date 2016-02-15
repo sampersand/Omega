@@ -196,6 +196,7 @@ class control:
         'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
         'abort': lambda eles, locls: control._doFunc(eles, locls, 'abort'),
         'displ': lambda eles, locls: control._doFunc(eles, locls, 'displ'),
+        'dispc': lambda eles, locls: control._doFunc(eles, locls, 'dispc'), #commas bxn elements
     }
 
 
@@ -221,14 +222,24 @@ class control:
 
     @staticmethod
     def _doFunc(eles, locls, funcname):
-        if funcname == 'disp' or funcname == 'displ':
-            if len(eles) == 0: #aka, its jsut disp or displ
-                print(end = funcname == 'displ' and '\n' or '')
-                return
+        if 'disp' in funcname:
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\'t break'
-            eles[1].eval(locls)
-            print(locls['$'], end = '\n' if funcname == 'displ' else '') #keep this here!
+                if len(eles) != 0:
+                    assert eles[0].val == funcname, 'this shouldn\'t break'
+            if len(eles) == 0:
+                print(end = '' if funcname == 'disp' else '\n')
+            elif funcname == 'disp':
+                for ele in eles[1]:
+                    ele.eval(locls)
+                    print(locls['$'], end = '')
+            elif funcname == 'displ':
+                for ele in eles[1]:
+                    ele.eval(locls)
+                    print(locls['$'], end = '\n')
+            elif funcname == 'dispc':
+                for ele in eles[1]:
+                    ele.eval(locls)
+                    print(locls['$'], end = ', ' if ele is not eles[1][-1] else '')
         elif funcname == 'abort':
             if len(eles) == 0:
                 locls['$'] = ''
@@ -278,15 +289,17 @@ class control:
         name = eles.val
         if name in control.alldelims:
             if name in control.delims['arraysep']:
-                # print()
-                # eles[0].eval(locls)
-                # ele1 = locls['$']
-                # eles[1].eval(locls)
-                # locls['$'] = [ele1, locls['$']]
-                pass
+                eles[0].eval(locls)
+                ret = []
+                name = eles.val
+                for ele in eles:
+                    ele.eval(locls)
+                    ret.append(locls['$'])
+                locls['$'] = ret# x = y
+                return
             else:
                 raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
-        if name == ':':
+        elif name == ':':
             if eles[0].val in control.alldelims:
                 assert 0, str(eles) + " | " + eles[0]
             if __debug__:
@@ -457,19 +470,6 @@ class wfile:
 
     @staticmethod
     def _compresstokens(linetokens):
-        def findhighest(linegrp):
-            if __debug__:
-                assert linegrp or linegrp.val, linegrp
-            highest = None
-            for elep in range(len(linegrp)):
-                ele = linegrp[elep].val
-                if ele in control.allopers and (highest == None or
-                        control.allopers[ele] > control.allopers[linegrp[highest].val]):
-                    highest = elep
-            if __debug__:
-                if not highest:
-                    raise SyntaxError('no operator for string \'{}\'!'.format(linegrp))
-            return highest
         def compresstokens(linegrp): #this is non-stable
             ret = group(parens = linegrp.parens) #universe
             while linegrp:
@@ -497,6 +497,19 @@ class wfile:
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
             return ret
+        def findhighest(linegrp):
+            if __debug__:
+                assert linegrp or linegrp.val, linegrp
+            highest = None
+            for elep in range(len(linegrp)):
+                ele = linegrp[elep].val
+                if ele in control.allopers and (highest == None or
+                        control.allopers[ele] > control.allopers[linegrp[highest].val]):
+                    highest = elep
+            if __debug__:
+                if not highest:
+                    raise SyntaxError('no operator for string \'{}\'!'.format(linegrp))
+            return highest
         def fixtkns(line):
             #combine tokens using order of operations
             if not line:
@@ -509,6 +522,7 @@ class wfile:
             fhp = findhighest(line)
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
+
             ret = group(val = line[fhp].val, parens = line.parens)
             s = fixtkns(group(args = line[0:fhp]))
             e = fixtkns(group(args = line[fhp + 1:]))
@@ -561,12 +575,6 @@ if __name__ == '__main__':
 
 
 
-"""
-@f1(arg)
-   @f2
-   def func(): pass
-
-"""
 
 
 
@@ -577,9 +585,4 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
-
-
+    
