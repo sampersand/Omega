@@ -436,6 +436,7 @@ class wfile:
                 ret[-1] += token
             else:
                 ret.append(token)
+
         #@define stuff
         linep = 0
         while linep < len(ret): 
