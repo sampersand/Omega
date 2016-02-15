@@ -252,7 +252,7 @@ class control:
         elif funcname == 'if':
             if __debug__:
                 assert eles[0].val == funcname, 'this shouldn\'t break'
-                assert len(eles) in (3, 4), 'can only have (if, cond, if true, [if false])'
+                assert len(eles) in (3, 4), 'can only have if:(cond):(if true)[:(if false)];'
             eles[1].eval(locls) # evaluates the condition
             if locls['$']:
                 eles[2].eval(locls)
@@ -261,18 +261,15 @@ class control:
         elif funcname == 'for':
             if __debug__:
                 assert eles[0].val == funcname, 'this shouldn\'t break'
-                assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-            eles[1][0][0].eval(locls) # evaluates the condition
+                assert len(eles) == 3, 'can only have for:(...):{ expression };'
+                assert len(eles[1]) == 3, 'can only have (initialize; condition; increment)'
+            eles[1][0].eval(locls) # initializes the for loop the condition
             while True:
-                eles[1][0][1][0].eval(locls) #checks the statement
+                eles[1][1].eval(locls) #check the conditoin
                 if not locls['$']:
                     break
-                eles[1][1].eval(locls)
-                eles[1][0][1][1].eval(locls)
-            if locls['$']:
-                eles[1][1][0].eval(locls)
-            elif len(eles[1][1]) == 2:
-                eles[1][1][1].eval(locls)
+                eles[2].eval(locls)
+                eles[1][2].eval(locls) #increment
         else:
 
             raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
@@ -592,8 +589,3 @@ if __name__ == '__main__':
 
 
 
-
-group(val = ':',
-      args = [group(val = 'if'), group(val = '=',
-                                       args = [group(val = 'a'),
-                                       group(val = '2')], parens = ('(', ')'))])
