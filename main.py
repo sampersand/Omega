@@ -227,6 +227,9 @@ class control:
                     assert eles[0].val == funcname, 'this shouldn\'t break'
             if len(eles) == 0:
                 print(end = '' if funcname == 'disp' else '\n')
+            elif len(eles[1]) == 0:
+                eles[1].eval(locls)
+                print(locls['$'],end = '' if funcname == 'disp' else '\n')
             elif funcname == 'disp':
                 for ele in eles[1]:
                     ele.eval(locls)
@@ -271,7 +274,6 @@ class control:
                 eles[2].eval(locls)
                 eles[1][2].eval(locls) #increment
         else:
-
             raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
     
     @staticmethod
