@@ -70,16 +70,19 @@ class group(list):
                 if self.val in control.consts:
                     locls['$'] = control.consts[self.val]
                 else:
-                    try:
-                        locls['$'] = int(self.val)
-                    except ValueError:
+                    if self.val == 'locals' or self.val == 'locls':
+                        locls['$'] = str(locls)
+                    else:
                         try:
-                            locls['$'] = float(self.val)
+                            locls['$'] = int(self.val)
                         except ValueError:
                             try:
-                                locls['$'] = complex(self.val)
+                                locls['$'] = float(self.val)
                             except ValueError:
-                                raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
+                                try:
+                                    locls['$'] = complex(self.val)
+                                except ValueError:
+                                    raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
 class control:
     import math
     from random import random
@@ -101,6 +104,7 @@ class control:
     allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
     punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
     consts = {
+        'True': True,   'False': False,     'None' : None, 'Null' : None, 'Nil' : None,
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
         'T': True, 'F': False, 'N':None, #these can be overriden
         't': True, 'f': False, 'n':None, #these can be overriden
@@ -208,6 +212,9 @@ class control:
     @staticmethod
     def _doFunc(eles, locls, funcname):
         if funcname == 'disp' or funcname == 'displ':
+            if len(eles) == 0: #aka, its jsut disp or displ
+                print(end = funcname == 'displ' and '\n' or '')
+                return
             if __debug__:
                 assert eles[0].val == funcname, 'this shouldn\'t break'
             eles[1].eval(locls)
@@ -229,10 +236,12 @@ class control:
             eles[1][0].eval(locls) # evaluates the condition
             # if len(eles[1])
             if locls['$']:
-                # if len(eles[1][1]) == 2:
-                    # eles[1][1][1].eval(locls)
-                # else:
-                eles[1][1][0].eval(locls)
+                if len(eles[1][1]) == 1:
+                    eles[1][1][0].eval(locls)
+                else:
+                    if __debug__:
+                        assert len(eles[1][1]) == 2
+                    eles[1][1][0].eval(locls)
             elif len(eles[1][1]) == 2:
                 eles[1][1][1].eval(locls)
         elif funcname == 'for':
@@ -506,9 +515,9 @@ if __name__ == '__main__':
     else:
         filepath = sys.argv[1] #0 is 'main.py'
     f = wfile(filepath)
-    print(f)
-    print('--')
-    print(f.eval())
+    # print(f)
+    # print('--')
+    f.eval()
 
 """
 @f1(arg)

@@ -1,7 +1,9 @@
 1 -> a;
 n -> b;
-if:(1 = a):(t -> b);          displ:b; n -> b; #a == 1, so sets b to True#
-if:(1 = a):(t -> b):(f -> b); displ:b; n -> b; #a == 1, else is pointless, so sets b to True#
+if:(a == 1):(displ;);
+
 abort;
+if:(1 = a):(True -> b);          displ:b; n -> b; #a == 1, so sets b to True#
+if:(1 = a):(t -> b):(f -> b); displ:b; n -> b; #a == 1, else is pointless, so sets b to True#
 if:(0 = a):(t -> b);          displ:b; n -> b; #a != 0, no else, so skips to None#
 if:(0 = a):(t -> b):(f -> b); displ:b; n -> b; #a != 0, else sets to b, so b is False#
