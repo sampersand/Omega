@@ -252,18 +252,12 @@ class control:
         elif funcname == 'if':
             if __debug__:
                 assert eles[0].val == funcname, 'this shouldn\'t break'
-                assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
-            eles[1][0].eval(locls) # evaluates the condition
-            # if len(eles[1])
+                assert len(eles) in (3, 4), 'can only have (if, cond, if true, [if false])'
+            eles[1].eval(locls) # evaluates the condition
             if locls['$']:
-                if len(eles[1][1]) == 1:
-                    eles[1][1][0].eval(locls)
-                else:
-                    if __debug__:
-                        assert len(eles[1][1]) == 2
-                    eles[1][1][0].eval(locls)
-            elif len(eles[1][1]) == 2:
-                eles[1][1][1].eval(locls)
+                eles[2].eval(locls)
+            elif len(eles) == 4:
+                eles[3].eval(locls)
         elif funcname == 'for':
             if __debug__:
                 assert eles[0].val == funcname, 'this shouldn\'t break'
@@ -599,5 +593,7 @@ if __name__ == '__main__':
 
 
 
-
-    
+group(val = ':',
+      args = [group(val = 'if'), group(val = '=',
+                                       args = [group(val = 'a'),
+                                       group(val = '2')], parens = ('(', ')'))])
