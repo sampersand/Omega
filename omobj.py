@@ -34,13 +34,12 @@ class omobj:
         return bool(str(self))
 
     def eval(self, eles, locls):
-        print('attempting to eval eles \'{}\' with locls \'{}\' in omobj \'{}\''.format(eles, locls, self))
-        if self.evalfunc == None:
-            print('evalfunc is none, returning self.base ({})'.format(self.base))
+        # print('attempting to eval eles \'{}\' with locls \'{}\' in omobj \'{}\''.format(eles, locls, self))
+        if self.evalfunc != None:
+            self.evalfunc(eles, locls)
+        else:
+            # print('evalfunc is none, returning self.base ({})'.format(self.base))
             locls['$'] = self.base
-            return
-        print('its not none, but idk waht to do, so returning None')
-        return None
 
 class oper(omobj):
 
@@ -63,7 +62,6 @@ class oper(omobj):
         #         raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.basestr))
         if self.evalfunc == None:
             self._specialoper(eles, locls)
-            return
         elif eles:
             eles[0].eval(locls)
             ret = locls['$']
@@ -72,47 +70,37 @@ class oper(omobj):
                 ele.eval(locls)
                 ret = self.evalfunc(ret, locls['$'])
             locls['$'] = ret# x = y
-
-
-        print("evaluating '{}' with locals {}".format(eles, locls))
-        # locls['$'] = self.evalfunc(eles, locls)
         print("evaluated '{}' with locals {}, and getting {}".format(eles, locls, locls['$']))
 
     def _specialoper(self, eles, locls):
         from group import group
         import control
+        print('todo: uncomment things in _specialoper')
         name = eles.basestr
         if name in control.alldelims:
-            pass
-        #     if name in control.delims['arraysep']:
-        #         eles[0].eval(locls)
-        #         ret = []
-        #         name = eles.basestr
-        #         for ele in eles:
-        #             ele.eval(locls)
-        #             ret.append(locls['$'])
-        #         locls['$'] = group(val = ret)# x = y
-        #         return
-        #     else:
-        #         raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
+            if name in control.delims['arraysep']:
+                eles[0].eval(locls)
+                ret = []
+                name = eles.basestr
+                for ele in eles:
+                    ele.eval(locls)
+                    ret.append(locls['$'])
+                locls['$'] = group(val = ret)# x = y
+                return
+            else:
+                raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
         elif name == ':':
-            pass
-        #     if eles[0].basestr in control.alldelims:
-        #         assert 0, str(eles) + " | " + eles[0]
-        #     if eles[0].basestr in locls:
-        #         locls[eles[0].basestr].eval(eles[1])
-        #     else:
-        #         if __debug__:
-        #             assert eles[0].basestr in funcs, 'no way to proccess function \'{}\''.format(eles[0].basestr)
-        #         funcs[eles[0].basestr](eles, locls)
+            if eles[0].basestr in locls:
+                assert 0, 'when does this ever happen?'
+                locls[eles[0].basestr].eval(eles[1])
+            else:
+                eles[0].base.eval(eles[1],locls)
         elif name == '||' or name == '&&':
-            pass
-        #     eles[0].eval(locls)
-        #     element = locls['$']
-        #     if name == '&&' and not element or name == '||' and element:
-        #         return element
-        #     eles[1].eval(locls)
-        #     locls['$'] = (element or locls['$']) if name == '&&' else (element and locls['$'])
+            eles[0].eval(locls)
+            element = locls['$']
+            if name == '&&' and not element or name == '||' and element:
+                return element
+            eles[1].eval(locls)
         else:
             direc = name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']
             if direc == 1:
@@ -123,26 +111,26 @@ class oper(omobj):
                 eles[0].eval(locls)
                 value =locls['$']
                 key = eles[1].basestr
+                name = '<' + name[1:-1] + '-'
             if __debug__:
                 assert name == '<-'  or\
                        name == '->'  or\
                        name == '<?-' or\
                        name == '-?>' or\
                        key in locls, '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, name)
-            if   name == '<-'   or name == '->'  : locls[key] = value
-            elif name == '<?-'  or name == '-?>' :
-                locls[key] = value if value else (locls[key] if key in locls else None)
-            elif name == '<+-'  or name == '-+>' : locls[key] += value
-            elif name == '<--'  or name == '-->' : locls[key] = value
-            elif name == '<*-'  or name == '-*>' : locls[key] = value
-            elif name == '</-'  or name == '-/>' : locls[key] = value
-            elif name == '<**-' or name == '-**>': locls[key] = value
-            elif name == '<%-'  or name == '-%>' : locls[key] = value
-            elif name == '<&-'  or name == '-&>' : locls[key] = value
-            elif name == '<|-'  or name == '-|>' : locls[key] = value
-            elif name == '<^-'  or name == '-^>' : locls[key] = value
-            elif name == '<<-'  or name == '-<>' : locls[key] = value
-            elif name == '<>-'  or name == '->>' : locls[key] = value
+            if   name == '<-'  : locls[key] = value
+            elif name == '<?-' : locls[key] = value if value else (locls[key] if key in locls else None)
+            elif name == '<+-' : locls[key] += value
+            elif name == '<--' : locls[key] -= value
+            elif name == '<*-' : locls[key] *= value
+            elif name == '</-' : locls[key] /= value
+            elif name == '<**-': locls[key] **= value
+            elif name == '<%-' : locls[key] %= value
+            elif name == '<&-' : locls[key] &= value
+            elif name == '<|-' : locls[key] |= value
+            elif name == '<^-' : locls[key] ^= value
+            elif name == '<<-' : locls[key] <<= value
+            elif name == '<>-' : locls[key] >>= value
             if direc == 0: #swap the return value
                 locls['$'] = locls[key]
 
