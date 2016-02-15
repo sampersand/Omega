@@ -278,15 +278,17 @@ class control:
         name = eles.val
         if name in control.alldelims:
             if name in control.delims['arraysep']:
-                # print()
-                # eles[0].eval(locls)
-                # ele1 = locls['$']
-                # eles[1].eval(locls)
-                # locls['$'] = [ele1, locls['$']]
-                pass
+                eles[0].eval(locls)
+                ret = []
+                name = eles.val
+                for ele in eles:
+                    ele.eval(locls)
+                    ret.append(locls['$'])
+                locls['$'] = ret# x = y
+                return
             else:
                 raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
-        if name == ':':
+        elif name == ':':
             if eles[0].val in control.alldelims:
                 assert 0, str(eles) + " | " + eles[0]
             if __debug__:
