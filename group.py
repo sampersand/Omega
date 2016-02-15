@@ -40,7 +40,7 @@ class group(list):
         if self.basestr in control.opers['binary']:
             if __debug__:
                 assert len(self.parens) == 2, repr(self)
-            return self.parens[0] + self.basestr.join(str(e) for e in self) + str(self.parens[1])
+            return self.parens[0] + (self.basestr).join(str(e) for e in self) + str(self.parens[1])
         return ''.join((self.basestr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
     def isnull(self):
         return not self and not self.hasparens() and not self.base

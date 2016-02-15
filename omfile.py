@@ -13,17 +13,18 @@ class omfile:
     def __str__(self):
         def getl(linep, l):
             if not l:
-                assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
+                if __debug__:
+                    assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
                 # node structure should prevent this.
-                assert l[0].basestr not in control.delims['endline'][0] or not l[0].basestr, l[0].base
+                assert l[0].basestr not in control.delims['endline'] or not l[0].basestr, l[0].base
             ret = ''
             if l[0]:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
             if len(l) > 1:
-                if l[1].basestr not in control.delims['endline'][0]:
+                if l[1].basestr not in control.delims['endline']:
                     ret += '\n{}:  \t{}'.format(linep, l[1])
                     linep += 1
                 else:
@@ -39,7 +40,6 @@ class omfile:
         ret = ''
         data = 0b00 # 0b10 = escaped, 0b01 = commented
         for char in rawt:
-            # print(char, char in control.linebreak, ret)
             if char in control.escape  and not data & 0b10:
                 data ^= 0b10
             elif char in control.comment and not data & 0b10:
@@ -55,7 +55,7 @@ class omfile:
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
-        return ret
+        return ret + (ret[-1] not in control.delims['endline'] and control.delims['endline'][0] or '')
     
     @staticmethod
     def _tokenize(rawt):
@@ -161,7 +161,7 @@ class omfile:
             ret = group(base = line[fhp].base, parens = line.parens)
             current = group()
             while line:
-                e = line.pop() #was formerly .pop(0)
+                e = line.pop(0) #was formerly .pop(0)
                 if e.base == ret.base:
                     if current:
                         ret.append(fixtkns(current))
@@ -170,7 +170,6 @@ class omfile:
                     current.append(e)
             if current:
                 ret.append(fixtkns(current))
-            print(repr(ret))
             return ret
         return fixtkns(compresstokens(group(args = linetokens)))
     
