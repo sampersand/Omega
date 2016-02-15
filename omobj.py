@@ -6,8 +6,8 @@ class omobj:
     @staticmethod
     def _getbase(base):
         import control
-        assert 0, vars(control).keys()
-        print(vars(control).keys())
+        if base == '':
+            return base
         if base[0] in control.allquotes:
             if __debug__:
                 assert base[-1] in control.allquotes

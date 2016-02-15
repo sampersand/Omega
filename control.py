@@ -2,6 +2,14 @@ from omobj import oper, omobj, func
 __all__ = ['a']
 import math
 from random import random
+linebreak = '\n\r' #linebreak is used for comments
+comment = '#'
+escape = '\\'
+datadef = '@'
+nbwhitespace = ' \t\x0b\x0c'
+whitespace = nbwhitespace + linebreak
+allquotes = '\'\"`'
+
 delims = {'arraysep':(',', oper(',', 14, None)),
           'etc':('|', oper('|', 14, None)),
           'endline':(';', oper(';', 14, lambda x, y: y))
@@ -114,14 +122,6 @@ funcs = {
     'dispc': func('dispc'), #commas bxn elements
 }
 
-linebreak = '\n\r' #linebreak is used for comments
-comment = '#'
-escape = '\\'
-datadef = '@'
-nbwhitespace = ' \t\x0b\x0c'
-whitespace = nbwhitespace + linebreak
-
-allquotes = '\'\"`'
 alldelims = ''.join(v[0] for v in delims.values())
 allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
 import copy
