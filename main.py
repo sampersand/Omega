@@ -73,16 +73,21 @@ class group(list):
                     if self.val == 'locals' or self.val == 'locls':
                         locls['$'] = str(locls)
                     else:
-                        try:
-                            locls['$'] = int(self.val)
-                        except ValueError:
+                        if self.val[0] in control.allquotes:
+                            if __debug__:
+                                assert self.val[-1] in control.allquotes
+                            locls['$'] = self.val
+                        else:
                             try:
-                                locls['$'] = float(self.val)
+                                locls['$'] = int(self.val)
                             except ValueError:
                                 try:
-                                    locls['$'] = complex(self.val)
+                                    locls['$'] = float(self.val)
                                 except ValueError:
-                                    raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
+                                    try:
+                                        locls['$'] = complex(self.val)
+                                    except ValueError:
+                                        raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
 class control:
     import math
     from random import random
@@ -412,17 +417,23 @@ class wfile:
                     par = rawt.partition(punc)
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
-        tokens = [token.strip(control.nbwhitespace) for token in tokenize(rawt)]
+        tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
             
-
         ret = []
+        quotetypes = set()
+        for token in tokens:
+            if token in control.allquotes:
+                if token not in quotetypes:
+                    ret.append(token)
+                    quotetypes.add(token)
+                else:
+                    ret[-1] += token
+                    quotetypes.remove(token)
 
-        for token in tokens: #clear empty lines
-            if not token:
-                continue
+            elif quotetypes:
+                ret[-1] += token
             else:
                 ret.append(token)
-
         #@define stuff
         linep = 0
         while linep < len(ret): 
@@ -443,7 +454,8 @@ class wfile:
                         control.allopers[ele] > control.allopers[linegrp[highest].val]):
                     highest = elep
             if __debug__:
-                assert highest != None, 'no highest for ' + str(linegrp)
+                if not highest:
+                    raise SyntaxError('no operator for string \'{}\'!'.format(linegrp))
             return highest
         def compresstokens(linegrp): #this is non-stable
             ret = group(parens = linegrp.parens) #universe

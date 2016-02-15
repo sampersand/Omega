@@ -1,5 +1,7 @@
-10 -> a
-if:()
+10 -> a;
+"ABC"->a;
+displ:'this is a display test + 5 and * 5 && 1';
+abort:a;
 #  10 -> a;
 ## 1 -> b;
 ##  if:(
