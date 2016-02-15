@@ -1,4 +1,5 @@
 from omobj import oper, omobj, func
+__all__ = ['a']
 import math
 from random import random
 delims = {'arraysep':(',', oper(',', 14, None)),
@@ -193,85 +194,6 @@ def _doFunc(eles, locls, funcname):
             eles[1][2].eval(locls) #increment
     else:
         raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
-
-def _specialoper(eles, locls):
-    from group import group
-    name = eles.basestr
-    if name in alldelims:
-        if name in delims['arraysep']:
-            eles[0].eval(locls)
-            ret = []
-            name = eles.basestr
-            for ele in eles:
-                ele.eval(locls)
-                ret.append(locls['$'])
-            locls['$'] = group(val = ret)# x = y
-            return
-        else:
-            raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
-    elif name == ':':
-        if eles[0].base in alldelims:
-            assert 0, str(eles) + " | " + eles[0]
-        if eles[0].base in locls:
-            locls[eles[0].base].eval(eles[1])
-        else:
-            if __debug__:
-                assert eles[0].base in funcs, 'no way to proccess function \'{}\''.format(eles[0].base)
-            funcs[eles[0].base](eles, locls)
-    elif name == '||' or name == '&&':
-        eles[0].eval(locls)
-        element = locls['$']
-        if name == '&&' and not element or name == '||' and element:
-            return element
-        eles[1].eval(locls)
-        locls['$'] = (element or locls['$']) if name == '&&' else (element and locls['$'])
-    else:
-        direc = name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']
-        if direc == 1:
-            eles[1].eval(locls)
-            value =locls['$']
-            key = eles[0].base
-        else:
-            eles[0].eval(locls)
-            value =locls['$']
-            key = eles[1].base
-        if __debug__:
-            assert name == '<-'  or\
-                   name == '->'  or\
-                   name == '<?-' or\
-                   name == '-?>' or\
-                   key in locls, '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, name)
-            if   name == '<-'   or name == '->'  : locls[key] = value
-            elif name == '<?-'  or name == '-?>' :
-                locls[key] = value if value else (locls[key] if key in locls else None)
-            elif name == '<+-'  or name == '-+>' : locls[key] += value
-            elif name == '<--'  or name == '-->' : locls[key] = value
-            elif name == '<*-'  or name == '-*>' : locls[key] = value
-            elif name == '</-'  or name == '-/>' : locls[key] = value
-            elif name == '<**-' or name == '-**>': locls[key] = value
-            elif name == '<%-'  or name == '-%>' : locls[key] = value
-            elif name == '<&-'  or name == '-&>' : locls[key] = value
-            elif name == '<|-'  or name == '-|>' : locls[key] = value
-            elif name == '<^-'  or name == '-^>' : locls[key] = value
-            elif name == '<<-'  or name == '-<>' : locls[key] = value
-            elif name == '<>-'  or name == '->>' : locls[key] = value
-        if direc == 0: #swap the return value
-            locls['$'] = locls[key]
-
-def evaloper(eles, locls):
-    if eles.base not in allopers:
-        raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.base))
-    oper = allopers[eles.base]
-    if oper.func == None:
-        _specialoper(eles, locls)
-    elif eles:
-        eles[0].eval(locls)
-        ret = locls['$']
-        name = eles.base
-        for ele in eles[1:]:
-            ele.eval(locls)
-            ret = allopers[name].func(ret, locls['$'])
-        locls['$'] = ret# x = y
 
 def applyrules(tokens):
     print(tokens)

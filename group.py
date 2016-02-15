@@ -54,38 +54,3 @@ class group(list):
             locls['$'] = locls[self.basestr]
         else:
             self.base.eval(self, locls)
-        # if self.isnull():
-        #     locls['$'] = None
-        # elif self.basestr in control.allopers:
-        #     control.evaloper(self, locls)
-        # elif self.basestr in control.funcs:
-        #     control.funcs[self.basestr](self, locls)
-        # else:
-        #     if self.basestr == '':
-        #         if __debug__:
-        #             assert len(self) == 1, self #expects 1 element (in parens)
-        #         self[0].eval(locls)
-        #     elif self.basestr in locls:
-        #         locls['$'] = locls[self.basestr]
-        #     else:
-        #         if self.basestr in control.consts:
-        #             locls['$'] = control.consts[self.basestr]
-        #         else:
-        #             if self.basestr == 'locals' or self.basestr == 'locls':
-        #                 locls['$'] = str(locls)
-        #             else:
-        #                 if self.basestr[0] in control.allquotes:
-        #                     if __debug__:
-        #                         assert self.basestr[-1] in control.allquotes
-        #                     locls['$'] = self.basestr
-        #                 else:
-        #                     try:
-        #                         locls['$'] = int(self.basestr)
-        #                     except ValueError:
-        #                         try:
-        #                             locls['$'] = float(self.basestr)
-        #                         except ValueError:
-        #                             try:
-        #                                 locls['$'] = complex(self.basestr)
-        #                             except ValueError:
-        #                                 raise SyntaxError('No known way to deal with \'{}\''.format(self.basestr))
