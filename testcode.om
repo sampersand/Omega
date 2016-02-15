@@ -11,4 +11,4 @@
 array:[i] -> a#
 (1 + 2) * 3 -> a;
 (2 && 0)-> a;
-displ:a
+abort:a;

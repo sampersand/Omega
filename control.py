@@ -139,61 +139,6 @@ def _invertparen(paren):
             '[':']', ']':'[',
             '{':'}', '}':'{'}[paren]
 
-def _doFunc(eles, locls, funcname):
-    if 'disp' in funcname:
-        if __debug__:
-            if len(eles) != 0:
-                assert eles[0].basestr == funcname, 'this shouldn\'t break'
-        if len(eles) == 0:
-            print(end = '' if funcname == 'disp' else '\n')
-        elif len(eles[1]) == 0:
-            eles[1].eval(locls)
-            print(locls['$'],end = '' if funcname == 'disp' else '\n')
-        elif funcname == 'disp':
-            for ele in eles[1]:
-                ele.eval(locls)
-                print(locls['$'], end = '')
-        elif funcname == 'displ':
-            for ele in eles[1]:
-                ele.eval(locls)
-                print(locls['$'], end = '\n')
-        elif funcname == 'dispc':
-            for ele in eles[1]:
-                ele.eval(locls)
-                print(locls['$'], end = ', ' if ele is not eles[1][-1] else '\n')
-    elif funcname == 'abort':
-        if len(eles) == 0:
-            locls['$'] = ''
-        else:
-            if __debug__:
-                assert eles[0].basestr == funcname, 'this shouldn\'t break'
-            eles[1].eval(locls)
-        if __debug__:
-            assert '$' in locls
-        quit('Aborting!' + ('' if locls['$'] == '' else ' Message: \'{}\''.format(str(locls['$']))))
-    elif funcname == 'if':
-        if __debug__:
-            assert eles[0].basestr == funcname, 'this shouldn\'t break'
-            assert len(eles) in (3, 4), 'can only have if:(cond):(if true)[:(if false)];'
-        eles[1].eval(locls) # evaluates the condition
-        if locls['$']:
-            eles[2].eval(locls)
-        elif len(eles) == 4:
-            eles[3].eval(locls)
-    elif funcname == 'for':
-        if __debug__:
-            assert eles[0].basestr == funcname, 'this shouldn\'t break'
-            assert len(eles) == 3, 'can only have for:(...):{ expression };'
-            assert len(eles[1]) == 3, 'can only have (initialize; condition; increment)'
-        eles[1][0].eval(locls) # initializes the for loop the condition
-        while True:
-            eles[1][1].eval(locls) #check the conditoin
-            if not locls['$']:
-                break
-            eles[2].eval(locls)
-            eles[1][2].eval(locls) #increment
-    else:
-        raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
 
 def applyrules(tokens):
     print(tokens)
@@ -207,8 +152,4 @@ def _getomobj(base):
     if __debug__:
         if not isinstance(base, str):
             print('warning: \'{}\' isnt not a string'.format(repr(base)))
-    # print("_getomobj: '{} ({})' ({})".format(\
-    #         allfuncs[base] if base in allfuncs else omobj(base),
-    #         type(allfuncs[base] if base in allfuncs else omobj(base)),
-    #         base in allfuncs), type(allfuncs[';']))
     return allfuncs[base] if base in allfuncs else omobj(base)
