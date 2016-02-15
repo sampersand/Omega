@@ -281,8 +281,10 @@ class control:
                 eles[0].eval(locls)
                 ele1 = locls['$']
                 eles[1].eval(locls)
-                if locls['$']
-                locls['$'] = [ele1, locls['$']]
+                if isinstance(locls['$'], list):
+                    locls['$'] = [ele1] + locls['$']
+                else:
+                    locls['$'] = [ele1, locls['$']]
                 return
             else:
                 raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
