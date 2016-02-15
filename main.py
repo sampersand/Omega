@@ -413,24 +413,26 @@ class wfile:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             for punc in control.punctuation + control.endline:
-                if punc in rawt and rawt[rawt.index(punc) - 1] not in control.escape:
+                if punc in rawt:
                     par = rawt.partition(punc)
+                    if rawt[rawt.index(punc) - 1] in control.escape:
+                        return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
         tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
             
         ret = []
-        quotetypes = set()
+        currentquote = None
         for token in tokens:
             if token in control.allquotes:
-                if token not in quotetypes:
+                if currentquote == None:
                     ret.append(token)
-                    quotetypes.add(token)
+                    currentquote = token
                 else:
-                    ret[-1] += token
-                    quotetypes.remove(token)
-
-            elif quotetypes:
+                    if token == currentquote:
+                        currentquote = None
+                    ret[-1] += token                    
+            elif currentquote:
                 ret[-1] += token
             else:
                 ret.append(token)

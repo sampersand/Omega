@@ -1,20 +1,3 @@
 10 -> a;
-"ABC"->a;
-displ:'this is a display test + 5 and * 5 && 1';
+"wow i really\" like this"->a;
 abort:a;
-#  10 -> a;
-## 1 -> b;
-##  if:(
-##      if:(a>10):
-##          {0 -> b;
-##              displ:0.01
-##           }:{
-##               1->b;
-##               displ:0.02
-##          }):{
-##      displ:a;
-##      displ:b
-##   }:{
-##       displ:b
-## }
- #
