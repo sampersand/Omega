@@ -98,8 +98,7 @@ class omfile:
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        from omobj import omobj
-        return [omobj(v) for v in ret]
+        return [control._getomobj(v) for v in ret]
 
     @staticmethod
     def _compresstokens(linetokens):
@@ -158,7 +157,6 @@ class omfile:
             
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
-
             ret = group(base = line[fhp].base, parens = line.parens)
             current = group()
             while line:

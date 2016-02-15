@@ -15,10 +15,11 @@ class group(list):
         self.base = base
         super().__init__(args)
         self.parens = parens
+        
     def hasparens(self):
         return bool(self.parens[0] or self.parens[1])
-    @property
 
+    @property
     def basestr(self):
         return str(self.base)
 

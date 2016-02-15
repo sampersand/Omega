@@ -113,7 +113,6 @@ funcs = {
     'dispc': func('dispc'), #commas bxn elements
 }
 
-
 linebreak = '\n\r' #linebreak is used for comments
 comment = '#'
 escape = '\\'
@@ -286,6 +285,8 @@ def _getomobj(base):
     if __debug__:
         if not isinstance(base, str):
             print('warning: \'{}\' isnt not a string'.format(repr(base)))
+    # print("_getomobj: '{} ({})' ({})".format(\
+    #         allfuncs[base] if base in allfuncs else omobj(base),
+    #         type(allfuncs[base] if base in allfuncs else omobj(base)),
+    #         base in allfuncs), type(allfuncs[';']))
     return allfuncs[base] if base in allfuncs else omobj(base)
-
-
