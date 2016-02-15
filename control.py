@@ -277,3 +277,10 @@ class control:
             assert tokens[1] == 'define', tokens[1] #currently, only 'define' is defined.
         assert 0, 'not implemented yet! todo: this'
         # fixedtokens = 
+    
+    @staticmethod
+    def _getomobj(base):
+        if base in control.allparens
+
+
+

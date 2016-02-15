@@ -12,7 +12,6 @@ if __name__ == '__main__':
     if __debug__:
         print(f)
         print('--')
-    quit()
     evald = f.eval()
     if __debug__:
         print(evald)
