@@ -239,7 +239,7 @@ class control:
             elif funcname == 'dispc':
                 for ele in eles[1]:
                     ele.eval(locls)
-                    print(locls['$'], end = ', ' if ele is not eles[1][-1] else '')
+                    print(locls['$'], end = ', ' if ele is not eles[1][-1] else '\n')
         elif funcname == 'abort':
             if len(eles) == 0:
                 locls['$'] = ''
@@ -280,8 +280,8 @@ class control:
                 eles[1][1][0].eval(locls)
             elif len(eles[1][1]) == 2:
                 eles[1][1][1].eval(locls)
-
         else:
+
             raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(funcname))
     
     @staticmethod
@@ -369,7 +369,6 @@ class control:
             assert tokens[1] == 'define', tokens[1] #currently, only 'define' is defined.
         assert 0, 'not implemented yet! todo: this'
         # fixedtokens = 
-
 class wfile:
     def __init__(self, filepath, encoding = 'utf-8'):
         self.filepath = filepath
@@ -512,18 +511,22 @@ class wfile:
             return highest
         def fixtkns(line):
             #combine tokens using order of operations
-            if not line:
-                return line
+            if not line: return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
                     return line
                 else:
                     return fixtkns(line[0])
             fhp = findhighest(line)
+            
+
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
 
             ret = group(val = line[fhp].val, parens = line.parens)
+            current = []
+            while line:
+                if 
             s = fixtkns(group(args = line[0:fhp]))
             e = fixtkns(group(args = line[fhp + 1:]))
             if s != None:

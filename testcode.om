@@ -1,5 +1,7 @@
-[1, 1, 2, 3, [5, 8, 13]]->array;
-2->a,1->b;
-dispc:('a:', a);displ;
-dispc:('b:', b);displ;
-displ:array;
+[1,2,3]->b;
+
+#[1, 1, 2, 3, [5, 8, 13]]->array;
+2 -> a, 1 -> b;
+dispc:('a:', a);
+dispc:('b:', b);
+displ:(array);#
