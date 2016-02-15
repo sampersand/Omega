@@ -43,9 +43,8 @@ class group(list):
             return ''.join((str(self.parens[0]), str(self.val), str(self.parens[1])))
         if self.val in control.opers['binary']:
             if __debug__:
-                assert len(self) == 2, repr(self)
                 assert len(self.parens) == 2, repr(self)
-            return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
+            return str(self.parens[0]) + str(self.val).join(str(e) for e in self) + str(self.parens[1])
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
     def isempty(self):
         return self.isnull() or not self and not self.hasparens() and self.val in control.delims['endline'][0]
@@ -390,13 +389,14 @@ class wfile:
             if l[0]:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
-            if l[1].val not in control.delims['endline'][0]:
-                ret += '\n{}:  \t{}'.format(linep, l[1])
-                linep += 1
-            else:
-                e = getl(linep, l[1])
-                ret += e[1]
-                linep += e[0]
+            if len(l) > 1:
+                if l[1].val not in control.delims['endline'][0]:
+                    ret += '\n{}:  \t{}'.format(linep, l[1])
+                    linep += 1
+                else:
+                    e = getl(linep, l[1])
+                    ret += e[1]
+                    linep += e[0]
             return linep, ret
         return 'file \'{}\':\n==[start]==\n{}\n\n==[ end ]=='.format(self.filepath, getl(0, self.lines)[1])
 
@@ -514,32 +514,44 @@ class wfile:
             if not line: return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
-                    return line
+                    return line[0]
                 else:
                     return fixtkns(line[0])
             fhp = findhighest(line)
             
-
             if __debug__:
                 assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
 
             ret = group(val = line[fhp].val, parens = line.parens)
-            current = []
+            current = group()
             while line:
-                if 
-            s = fixtkns(group(args = line[0:fhp]))
-            e = fixtkns(group(args = line[fhp + 1:]))
-            if s != None:
-                if len(s) == 1 and not s.val and not s.hasparens():
-                    ret.append(s[0])
+                e = line.pop(0)
+                if e.val == ret.val:
+                    if current:
+                        ret.append(fixtkns(current))
+                        ##TODO: REMOVE
+                        # e = fixtkns(current)
+                        # print(repr(e))
+                        # ret.append(e)
+                    current = group()
                 else:
-                    ret.append(s)
-            if e != None:
-                if len(e) == 1 and not e.val and not e.hasparens():
-                    ret.append(e[0])
-                else:
-                    ret.append(e)
+                    current.append(e)
+            if current:
+                ret.append(fixtkns(current))
             return ret
+            # s = fixtkns(group(args = line[0:fhp]))
+            # e = fixtkns(group(args = line[fhp + 1:]))
+            # if s != None:
+            #     if len(s) == 1 and not s.val and not s.hasparens():
+            #         ret.append(s[0])
+            #     else:
+            #         ret.append(s)
+            # if e != None:
+            #     if len(e) == 1 and not e.val and not e.hasparens():
+            #         ret.append(e[0])
+            #     else:
+            #         ret.append(e)
+            # return ret
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
