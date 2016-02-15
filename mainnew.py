@@ -19,7 +19,7 @@ class omobj(list):
 
     def __init__(self, base = None, nodes = [], parens = None):
         super().__init__(nodes)
-        self.base = base
+        self.base = base or 1
         self.parens = omobj._parenslist(parens or ('', ''))
 
     @staticmethod
@@ -493,7 +493,6 @@ class wfile:
                                 if __debug__:
                                     assert control.invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
                                 parens[control.invertparen(last)] -= 1
-                    print(toappend)
                     if __debug__:
                         assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (ele, toappend.pop())
@@ -526,6 +525,8 @@ class wfile:
                 else:
                     ret.append(e)
             return ret
+        a = omobj(nodes = linetokens)
+        assert 0, a
         return fixtkns(compresstokens(omobj(nodes = linetokens)))
     
     def eval(self):
@@ -537,12 +538,13 @@ class wfile:
 
 if __name__ == '__main__':
     import sys
+    assert 0, sys.argv[1]
     if len(sys.argv) == 1:
         filepath = 'testcode.om'
     else:
         filepath = sys.argv[1] #0 is 'main.py'
         if __debug__:
-            if sys.argv[1] == '/Users/westerhack/code/python/Omega/main.py':
+            if sys.argv[1] == '/Users/westerhack/code/python/Omega/mainnew.py':
                 filepath = 'testcode.om'
     f = wfile(filepath)
     # print(f)

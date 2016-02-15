@@ -9,84 +9,88 @@ class oper:
         return self.value
     def __lt__(self, other):
         return self.priority < other.priority
+class omobj(list):
+    class _parenslist(tuple):
+        def __bool__(self):
+            return bool(self[0] or self[1])
 
-class group(list):
-    def __new__(self, val = '', args = [], parens = ('','')):
-        return super().__new__(self, args)
+    def __new__( self, base = None, nodes = [], parens = None):
+        return super().__new__(self, nodes)
 
-    def __init__(self, val = '', args = [], parens = ('','')):
-        super().__init__(args)
+    def __init__(self, base = None, nodes = [], parens = None):
+        super().__init__(nodes)
+        self.base = base or 1
+        self.parens = omobj._parenslist(parens or ('', ''))
+
+    @property
+    def basestr(self):
+        return str(self.base)
+    
+    @staticmethod
+    def basefromstr(base):
+        # if base[0] in control.allquotes:
+        #     if __debug__:
+        #         assert base[-1] in control.allquotes
+        #     return base
         if __debug__:
-            assert type(val) == str, val
-            assert type(args) == list, str(args) + str(type(args))
-            assert type(parens) == tuple, str(parens) + str(type(parens))
-            assert len(parens) == 2, parens
-        self.val = val
-        self.parens = parens
-    def hasparens(self):
-        return bool(self.parens[0] or self.parens[1])
+            assert base != None
+        try:
+            return int(base)
+        except ValueError:
+            try:
+                return float(base)
+            except ValueError:
+                try:
+                    return complex(base)
+                except ValueError:
+                    return str(base)
+                    raise SyntaxError('No known way to deal with \'{}\''.format(base))
+
+    def __bool__(self):
+        return bool(len(self) or self.parens or self.base)
 
     def __repr__(self):
-        ret = 'group('
-        if self.val:
-            ret += 'val = ' + repr(self.val) + ', '
-        if self:
-            ret += 'args = ' + super().__repr__() + ', '
-        if self.hasparens():
+        ret = 'omobj('
+        if self.base:
+            ret += 'base = ' + repr(self.base) + ', '
+        if len(self):
+            ret += 'nodes = ' + super().__repr__() + ', '
+        if self.parens:
             ret += 'parens = ' + repr(self.parens)
-        if not self.hasparens() and (self.val or self):
+        if not self.parens and (self.base or len(self)):
             ret = ret[:-2]
         return ret + ')'
 
-    def __str__(self):
-        if not self:
-            return ''.join((str(self.parens[0]), str(self.val), str(self.parens[1])))
-        if self.val in control.opers['binary']:
-            if __debug__:
-                assert len(self) == 2, repr(self)
-                assert len(self.parens) == 2, repr(self)
-            return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
-        return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
-    def isempty(self):
-        return self.isnull() or not self and not self.hasparens() and self.val in control.delims['endline'][0]
-    def isnull(self):
-        return not self and not self.hasparens() and not self.val
+    # def __str__(self):
+    #     if not self:
+    #         return ''.join((str(self.parens[0]), self.basestr, str(self.parens[1])))
+    #     if self.base in control.opers['binary']:
+    #         return ''.join((str(self.parens[0]), str(self[0]), self.basestr, str(self[1]), str(self.parens[1])))
+    #     return ''.join((self.basestr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+
     def eval(self, locls):
-        if self.isnull():
+        if not self:
             locls['$'] = None
-        elif self.val in control.allopers:
+        elif self.basestr in control.allopers:
             control.evaloper(self, locls)
-        elif self.val in control.funcs:
-            control.funcs[self.val](self, locls)
+        elif self.basestr in control.funcs:
+            control.funcs[self.basestr](self, locls)
         else:
-            if self.val == '':
+            if self.basestr == '':
                 if __debug__:
                     assert len(self) == 1, self #expects 1 element (in parens)
                 self[0].eval(locls)
-            elif self.val in locls:
-                locls['$'] = locls[self.val]
+            elif self.basestr in locls:
+                locls['$'] = locls[self.basestr]
             else:
-                if self.val in control.consts:
-                    locls['$'] = control.consts[self.val]
+                if self.basestr in control.consts:
+                    locls['$'] = control.consts[self.basestr]
                 else:
-                    if self.val == 'locals' or self.val == 'locls':
+                    if self.basestr == 'locals' or self.basestr == 'locls':
                         locls['$'] = str(locls)
                     else:
-                        if self.val[0] in control.allquotes:
-                            if __debug__:
-                                assert self.val[-1] in control.allquotes
-                            locls['$'] = self.val
-                        else:
-                            try:
-                                locls['$'] = int(self.val)
-                            except ValueError:
-                                try:
-                                    locls['$'] = float(self.val)
-                                except ValueError:
-                                    try:
-                                        locls['$'] = complex(self.val)
-                                    except ValueError:
-                                        raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
+                        locls['$'] = omobj(base = self.basestr[0])
+
 class control:
     import math
     from random import random
@@ -226,7 +230,7 @@ class control:
                 print(end = funcname == 'displ' and '\n' or '')
                 return
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\'t break'
+                assert eles[0].base == funcname, 'this shouldn\'t break'
             eles[1].eval(locls)
             print(locls['$'], end = '\n' if funcname == 'displ' else '') #keep this here!
         elif funcname == 'abort':
@@ -234,14 +238,14 @@ class control:
                 locls['$'] = ''
             else:
                 if __debug__:
-                    assert eles[0].val == funcname, 'this shouldn\'t break'
+                    assert eles[0].base == funcname, 'this shouldn\'t break'
                 eles[1].eval(locls)
             if __debug__:
                 assert '$' in locls
             quit('Aborting!' + ('' if locls['$'] == '' else ' Message: \'{}\''.format(str(locls['$']))))
         elif funcname == 'if':
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\'t break'
+                assert eles[0].base == funcname, 'this shouldn\'t break'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0].eval(locls) # evaluates the condition
             # if len(eles[1])
@@ -256,7 +260,7 @@ class control:
                 eles[1][1][1].eval(locls)
         elif funcname == 'for':
             if __debug__:
-                assert eles[0].val == funcname, 'this shouldn\'t break'
+                assert eles[0].base == funcname, 'this shouldn\'t break'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0][0].eval(locls) # evaluates the condition
             while True:
@@ -275,23 +279,25 @@ class control:
     
     @staticmethod
     def _specialoper(eles, locls):
-        name = eles.val
+        name = eles.base
         if name in control.alldelims:
             if name in control.delims['arraysep']:
-                # print()
-                # eles[0].eval(locls)
-                # ele1 = locls['$']
-                # eles[1].eval(locls)
-                # locls['$'] = [ele1, locls['$']]
-                pass
+                eles[0].eval(locls)
+                ele1 = locls['$']
+                eles[1].eval(locls)
+                if isinstance(locls['$'], list):
+                    locls['$'] = [ele1] + locls['$']
+                else:
+                    locls['$'] = [ele1, locls['$']]
+                return
             else:
                 raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
         if name == ':':
-            if eles[0].val in control.alldelims:
+            if eles[0].base in control.alldelims:
                 assert 0, str(eles) + " | " + eles[0]
             if __debug__:
-                assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
-            control.funcs[eles[0].val](eles, locls)
+                assert eles[0].base in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].base)
+            control.funcs[eles[0].base](eles, locls)
         elif name == '||' or name == '&&':
             eles[0].eval(locls)
             element = locls['$']
@@ -304,11 +310,11 @@ class control:
             if direc == 1:
                 eles[1].eval(locls)
                 value =locls['$']
-                key = eles[0].val
+                key = eles[0].base
             else:
                 eles[0].eval(locls)
                 value =locls['$']
-                key = eles[1].val
+                key = eles[1].base
             if __debug__:
                 assert name == '<-'  or\
                        name == '->'  or\
@@ -334,15 +340,15 @@ class control:
 
     @staticmethod
     def evaloper(eles, locls):
-        if eles.val not in control.allopers:
-            raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.val))
-        oper = control.allopers[eles.val]
+        if eles.base not in control.allopers:
+            raise SyntaxError('operator \'{}\' isn\'t defined'.format(eles.base))
+        oper = control.allopers[eles.base]
         if oper.func == None:
             control._specialoper(eles, locls)
         elif eles:
             eles[0].eval(locls)
             ret = locls['$']
-            name = eles.val
+            name = eles.base
             for ele in eles[1:]:
                 ele.eval(locls)
                 ret = control.allopers[name].func(ret, locls['$'])
@@ -373,12 +379,12 @@ class wfile:
                 assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
-                assert l[0].val not in control.delims['endline'][0] or not l[0].val, l[0].val # node structure should prevent this.
+                assert l[0].base not in control.delims['endline'][0] or not l[0].base, l[0].base # node structure should prevent this.
             ret = ''
             if l[0]:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
-            if l[1].val not in control.delims['endline'][0]:
+            if l[1].base not in control.delims['endline'][0]:
                 ret += '\n{}:  \t{}'.format(linep, l[1])
                 linep += 1
             else:
@@ -459,27 +465,28 @@ class wfile:
     def _compresstokens(linetokens):
         def findhighest(linegrp):
             if __debug__:
-                assert linegrp or linegrp.val, linegrp
+                assert linegrp, linegrp
             highest = None
             for elep in range(len(linegrp)):
-                ele = linegrp[elep].val
+                ele = linegrp[elep].basestr
                 if ele in control.allopers and (highest == None or
-                        control.allopers[ele] > control.allopers[linegrp[highest].val]):
+                        control.allopers[ele] > control.allopers[linegrp[highest].basestr]):
                     highest = elep
+            print(ele, highest)
             if __debug__:
                 if not highest:
                     raise SyntaxError('no operator for string \'{}\'!'.format(linegrp))
             return highest
         def compresstokens(linegrp): #this is non-stable
-            ret = group(parens = linegrp.parens) #universe
-            while linegrp:
+            ret = omobj(parens = linegrp.parens) #universe
+            while len(linegrp):
                 ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
                 if ele not in control.allparens:
-                    ret.append(group(ele))
+                    ret.append(omobj(base = omobj.basefromstr(ele)))
                 else:
-                    toappend = group()
+                    toappend = omobj()
                     parens = {str(ele):1}
-                    while sum(parens.values()) > 0 and linegrp:
+                    while sum(parens.values()) > 0 and len(linegrp):
                         toappend.append(linegrp.pop(0))
                         if toappend[-1] in control.allparens:
                             last = toappend[-1]
@@ -508,22 +515,22 @@ class wfile:
                     return fixtkns(line[0])
             fhp = findhighest(line)
             if __debug__:
-                assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
-            ret = group(val = line[fhp].val, parens = line.parens)
-            s = fixtkns(group(args = line[0:fhp]))
-            e = fixtkns(group(args = line[fhp + 1:]))
+                assert isinstance(line[fhp], omobj), 'expected a omobj for fhp! (not %s)' % line[fhp]
+            ret = omobj(base = line[fhp].base, parens = line.parens)
+            s = fixtkns(omobj(nodes = line[0:fhp]))
+            e = fixtkns(omobj(nodes = line[fhp + 1:]))
             if s != None:
-                if len(s) == 1 and not s.val and not s.hasparens():
+                if len(s) == 1 and not s.base and not s.hasparens():
                     ret.append(s[0])
                 else:
                     ret.append(s)
             if e != None:
-                if len(e) == 1 and not e.val and not e.hasparens():
+                if len(e) == 1 and not e.base and not e.hasparens():
                     ret.append(e[0])
                 else:
                     ret.append(e)
             return ret
-        return fixtkns(compresstokens(group(args = linetokens)))
+        return fixtkns(compresstokens(omobj(nodes = linetokens)))
     
     def eval(self):
         locls = {}

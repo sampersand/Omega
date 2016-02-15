@@ -47,12 +47,13 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+    def isempty(self):
+        return self.isnull() or not self and not self.hasparens() and self.val in control.delims['endline'][0]
     def isnull(self):
         return not self and not self.hasparens() and not self.val
     def eval(self, locls):
         if self.isnull():
             locls['$'] = None
-        # print(self.val, self.val in control.funcs)
         elif self.val in control.allopers:
             control.evaloper(self, locls)
         elif self.val in control.funcs:
@@ -68,35 +69,36 @@ class group(list):
                 if self.val in control.consts:
                     locls['$'] = control.consts[self.val]
                 else:
-                    try:
-                        locls['$'] = int(self.val)
-                    except ValueError:
-                        try:
-                            locls['$'] = float(self.val)
-                        except ValueError:
+                    if self.val == 'locals' or self.val == 'locls':
+                        locls['$'] = str(locls)
+                    else:
+                        if self.val[0] in control.allquotes:
+                            if __debug__:
+                                assert self.val[-1] in control.allquotes
+                            locls['$'] = self.val
+                        else:
                             try:
-                                locls['$'] = complex(self.val)
+                                locls['$'] = int(self.val)
                             except ValueError:
-                                raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
+                                try:
+                                    locls['$'] = float(self.val)
+                                except ValueError:
+                                    try:
+                                        locls['$'] = complex(self.val)
+                                    except ValueError:
+                                        raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
 class control:
     import math
     from random import random
-    linebreak = '\n\r' #linebreak is used for comments
-    endline = ';' #used to seperate lines
-    # endline = '\n\r;'
-    comment = '#'
-    escape = '\\'
-    datadef = '@'
-    nbwhitespace = ' \t\x0b\x0c'
-    whitespace = nbwhitespace + linebreak
-    parens = {'l':'([{',
-              'r':')]}'}
-    allparens = ''.join(list(parens.values()))
-    alldelims = ',|' + endline
-    punctuation = '!"#$%&\'*+-/;<=>?@\\^`|~' + allparens + alldelims #stuff used to break apart things, ignoring ._
+    delims = {'arraysep':(',', None),
+              'etc':('|', None),
+              'endline':(';', lambda x, y: y)}
+    parens = {'l':'([{', 'r':')]}'}
     consts = {
+        'True': True,   'False': False,     'None' : None, 'Null' : None, 'Nil' : None,
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
         'T': True, 'F': False, 'N':None, #these can be overriden
+        't': True, 'f': False, 'n':None, #these can be overriden
         'pi': math.pi,  'PI': math.pi,      'π': math.pi,   'Π': math.pi,
         'e': math.e,    'E':  math.e,
         'k': 8.9875517873681764E9, 'K': 8.9875517873681764E9,
@@ -186,38 +188,75 @@ class control:
             'r':{'!':oper('!', 2, lambda x, y: not x)}
         }
     }
-    for delim in alldelims:
-        opers['unary']['l'][str(delim)] = oper(str(delim), 14, lambda x, y: y)
+    opers['unary']['l'].update({d[0]:oper(d[0], 14, d[1]) for d in delims.values()})
     funcs = {
+        #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
         'for': lambda eles, locls: control._doFunc(eles, locls, 'for'),
         'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
+        'abort': lambda eles, locls: control._doFunc(eles, locls, 'abort'),
         'displ': lambda eles, locls: control._doFunc(eles, locls, 'displ'),
     }
+
+
+    linebreak = '\n\r' #linebreak is used for comments
+    comment = '#'
+    escape = '\\'
+    datadef = '@'
+    nbwhitespace = ' \t\x0b\x0c'
+    whitespace = nbwhitespace + linebreak
+
+    allquotes = '\'\"`'
+    alldelims = ''.join(v[0] for v in delims.values())
+    allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
+
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
+
+    punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
+    
+    @staticmethod
+    def invertparen(paren):
+        return {'(':')', ')':'(',   '[':']', ']':'[',   '{':'}','}':'{'}[paren]
 
     @staticmethod
     def _doFunc(eles, locls, funcname):
-        if __debug__:
-            assert eles[0].val == funcname, 'this shouldn\'t break'
         if funcname == 'disp' or funcname == 'displ':
+            if len(eles) == 0: #aka, its jsut disp or displ
+                print(end = funcname == 'displ' and '\n' or '')
+                return
+            if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\'t break'
             eles[1].eval(locls)
             print(locls['$'], end = '\n' if funcname == 'displ' else '') #keep this here!
+        elif funcname == 'abort':
+            if len(eles) == 0:
+                locls['$'] = ''
+            else:
+                if __debug__:
+                    assert eles[0].val == funcname, 'this shouldn\'t break'
+                eles[1].eval(locls)
+            if __debug__:
+                assert '$' in locls
+            quit('Aborting!' + ('' if locls['$'] == '' else ' Message: \'{}\''.format(str(locls['$']))))
         elif funcname == 'if':
             if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\'t break'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0].eval(locls) # evaluates the condition
             # if len(eles[1])
             if locls['$']:
-                if len(eles[1][1]) == 2:
-                    eles[1][1].eval(locls)
+                if len(eles[1][1]) == 1:
+                    eles[1][1][0].eval(locls)
                 else:
+                    if __debug__:
+                        assert len(eles[1][1]) == 2
                     eles[1][1][0].eval(locls)
             elif len(eles[1][1]) == 2:
                 eles[1][1][1].eval(locls)
         elif funcname == 'for':
             if __debug__:
+                assert eles[0].val == funcname, 'this shouldn\'t break'
                 assert len(eles[1]) == 2, 'this shouldn\'t break!' #should be CONDITION, VALUE
             eles[1][0][0].eval(locls) # evaluates the condition
             while True:
@@ -237,7 +276,19 @@ class control:
     @staticmethod
     def _specialoper(eles, locls):
         name = eles.val
+        if name in control.alldelims:
+            if name in control.delims['arraysep']:
+                # print()
+                # eles[0].eval(locls)
+                # ele1 = locls['$']
+                # eles[1].eval(locls)
+                # locls['$'] = [ele1, locls['$']]
+                pass
+            else:
+                raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
         if name == ':':
+            if eles[0].val in control.alldelims:
+                assert 0, str(eles) + " | " + eles[0]
             if __debug__:
                 assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
             control.funcs[eles[0].val](eles, locls)
@@ -248,11 +299,6 @@ class control:
                 return element
             eles[1].eval(locls)
             locls['$'] = (element or locls['$']) if name == '&&' else (element and locls['$'])
-        # elif name in control.opers['unary']['l']:
-        #     if __debug__:
-        #         assert eles[0].isnull(),eles #should be (nothing, item)
-        #     eles[1].eval(locls)
-        #     locls['$'] = ~locls['$']
         else:
             direc = name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']
             if direc == 1:
@@ -293,7 +339,7 @@ class control:
         oper = control.allopers[eles.val]
         if oper.func == None:
             control._specialoper(eles, locls)
-        else:
+        elif eles:
             eles[0].eval(locls)
             ret = locls['$']
             name = eles.val
@@ -321,17 +367,26 @@ class wfile:
         import copy
         self.lines = wfile._compresstokens(copy.deepcopy(self.tokens))
     
-    def __iter__(self):
-        return iter(self.lines)
-    
     def __str__(self):
-        ret = 'file \'{}\':\n==[start]==\n'.format(self.filepath)
-        pos = 1
-        for line in self.lines:
-            ret += '\n{}: \t{}'.format(pos, line)
-            pos+=1
-        return ret + '\n\n==[ end ]=='
-        # return 'file \'{}\':\n>>\t{}'.format(self.filepath, '\n\t'.join(str(line) for line in self.lines))
+        def getl(linep, l):
+            if not l:
+                assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
+                return linep, ''
+            if __debug__:
+                assert l[0].val not in control.delims['endline'][0] or not l[0].val, l[0].val # node structure should prevent this.
+            ret = ''
+            if l[0]:
+                ret = '\n{}:  \t{}'.format(linep, l[0])
+                linep += 1
+            if l[1].val not in control.delims['endline'][0]:
+                ret += '\n{}:  \t{}'.format(linep, l[1])
+                linep += 1
+            else:
+                e = getl(linep, l[1])
+                ret += e[1]
+                linep += e[0]
+            return linep, ret
+        return 'file \'{}\':\n==[start]==\n{}\n\n==[ end ]=='.format(self.filepath, getl(0, self.lines)[1])
 
     @staticmethod
     def _striptext(rawt):
@@ -339,15 +394,19 @@ class wfile:
         ret = ''
         data = 0b00 # 0b10 = escaped, 0b01 = commented
         for char in rawt:
+            # print(char, char in control.linebreak, ret)
             if char in control.escape  and not data & 0b10:
                 data ^= 0b10
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
             elif char in control.linebreak:
+                continue
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns
                     # ret += char
-                data &= 0b10
+                # data &= 0b10 #remove comments
             else:
+                if data & 0b10:
+                    ret += control.escape
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
@@ -360,29 +419,41 @@ class wfile:
             for oper in control.sortedopers:
                 if oper in rawt:
                     par = rawt.partition(oper)
+                    if rawt[rawt.index(oper) - 1] in control.escape:
+                        return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
-            for punc in control.punctuation + control.endline:
+            for punc in control.punctuation + control.delims['endline'][0]:
                 if punc in rawt:
                     par = rawt.partition(punc)
+                    if rawt[rawt.index(punc) - 1] in control.escape:
+                        return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
-        tokens = [token.strip(control.nbwhitespace) for token in tokenize(rawt)]
+        tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
             
-
-        ret = [[]]
+        ret = []
+        currentquote = None
         for token in tokens:
-            if not token:
-                continue
-            # if token in control.endline:
-                # ret.append([])
+            if token in control.allquotes:
+                if currentquote == None:
+                    ret.append(token)
+                    currentquote = token
+                else:
+                    if token == currentquote:
+                        currentquote = None
+                    ret[-1] += token                    
+            elif currentquote:
+                ret[-1] += token
             else:
-                ret[-1].append(token)
+                ret.append(token)
+
+        #@define stuff
         linep = 0
-        while linep < len(ret):
-            if ret[linep] and ret[linep][0] in control.datadef:
+        while linep < len(ret): 
+            if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        return [l for l in ret if l]
+        return ret
 
     @staticmethod
     def _compresstokens(linetokens):
@@ -396,7 +467,8 @@ class wfile:
                         control.allopers[ele] > control.allopers[linegrp[highest].val]):
                     highest = elep
             if __debug__:
-                assert highest != None, 'no highest for ' + str(linegrp)
+                if not highest:
+                    raise SyntaxError('no operator for string \'{}\'!'.format(linegrp))
             return highest
         def compresstokens(linegrp): #this is non-stable
             ret = group(parens = linegrp.parens) #universe
@@ -406,13 +478,19 @@ class wfile:
                     ret.append(group(ele))
                 else:
                     toappend = group()
-                    parens = 1
-                    while parens > 0 and linegrp:
+                    parens = {str(ele):1}
+                    while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
-                        if toappend[-1] in control.parens['l']:
-                            parens += 1
-                        if toappend[-1] in control.parens['r']:
-                            parens -= 1
+                        if toappend[-1] in control.allparens:
+                            last = toappend[-1]
+                            if last in control.parens['l']:
+                                if last not in parens:
+                                    parens[last] = 0
+                                parens[last] += 1
+                            if last in control.parens['r']:
+                                if __debug__:
+                                    assert control.invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
+                                parens[control.invertparen(last)] -= 1
                     if __debug__:
                         assert toappend[-1] in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (ele, toappend.pop())
@@ -445,23 +523,28 @@ class wfile:
                 else:
                     ret.append(e)
             return ret
-
-        return group(args = [fixtkns(compresstokens(group(args = line))) for line in linetokens])
+        return fixtkns(compresstokens(group(args = linetokens)))
     
-
     def eval(self):
         locls = {}
-        for line in self:
-            line.eval(locls)
+        self.lines.eval(locls)
         if '$' in locls:
             del locls['$']
         return locls
 
 if __name__ == '__main__':
-    f = wfile('testcode.om')
-    print(f)
-    print('--')
-    print(f.eval())
+    import sys
+    if len(sys.argv) == 1:
+        filepath = 'testcode.om'
+    else:
+        filepath = sys.argv[1] #0 is 'main.py'
+        if __debug__:
+            if sys.argv[1] == '/Users/westerhack/code/python/Omega/main.py':
+                filepath = 'testcode.om'
+    f = wfile(filepath)
+    # print(f)
+    # print('--')
+    f.eval()
 
 """
 @f1(arg)
