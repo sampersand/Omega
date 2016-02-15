@@ -3,11 +3,12 @@ class group(list):
         return super().__new__(self, args)
 
     def __init__(self, base = '', args = [], parens = ('','')):
-        from control import control
-        self.base = control._getomobj(base)
-        
+        import control
+        self.base = control._getomobj(str(base))
+
         if __debug__:
-            assert type(self.base) == omobj, self.base
+            import omobj
+            assert isinstance(self.base, omobj.omobj), type(self.base)
             assert type(args) == list, 'Expected {} for \'args\', not \'{}\'!'.format(type(list), type(args))
             assert type(parens) == tuple, 'Expected {} for \'parens\', not \'{}\'!'.format(type(tuple), type(parens))
             assert len(parens) == 2, 'Parens needs to be \'(Left Paren, Right Paren)\'! not \'{}\''.format(parens)
@@ -34,7 +35,7 @@ class group(list):
         return ret + ')'
 
     def __str__(self):
-        from control import control
+        import control
         if not self:
             return ''.join((str(self.parens[0]), self.basestr, str(self.parens[1])))
         if self.basestr in control.opers['binary']:
@@ -45,7 +46,7 @@ class group(list):
     def isnull(self):
         return not self and not self.hasparens() and not self.base
     def eval(self, locls):
-        from control import control
+        import control
         if __debug__:
             assert self.basestr != None
         if self.basestr in locls: #short cut

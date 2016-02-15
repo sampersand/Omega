@@ -14,13 +14,24 @@ class omobj:
             print('evalfunc is none, returning self.base ({})'.format(self.base))
             return self.base
         return None
+
 class oper(omobj):
     def __init__(self, base, priority, evalfunc):
         super().__init__(base, evalfunc)
         self.priority = priority
     def __repr__(self):
-        return 'oper({},{},{})'.format(self.base, self.priority, self.func)
+        return 'oper({},{},{})'.format(self.base, self.priority, self.evalfunc)
     def __str__(self):
         return self.base
     def __lt__(self, other):
         return self.priority < other.priority
+
+class func(omobj):
+    def __init__(self, base):
+        super().__init__(base, None)
+    def eval(self, grp, locls):
+        print('attempting to eval grp \'{}\' with locls \'{}\' in func \'{}\''.format(grp, locls, self))
+        if self.evalfunc == None:
+            print('evalfunc is none, returning self.base ({})'.format(self.base))
+            return self.base
+        return None

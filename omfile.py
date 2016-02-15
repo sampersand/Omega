@@ -1,4 +1,4 @@
-from control import control
+import control
 from group import group
 class omfile:
     def __init__(self, filepath, encoding = 'utf-8'):
@@ -122,8 +122,8 @@ class omfile:
                                 parens[last] += 1
                             if last in control.parens['r']:
                                 if __debug__:
-                                    assert control.invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
-                                parens[control.invertparen(last)] -= 1
+                                    assert control._invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
+                                parens[control._invertparen(last)] -= 1
                     if __debug__:
                         assert str(toappend[-1]) in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (str(ele), str(toappend.pop()))
@@ -138,6 +138,7 @@ class omfile:
             highest = None
             for elep in range(len(linegrp)):
                 ele = linegrp[elep].basestr
+                assert 'displ' not in control.allopers, control.allopers.keys()
                 if ele in control.allopers and (highest == None or
                         control.allopers[ele] > control.allopers[linegrp[highest].basestr]):
                     highest = elep
