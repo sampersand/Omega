@@ -287,16 +287,19 @@ class control:
                 for ele in eles:
                     ele.eval(locls)
                     ret.append(locls['$'])
-                locls['$'] = ret# x = y
+                locls['$'] = group(val = ret)# x = y
                 return
             else:
                 raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
         elif name == ':':
             if eles[0].val in control.alldelims:
                 assert 0, str(eles) + " | " + eles[0]
-            if __debug__:
-                assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
-            control.funcs[eles[0].val](eles, locls)
+            if eles[0].val in locls:
+                locls[eles[0].val].eval(eles[1])
+            else:
+                if __debug__:
+                    assert eles[0].val in control.funcs, 'no way to proccess function \'{}\''.format(eles[0].val)
+                control.funcs[eles[0].val](eles, locls)
         elif name == '||' or name == '&&':
             eles[0].eval(locls)
             element = locls['$']
