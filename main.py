@@ -9,6 +9,27 @@ class oper:
         return self.value
     def __lt__(self, other):
         return self.priority < other.priority
+class omobj:
+    def __init__(self, val, *args):
+        self.val = val
+
+    @staticmethod
+    def fromstr(val):
+        if val[0] in control.allquotes:
+            if __debug__:
+                assert val[-1] in control.allquotes
+            locls['$'] = val
+        else:
+            try:
+                locls['$'] = int(val)
+            except ValueError:
+                try:
+                    locls['$'] = float(val)
+                except ValueError:
+                    try:
+                        locls['$'] = complex(val)
+                    except ValueError:
+                        raise SyntaxError('No known way to deal with \'{}\''.format(val))
 
 class group(list):
     def __new__(self, val = '', args = [], parens = ('','')):
@@ -47,8 +68,6 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
-    def isempty(self):
-        return self.isnull() or not self and not self.hasparens() and self.val in control.delims['endline'][0]
     def isnull(self):
         return not self and not self.hasparens() and not self.val
     def eval(self, locls):
@@ -72,21 +91,8 @@ class group(list):
                     if self.val == 'locals' or self.val == 'locls':
                         locls['$'] = str(locls)
                     else:
-                        if self.val[0] in control.allquotes:
-                            if __debug__:
-                                assert self.val[-1] in control.allquotes
-                            locls['$'] = self.val
-                        else:
-                            try:
-                                locls['$'] = int(self.val)
-                            except ValueError:
-                                try:
-                                    locls['$'] = float(self.val)
-                                except ValueError:
-                                    try:
-                                        locls['$'] = complex(self.val)
-                                    except ValueError:
-                                        raise SyntaxError('No known way to deal with \'{}\''.format(self.val))
+                        locls['$'] = omobj(self.val[0])
+
 class control:
     import math
     from random import random
