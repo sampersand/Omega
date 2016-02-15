@@ -48,13 +48,12 @@ class group(list):
             return ''.join((str(self.parens[0]), str(self[0]), str(self.val), str(self[1]), str(self.parens[1])))
         return ''.join((str(self.val), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
     def isempty(self):
-        return self.isnull() or not self and not self.hasparens() and self.val in control.endline
+        return self.isnull() or not self and not self.hasparens() and self.val in control.delims['endline'][0]
     def isnull(self):
         return not self and not self.hasparens() and not self.val
     def eval(self, locls):
         if self.isnull():
             locls['$'] = None
-        # print(self.val, self.val in control.funcs)
         elif self.val in control.allopers:
             control.evaloper(self, locls)
         elif self.val in control.funcs:
@@ -91,23 +90,10 @@ class group(list):
 class control:
     import math
     from random import random
-    linebreak = '\n\r' #linebreak is used for comments
-    endline = ';' #used to seperate lines
-    # endline = '\n\r;'
-    comment = '#'
-    escape = '\\'
-    datadef = '@'
-    nbwhitespace = ' \t\x0b\x0c'
-    whitespace = nbwhitespace + linebreak
-    alldelims = ',|' + endline
-    allquotes = '\'\"`'
-    parens = {'l':'([{',
-              'r':')]}'}
-    @staticmethod
-    def invertparen(paren):
-        return {'(':')', ')':'(',   '[':']', ']':'[',   '{':'}','}':'{'}[paren]
-    allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
-    punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
+    delims = {'arraysep':(',', None),
+              'etc':('|', None),
+              'endline':(';', lambda x, y: y)}
+    parens = {'l':'([{', 'r':')]}'}
     consts = {
         'True': True,   'False': False,     'None' : None, 'Null' : None, 'Nil' : None,
         'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
@@ -202,17 +188,36 @@ class control:
             'r':{'!':oper('!', 2, lambda x, y: not x)}
         }
     }
-    for delim in alldelims:
-        opers['unary']['l'][str(delim)] = oper(str(delim), 14, lambda x, y: y)
-    funcs = { #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
+    opers['unary']['l'].update({d[0]:oper(d[0], 14, d[1]) for d in delims.values()})
+    funcs = {
+        #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
         'if': lambda eles, locls: control._doFunc(eles, locls, 'if'),
         'for': lambda eles, locls: control._doFunc(eles, locls, 'for'),
         'disp': lambda eles, locls: control._doFunc(eles, locls, 'disp'),
         'abort': lambda eles, locls: control._doFunc(eles, locls, 'abort'),
         'displ': lambda eles, locls: control._doFunc(eles, locls, 'displ'),
     }
+
+
+    linebreak = '\n\r' #linebreak is used for comments
+    comment = '#'
+    escape = '\\'
+    datadef = '@'
+    nbwhitespace = ' \t\x0b\x0c'
+    whitespace = nbwhitespace + linebreak
+
+    allquotes = '\'\"`'
+    alldelims = ''.join(v[0] for v in delims.values())
+    allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
     allopers = opers['binary']; allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
+
     sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
+
+    punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
+    
+    @staticmethod
+    def invertparen(paren):
+        return {'(':')', ')':'(',   '[':']', ']':'[',   '{':'}','}':'{'}[paren]
 
     @staticmethod
     def _doFunc(eles, locls, funcname):
@@ -271,6 +276,16 @@ class control:
     @staticmethod
     def _specialoper(eles, locls):
         name = eles.val
+        if name in control.alldelims:
+            if name in control.delims['arraysep']:
+                eles[0].eval(locls)
+                ele1 = locls['$']
+                eles[1].eval(locls)
+                if locls['$']
+                locls['$'] = [ele1, locls['$']]
+                return
+            else:
+                raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
         if name == ':':
             if eles[0].val in control.alldelims:
                 assert 0, str(eles) + " | " + eles[0]
@@ -284,11 +299,6 @@ class control:
                 return element
             eles[1].eval(locls)
             locls['$'] = (element or locls['$']) if name == '&&' else (element and locls['$'])
-        # elif name in control.opers['unary']['l']:
-        #     if __debug__:
-        #         assert eles[0].isnull(),eles #should be (nothing, item)
-        #     eles[1].eval(locls)
-        #     locls['$'] = ~locls['$']
         else:
             direc = name in ['<-', '<?-', '<+-', '<--', '<*-', '</-', '<**-', '<%-', '<&-', '<|-', '<^-', '<<-', '<>-']
             if direc == 1:
@@ -363,12 +373,12 @@ class wfile:
                 assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
             if __debug__:
-                assert l[0].val not in control.endline or not l[0].val, l[0].val # node structure should prevent this.
+                assert l[0].val not in control.delims['endline'][0] or not l[0].val, l[0].val # node structure should prevent this.
             ret = ''
             if l[0]:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
-            if l[1].val not in control.endline:
+            if l[1].val not in control.delims['endline'][0]:
                 ret += '\n{}:  \t{}'.format(linep, l[1])
                 linep += 1
             else:
@@ -412,7 +422,7 @@ class wfile:
                     if rawt[rawt.index(oper) - 1] in control.escape:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
-            for punc in control.punctuation + control.endline:
+            for punc in control.punctuation + control.delims['endline'][0]:
                 if punc in rawt:
                     par = rawt.partition(punc)
                     if rawt[rawt.index(punc) - 1] in control.escape:
@@ -515,7 +525,6 @@ class wfile:
             return ret
         return fixtkns(compresstokens(group(args = linetokens)))
     
-
     def eval(self):
         locls = {}
         self.lines.eval(locls)
@@ -529,6 +538,9 @@ if __name__ == '__main__':
         filepath = 'testcode.om'
     else:
         filepath = sys.argv[1] #0 is 'main.py'
+        if __debug__:
+            if sys.argv[1] == '/Users/westerhack/code/python/Omega/main.py':
+                filepath = 'testcode.om'
     f = wfile(filepath)
     # print(f)
     # print('--')
