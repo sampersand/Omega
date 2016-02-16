@@ -42,7 +42,8 @@ class omobj:
         return 'omobj(' + repr(self.base) + ('' if self.evalfunc == None else ', {}'.format(repr(self.evalfunc))) + ')'
 
     def __bool__(self):
-        return bool(str(self))
+        return bool(self.base)
+        # return bool(str(self))
 
     def __eq__(self, other):
         if __debug__:
@@ -150,20 +151,17 @@ class oper(omobj):
             else:
                 raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
         elif name == ':':
-            # assert 0, repr(eles)
-            # if eles[0].basestr in locls:
-            #     locls[eles[0].basestr].base.eval(eles[1], locls)
-            # else:
-            print('\':\' :: ',repr(eles[0].base),repr(eles[1:]), locls)
+            # print('\':\' :: ',repr(eles[0].base),repr(eles[1:]), locls)
             if __debug__:
                 assert not eles[0] #just a thing i noticed, no hard and fast rule
             eles[0].base.eval(eles[1:],locls)
-        # elif name == '||' or name == '&&':
-        #     eles[0].eval(locls)
-        #     element = locls['$']
-        #     if name == '&&' and not element or name == '||' and element:
-        #         return element
-        #     eles[1].eval(locls)
+        elif name == '||' or name == '&&':
+            typ = name == '&&'
+            eles[0].eval(locls)
+            element = locls['$']
+            if (typ and element) or (not typ and not element):
+                return
+            eles[1].eval(locls)
         else:
             if __debug__:
                 assert len(eles) == 2
@@ -179,57 +177,57 @@ class func(omobj):
     def __init__(self, base):
         super().__init__(base, None)
     
-    # def eval(self, eles, locls):
-    #     assert 0, 'todo: this'
-    #     import control
-    #     if self.evalfunc != None:
-    #         super().eval(eles, local)
-    #     else:
-    #         if 'disp' in str(self):
-    #             sep = str(self) == 'displ' and '\n' or str(self) == 'dispc' and ', ' or ''
-    #             if len(eles) == 0: #aka just 'disp;'
-    #                 print(end=sep)
-    #             else:
-    #                 if __debug__:
-    #                     assert len(eles) == 1
-    #                 for element in eles:
-    #                     element.eval(locls)
-    #                     from group import group
-    #                     if isinstance(locls['$'], group):
-    #                         print(sep.join(str(e) for e in locls['$'].base.base), end = sep)
-    #                     else:
-    #                         print(locls['$'], end = sep)
-    #         elif str(self) == 'abort':
-    #             if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
-    #                 locls['$'] = eles
-    #             elif str(eles.base) == str(control.funcs['abort']): 
-    #                 #'$' not in locls:
-    #                 locls['$'] = ''
-    #             if __debug__:
-    #                 assert '$' in locls
-    #             quit('Aborting!' + (str(locls['$']) and " Message: '{}'".format(str(locls['$']))))
-    #         elif str(self) == 'if':
-    #             if __debug__:
-    #                 assert len(eles) in (2, 3), 'can only have if:(cond):(if true)[:(if false)];'
-    #             eles[0].eval(locls) # evaluates the condition
-    #             if locls['$']:
-    #                 eles[1].eval(locls)
-    #             elif len(eles) == 3:
-    #                 eles[2].eval(locls)
-    #         elif str(self) == 'for':
-    #             if __debug__:
-    #                 assert len(eles) == 2, 'can only have for:(...):{ expression };'
-    #                 assert len(eles[0]) == 3, 'can only have (initialize; condition; increment)'
-    #             eles[0][0].eval(locls) # initializes the for loop the condition
-    #             # print(eles[0][0])
-    #             while True:
-    #                 eles[0][1].eval(locls) #check the conditoin
-    #                 if not locls['$']:
-    #                     break
-    #                 eles[1].eval(locls) #increment
-    #                 eles[0][2].eval(locls)
-    #         else:
-    #             raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))
+    def eval(self, eles, locls):
+        # assert 0, 'todo: this'
+        import control
+        if self.evalfunc != None:
+            super().eval(eles, local)
+        else:
+            if 'disp' in str(self):
+                sep = str(self) == 'displ' and '\n' or str(self) == 'dispc' and ', ' or ''
+                if len(eles) == 0: #aka just 'disp;'
+                    print(end=sep)
+                else:
+                    if __debug__:
+                        assert len(eles) == 1
+                    for element in eles:
+                        element.eval(locls)
+                        from group import group
+                        if isinstance(locls['$'], group):
+                            print(sep.join(str(e) for e in locls['$'].base.base), end = sep)
+                        else:
+                            print(locls['$'], end = sep)
+            elif str(self) == 'abort':
+                if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
+                    locls['$'] = eles
+                elif str(eles.base) == str(control.funcs['abort']): 
+                    #'$' not in locls:
+                    locls['$'] = ''
+                if __debug__:
+                    assert '$' in locls
+                quit('Aborting!' + (str(locls['$']) and " Message: '{}'".format(str(locls['$']))))
+            elif str(self) == 'if':
+                if __debug__:
+                    assert len(eles) in (2, 3), 'can only have if:(cond):(if true)[:(if false)];'
+                eles[0].eval(locls) # evaluates the condition
+                if locls['$']:
+                    eles[1].eval(locls)
+                elif len(eles) == 3:
+                    eles[2].eval(locls)
+            elif str(self) == 'for':
+                if __debug__:
+                    assert len(eles) == 2, 'can only have for:(...):{ expression };'
+                    assert len(eles[0]) == 3, 'can only have (initialize; condition; increment)'
+                eles[0][0].eval(locls) # initializes the for loop the condition
+                # print(eles[0][0])
+                while True:
+                    eles[0][1].eval(locls) #check the conditoin
+                    if not locls['$']:
+                        break
+                    eles[1].eval(locls) #increment
+                    eles[0][2].eval(locls)
+            else:
+                raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))
 
 class array(omobj):
     def __init__(self, base):
@@ -244,7 +242,7 @@ class array(omobj):
             if __debug__:
                 assert len(eles) == 1, 'only one index for the time being'
             eles[0].eval(locls)
-            print(locls['$'])
+            # print(locls['$'])
             locls['$'] = self.base[locls['$']]
 
 
