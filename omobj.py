@@ -51,57 +51,67 @@ class omobj:
             assert hasattr(other, 'base'), "{} :: {}".format(repr(other), type(other))
             assert hasattr(other, 'evalfunc'), "{} :: {}".format(repr(other), type(other))
         return self.base == other.base and self.evalfunc == other.evalfunc
-
     def eval(self, eles, locls):
         if str(self) in locls:
-            locls[str(self)].eval(eles, locls)
+            assert 0, 'when does this happen?'
+            locls[str(self.base)].eval(eles, locls)
         if self.evalfunc == None:
             locls['$'] = self
         else:
             self.evalfunc(eles, locls)
-
-    def set(self, fname, vals, locls):
-        if __debug__:
-            assert str(self) not in locls
+    # def __hash__(self):
+    #     return hash(self.base) * hash(self.evalfunc)
+    def update(self, value, fname):
+        if fname == '':
+            self.base = value.base
+        elif fname == '?':
+            assert 0, 'todo'
+        elif fname == '+':
+            self.base += value.base
+        elif fname == '-':
+            self.base -= value.base 
+        elif fname == '*':
+            self.base *= value.base 
+        elif fname == '/':
+            self.base /= value.base 
+        elif fname == '**':
+            self.base **= value.base 
+        elif fname == '%':
+            self.base %= value.base 
+        elif fname == '&':
+            self.base &= value.base 
+        elif fname == '|':
+            self.base |= value.base 
+        elif fname == '^':
+            self.base ^= value.base 
+        elif fname == '<':
+            self.base <<= value.base 
+        elif fname == '>':
+            self.base >>= value.base 
+        # if __debug__:
+        #     assert str(self) not in locls
         # if vals.isfinal():
         #     other.eval(locls)
         #     locls[str(self)] = locls['$']
         # else:
-        vals.eval(vals, locls)
-        locls[str(self)] = locls['$']
+        # assert 0, repr(vals)
 
-        if __debug__:
-            assert not fname or fname == '?' or key in locls, "'{}'  exist, so cant do '{}'!".format(key, fname)
+        # if __debug__:
+            # assert not fname or fname == '?' or key in locls, "'{}'  exist, so cant do '{}'!".format(key, fname)
         # key.set(fname, fname, locls)
         # if direc == 0: #swap the return value
             # locls['$'] = locls[key]
 
-    # def set(self, eles, name, locls):
-    #     if __debug__:
-    #         assert str(self) not in locls
-    #     eles[0].eval(locls)
-    #     locls[self] = locls['$']
-        # if eles[1].isfinal():
-        #     eles[1].eval(locls)
-        #     locls[str(self)] = locls['$']
-        # else:
-        #     assert 0
-        # print(locls)
-        # if name == '':
-        #     self
-        # if   name == ''  : self.set(value, '= ')
-        # elif name == '<?-' : self.set(value, '?') if value else (locls[self] if self in locls else None)
-        # elif name == '<+-' : self.set(value, '+=')
-        # elif name == '<--' : self.set(value, '-=')
-        # elif name == '<*-' : self.set(value, '*=')
-        # elif name == '</-' : self.set(value, '/=')
-        # elif name == '<**-': self.set(value, '**')
-        # elif name == '<%-' : self.set(value, '%=')
-        # elif name == '<&-' : self.set(value, '&=')
-        # elif name == '<|-' : self.set(value, '|=')
-        # elif name == '<^-' : self.set(value, '^=')
-        # elif name == '<<-' : self.set(value, '<<')
-        # elif name == '<>-' : self.set(value, '>>')
+
+
+
+
+
+
+
+
+
+
 
 class oper(omobj):
 
@@ -126,13 +136,15 @@ class oper(omobj):
             name = eles.basestr
             for ele in eles[1:]:
                 ele.eval(locls)
-                ret = self.evalfunc(ret, locls['$'])
+                print(ret,locls,eles,locls['$'].base)
+                ret = omobj(self.evalfunc(ret.base, locls['$'].base))
+                locls['$'] = ret
             locls['$'] = ret
 
     def _specialoper(self, eles, locls):
         from group import group
         import control
-        name = eles.basestr
+        name = str(self)
         if name in control.alldelims:
             if name in control.delims['arraysep'][0]:
                 eles[0].eval(locls)
@@ -151,7 +163,6 @@ class oper(omobj):
             else:
                 raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
         elif name == ':':
-            # print('\':\' :: ',repr(eles[0].base),repr(eles[1:]), locls)
             if __debug__:
                 assert not eles[0] #just a thing i noticed, no hard and fast rule
             eles[0].base.eval(eles[1:],locls)
@@ -165,14 +176,23 @@ class oper(omobj):
         else:
             if __debug__:
                 assert len(eles) == 2
-            direc = name[0] == '<' and name[-1] == '-'
-            name = name[1:-1]
-            eles[direc].eval(locls)
-            value = locls['$']
+            direc = name[0] == '-' and name[-1] == '>'
+            keystr = str(eles[direc])
             eles[not direc].eval(locls)
-            key = locls['$']
-            key.set(name, value, locls)
-
+            valueobj = locls['$']
+            if name[1:-1] == '':
+                locls[keystr] = valueobj
+            else:
+                if __debug__:
+                    assert keystr in locls, 'cant update a non-existant object!'
+                locls[keystr].update(valueobj, name[1:-1])
+            locls['$'] = locls[keystr]
+            # assert 0, '{} | {} | {} | {}'.format(repr(eles),repr(eles[direc]), locls, key)
+            # key.set(name[1:-1], value)
+            # locls['$'] = key.set(name[1:-1], value, locls)
+            # if str(key) not in locls:
+                # locls[str(key)] = locls['$']
+            print(self,eles,locls,keystr,valueobj,sep="\t|\t")
 class func(omobj):
     def __init__(self, base):
         super().__init__(base, None)
@@ -183,8 +203,8 @@ class func(omobj):
         if self.evalfunc != None:
             super().eval(eles, local)
         else:
-            if 'disp' in str(self):
-                sep = str(self) == 'displ' and '\n' or str(self) == 'dispc' and ', ' or ''
+            if 'disp' in str(self.base):
+                sep = str(self.base) == 'displ' and '\n' or str(self.base) == 'dispc' and ', ' or ''
                 if len(eles) == 0: #aka just 'disp;'
                     print(end=sep)
                 else:
@@ -197,7 +217,7 @@ class func(omobj):
                             print(sep.join(str(e) for e in locls['$'].base.base), end = sep)
                         else:
                             print(locls['$'], end = sep)
-            elif str(self) == 'abort':
+            elif str(self.base) == 'abort':
                 if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
                     locls['$'] = eles
                 elif str(eles.base) == str(control.funcs['abort']): 
@@ -219,9 +239,10 @@ class func(omobj):
                     assert len(eles) == 2, 'can only have for:(...):{ expression };'
                     assert len(eles[0]) == 3, 'can only have (initialize; condition; increment)'
                 eles[0][0].eval(locls) # initializes the for loop the condition
-                # print(eles[0][0])
+                print(eles[0][0],"@",locls)
                 while True:
                     eles[0][1].eval(locls) #check the conditoin
+                    print(locls['$'],'@',eles[0][1])
                     if not locls['$']:
                         break
                     eles[1].eval(locls) #increment
