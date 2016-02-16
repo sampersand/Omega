@@ -1,8 +1,6 @@
 class omobj:
     def __init__(self, base, evalfunc = None):
-        print("@",base)
         self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
-        print(self.base,type(self.base))
         self.evalfunc = evalfunc
 
     @staticmethod
@@ -27,7 +25,7 @@ class omobj:
                         return complex(base)
                     except ValueError:
                         return str(base)
-                        return control.allkeywords[base] if base in control.allkeywords else str(base)
+                        # return control.allkeywords[base] if base in control.allkeywords else str(base)
 
     def __str__(self):
         return str(self.base)

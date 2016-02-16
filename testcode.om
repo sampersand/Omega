@@ -1,3 +1,13 @@
+
+t -> a;
+n -> b;
+1->c;
+displ:a;
+for:(i=0,i<10,1-+>i):{displ:i}
+#dispc:[a,b];#
+#displ:[a,1];#
+# if:(a=n):(t->b);dispc:(a, b, c, d);#
+# if:(a=2):(1->b):{2}#
 # [1, 1, 2, 3, [5, 8, 13]]->array;
 ##2 -> a, 1 -> b;
 ##disp:$;
@@ -12,12 +22,3 @@
 ##(2 && 0)-> a;
 ##abort;
  #
-t -> a;
-n -> b;
-1->c;
-displ:a;
-for:(i=0,i<10,1-+>i):{displ:i}
-#dispc:[a,b];#
-#displ:[a,1];#
-# if:(a=n):(t->b);dispc:(a, b, c, d);#
-# if:(a=2):(1->b):{2}#
