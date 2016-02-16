@@ -50,6 +50,11 @@ class omobj:
         if str(self) in locls:
             return
         if self.evalfunc == None:
+            if hasattr(self.base, '__getitem__'):
+                if __debug__:
+                    assert len(eles) == 0, 'only one index for the time being'
+                eles.eval(locls)
+                return self.base[locls['$']]
             locls['$'] = self.base
         else:
             self.evalfunc(eles, locls)
@@ -160,7 +165,8 @@ class func(omobj):
                     if __debug__:
                         assert len(eles) == 1
                     if len(eles[0]) == 0:
-                        print(eles[0], end = sep)
+                        eles[0].eval(locls)
+                        print(locls['$'], end = sep)
                     else:
                         print(sep.join(x for x in pr(eles[0] if len(eles) == 1 else eles, locls)), end = sep)
             elif str(self) == 'abort':
