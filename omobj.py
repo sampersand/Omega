@@ -8,7 +8,8 @@ class omobj:
     @staticmethod
     def fromstr(base):
         import control
-        return control.allkeywords[base] if base in control.allkeywords else str(base)
+        return control.allkeywords[base] if base in control.allkeywords else omobj(base)
+        # return control.allkeywords[base] if base in control.allkeywords else omobj(base)
     @staticmethod
     def _getbase(base):
         if not isinstance(base, str) or not (base or base.isalnum()):
@@ -20,16 +21,11 @@ class omobj:
             return base
         else:
             try:
-                return int(base)
-            except ValueError:
-                try:
-                    return float(base)
-                except ValueError:
-                    try:
-                        return complex(base)
-                    except ValueError:
-                        # return str(base)
-                        return control.allkeywords[base] if base in control.allkeywords else str(base)
+                return eval(base)
+            except SyntaxError:
+                return control.allkeywords[base] if base in control.allkeywords else str(base)
+            except NameError:
+                return control.allkeywords[base] if base in control.allkeywords else str(base)
 
     def __str__(self):
         return str(self.base)
@@ -39,6 +35,7 @@ class omobj:
 
     def __bool__(self):
         return bool(str(self))
+
     def __eq__(self, other):
         if __debug__:
             assert isinstance(other, omobj), repr(other)
@@ -50,6 +47,7 @@ class omobj:
         if str(self) in locls:
             return
         if self.evalfunc == None:
+            print(self.base)
             if hasattr(self.base, '__getitem__'):
                 if __debug__:
                     assert len(eles) == 0, 'only one index for the time being'
@@ -67,10 +65,8 @@ class oper(omobj):
         self.priority = priority
 
     def __repr__(self):
-        return 'oper({},{},{})'.format(self.base, self.priority, self.evalfunc)
+        return 'oper({},{},{})'.format(repr(self.base), repr(self.priority), repr(self.evalfunc))
 
-    def __str__(self):
-        return self.base
     def __lt__(self, other):
         return self.priority < other.priority
 
@@ -114,7 +110,11 @@ class oper(omobj):
                 return element
             eles[1].eval(locls)
         else:
+            if __debug__:
+                assert len(eles) == 2
             direc = name[0] == '<' and name[-1] == '-'
+            print('eles:',repr(eles),'\neles[0]',repr(eles[0]),
+                  '\neles[1]',repr(eles[1]),end='\n\n')
             if direc == 1:
                 eles[1].eval(locls)
                 value =locls['$']
@@ -163,7 +163,11 @@ class func(omobj):
                         assert len(eles) == 1
                     for element in eles:
                         element.eval(locls)
-                        print(locls['$'], end = sep)
+                        from group import group
+                        if isinstance(locls['$'], group):
+                            print(sep.join(str(e) for e in locls['$'].base.base), end = sep)
+                        else:
+                            print(locls['$'], end = sep)
             elif str(self) == 'abort':
                 if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
                     locls['$'] = eles

@@ -18,10 +18,10 @@ parens = {'l':'([{', 'r':')]}'}
 consts = {
     'True'  : omobj(True),          'False' : omobj(False),     'None'  : omobj(None),
     'true'  : omobj(True),          'false' : omobj(False),     'none'  : omobj(None),
-    'T'     : omobj(True),          'F'     : omobj(False),     'N'     : omobj(None), #can be overode
-    't'     : omobj(True),          'f'     : omobj(False),     'n'     : omobj(None), #can be overode
+#    'T'     : omobj(True),          'F'     : omobj(False),     'N'     : omobj(None), #can be overode
+#    't'     : omobj(True),          'f'     : omobj(False),     'n'     : omobj(None), #can be overode
     'pi'    : omobj(math.pi),       'π'     : omobj(math.pi),   'e'     : omobj(math.e),
-    'k'     : omobj(8.987551787368e9), 'i'  : omobj(complex(0, 1)), 'j' : omobj(complex(0, 1)),
+    'k'     : omobj(8.987551787368e9),'imag': omobj(complex(0, 1)),
     'rand'  : omobj(None, random()), 'nan'  : omobj(float('nan')), 'NaN': omobj(float('nan')),
     'inf'   : omobj(float('inf')),  '∞'     : omobj(float('inf')),
 

@@ -1,5 +1,6 @@
 if __name__ == '__main__':
     import sys
+    from omfile import omfile
     if len(sys.argv) == 1:
         filepath = 'testcode.om'
     else:
@@ -7,14 +8,14 @@ if __name__ == '__main__':
         if __debug__:
             if '.py' in sys.argv[1]:
                 filepath = '/Users/westerhack/code/python/Omega/testcode.om'
-    from omfile import omfile
     f = omfile(filepath)
     if __debug__:
         print(f)
         print('--')
     evald = f.eval()
+    print('\n\nDone.')
     if __debug__:
-        print(evald)
+        print('locals:',evald)
 
 
 """
