@@ -100,6 +100,7 @@ funcs = {
     'abort': func('abort'),
     'displ': func('displ'),
     'dispc': func('dispc'), #commas bxn elements
+    'skip': func('skip'), #commas bxn elements
 }
 
 for d in delims.values():
