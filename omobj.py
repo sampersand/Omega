@@ -176,15 +176,22 @@ class oper(omobj):
             direc = name[0] == '-' and name[-1] == '>'
             name = name[1:-1]
             keystr = str(eles[direc])
+            # print(eles[not direc])
+            if '$' in locls:
+                del locls['$']
+            print(locls)
+            print(str(eles[direc]),eles[not direc])
             eles[not direc].eval(locls)
             valueobj = locls['$']
+            print(repr(locls),repr(keystr),repr(valueobj),repr(eles[direc]),repr(eles[not direc]), repr(eles), sep = '\t|\t')
+            # assert 0, repr(eles[n])
+            # assert keystr not in locls or locls['$'] is not locls[keystr]
             # print('@here:',keystr,valueobj,... if keystr not in locls else locls[keystr])
             # if name == '':
                 # locls[keystr] = valueobj
             # else:
             # if __debug__:
             #     assert keystr in locls, 'cant update a non-existant object!'
-            print(locls,keystr,valueobj)
             if keystr not in locls:
                 locls[keystr] = valueobj
             elif isinstance(locls[keystr], omobj):
