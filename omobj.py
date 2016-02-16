@@ -52,12 +52,41 @@ class omobj:
         return self.base == other.base and self.evalfunc == other.evalfunc
 
     def eval(self, eles, locls):
+        if str(self) == 'skip':
+            locls['$'] = locls['$'] if '$' in locls else None
+            return
         if str(self) in locls:
-            locls[str(self)].base.eval(eles, locls)
+            locls[str(self)].eval(eles, locls)
         if self.evalfunc == None:
-            locls['$'] = self.base
+            locls['$'] = self
         else:
             self.evalfunc(eles, locls)
+    def set(self, eles, name, locls):
+        if __debug__:
+            assert str(self) not in locls
+        eles[0].eval(locls)
+        locls[self] = locls['$']
+        # if eles[1].isfinal():
+        #     eles[1].eval(locls)
+        #     locls[str(self)] = locls['$']
+        # else:
+        #     assert 0
+        # print(locls)
+        # if name == '':
+        #     self
+        # if   name == ''  : self.set(value, '= ')
+        # elif name == '<?-' : self.set(value, '?') if value else (locls[self] if self in locls else None)
+        # elif name == '<+-' : self.set(value, '+=')
+        # elif name == '<--' : self.set(value, '-=')
+        # elif name == '<*-' : self.set(value, '*=')
+        # elif name == '</-' : self.set(value, '/=')
+        # elif name == '<**-': self.set(value, '**')
+        # elif name == '<%-' : self.set(value, '%=')
+        # elif name == '<&-' : self.set(value, '&=')
+        # elif name == '<|-' : self.set(value, '|=')
+        # elif name == '<^-' : self.set(value, '^=')
+        # elif name == '<<-' : self.set(value, '<<')
+        # elif name == '<>-' : self.set(value, '>>')
 
 class oper(omobj):
 
@@ -118,43 +147,25 @@ class oper(omobj):
             if __debug__:
                 assert len(eles) == 2
             direc = name[0] == '<' and name[-1] == '-'
-            # print('eles:',repr(eles),'\neles[0]',repr(eles[0]),
-                  # '\neles[1]',repr(eles[1]),end='\n\n')
-            if direc:
-                eles[1].eval(locls)
-                value =locls['$']
-                eles[0].eval(locls)
-                key = locls['$']
-            else:
-                eles[0].eval(locls)
-                value = locls['$']
-                key = eles[1].basestr
-                # eles[1].eval(locls)
-                # key = locls['$']
-                # print(name, key, value,eles,eles[0],eles[1])
-                name = '<' + name[1:-1] + '-'
+            name = name[1:-1]
+            eles[direc].eval(locls)
+            value = locls['$']
+            eles[not direc].eval(locls)
+            key = locls['$']    def set(self, all, name, locls):
+        if __debug__:
+            assert str(self) not in locls
+        if self.isfinal():
+            other.eval(locls)
+            locls[str(self)] = locls['$']
+        else:
+            print(self)
+
+            print(repr(key),repr(value))
             if __debug__:
-                assert name == '<-'  or\
-                       name == '->'  or\
-                       name == '<?-' or\
-                       name == '-?>' or\
-                       key in locls, "'{}' needs to be defined to perform '{}' on it!".format(key, name)
-            key.set(value, name[1:-1])
-            if   name == '<-'  : key.set(value, '= ')
-            elif name == '<?-' : key.set(value, '?') if value else (locls[key] if key in locls else None)
-            elif name == '<+-' : key.set(value, '+=')
-            elif name == '<--' : key.set(value, '-=')
-            elif name == '<*-' : key.set(value, '*=')
-            elif name == '</-' : key.set(value, '/=')
-            elif name == '<**-': key.set(value, '**')
-            elif name == '<%-' : key.set(value, '%=')
-            elif name == '<&-' : key.set(value, '&=')
-            elif name == '<|-' : key.set(value, '|=')
-            elif name == '<^-' : key.set(value, '^=')
-            elif name == '<<-' : key.set(value, '<<')
-            elif name == '<>-' : key.set(value, '>>')
-            if direc == 0: #swap the return value
-                locls['$'] = locls[key]
+                assert not name or name == '?' or key in locls, "'{}'  exist, so cant do '{}'!".format(key, name)
+            key.set(value, name, locls)
+            # if direc == 0: #swap the return value
+                # locls['$'] = locls[key]
 
 class func(omobj):
     def __init__(self, base):

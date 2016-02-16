@@ -51,8 +51,9 @@ class omfile:
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
-        ret = ret[0:ret.find('@eof')]
-        return ret + (ret and (ret[-1] not in control.delims['endline'][0] and control.delims['endline'][0][0] or ''))
+        if '@eof' in ret:
+            ret = ret[0:ret.find('@eof')]
+        return 'skip'+control.delims['endline'][0] + ret + control.delims['endline'][0]
     
     @staticmethod
     def _tokenize(rawt):
@@ -172,6 +173,6 @@ class omfile:
     def eval(self):
         locls = {}
         self.lines.eval(locls)
-        if '$' in locls:
+        if '$' in locls and not __debug__:
             del locls['$']
         return locls
