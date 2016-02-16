@@ -139,19 +139,20 @@ class oper(omobj):
                        name == '<?-' or\
                        name == '-?>' or\
                        key in locls, "'{}' needs to be defined to perform '{}' on it!".format(key, name)
-            if   name == '<-'  : locls[key] = value
-            elif name == '<?-' : locls[key] = value if value else (locls[key] if key in locls else None)
-            elif name == '<+-' : locls[key] += value
-            elif name == '<--' : locls[key] -= value
-            elif name == '<*-' : locls[key] *= value
-            elif name == '</-' : locls[key] /= value
-            elif name == '<**-': locls[key] **= value
-            elif name == '<%-' : locls[key] %= value
-            elif name == '<&-' : locls[key] &= value
-            elif name == '<|-' : locls[key] |= value
-            elif name == '<^-' : locls[key] ^= value
-            elif name == '<<-' : locls[key] <<= value
-            elif name == '<>-' : locls[key] >>= value
+            key.set(value, name[1:-1])
+            if   name == '<-'  : key.set(value, '= ')
+            elif name == '<?-' : key.set(value, '?') if value else (locls[key] if key in locls else None)
+            elif name == '<+-' : key.set(value, '+=')
+            elif name == '<--' : key.set(value, '-=')
+            elif name == '<*-' : key.set(value, '*=')
+            elif name == '</-' : key.set(value, '/=')
+            elif name == '<**-': key.set(value, '**')
+            elif name == '<%-' : key.set(value, '%=')
+            elif name == '<&-' : key.set(value, '&=')
+            elif name == '<|-' : key.set(value, '|=')
+            elif name == '<^-' : key.set(value, '^=')
+            elif name == '<<-' : key.set(value, '<<')
+            elif name == '<>-' : key.set(value, '>>')
             if direc == 0: #swap the return value
                 locls['$'] = locls[key]
 
