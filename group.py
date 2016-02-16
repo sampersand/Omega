@@ -5,7 +5,7 @@ class group(list):
     def __init__(self, base = '', args = [], parens = ('','')):
         import control
         import omobj
-        self.base = base if isinstance(base,omobj.omobj) else omobj.omobj(base)
+        self.base = omobj.omobj.genobj(base)
         super().__init__(args)
         self.parens = parens
         if __debug__:
@@ -24,6 +24,7 @@ class group(list):
 
     def isfinal(self):
         return len(self) == 0
+        
     def __repr__(self):
         ret = 'group('
         if self.base:
@@ -45,6 +46,7 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return self.parens[0] + (self.basestr).join(str(e) for e in self) + str(self.parens[1])
         return ''.join((self.basestr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+
     def eval(self, locls):
         import control
         if __debug__:

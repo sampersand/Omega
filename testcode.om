@@ -1,8 +1,9 @@
-#[99,123,134] -> array;#
-(43.2,2.3) -> array;
-array:[0] <- 999999; #-> (array:[2]);#
-dispc:array;
-
+(43.2,2.3) -> arr;
+99 -> (arr:[0]);
+displ:'done';
+@eof
+#(arr:[0]) <- 999999; ##-> (array:[2]);#
+# dispc:(arr,);#
 #array:[i] -> a;#
 #displ:('1',array:[1],'2');#
 #displ:1;#

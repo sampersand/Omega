@@ -2,6 +2,7 @@
 <ul> Comments are multi-line. That is, when an unescaped '#' is found, no text will be registered until another unescaped '#' is found</ul>
 <ul> ```$``` is the last value parsed.</ul>
 <ul> Arrays are defined like ```[a, b, c, ...]```.</ul>
+<ul> ```@eof``` will end the file at that position</ul>
 ##Assignment
 <ul>a -> b</ul>
 <ul>b <- a</ul>

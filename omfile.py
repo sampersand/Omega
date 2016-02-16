@@ -1,3 +1,4 @@
+
 import control
 from group import group
 class omfile:
@@ -50,6 +51,7 @@ class omfile:
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
+        ret = ret[0:ret.find('@eof')]
         return ret + (ret and (ret[-1] not in control.delims['endline'][0] and control.delims['endline'][0][0] or ''))
     
     @staticmethod
@@ -94,7 +96,7 @@ class omfile:
                 control.applyrules(ret.pop(0))
             linep+=1
         import omobj
-        return [omobj.omobj.fromstr(v) for v in ret]
+        return [omobj.omobj.genobj(v) for v in ret]
 
     @staticmethod
     def _compresstokens(linetokens):

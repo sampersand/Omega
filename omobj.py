@@ -2,30 +2,38 @@ class omobj:
     def __init__(self, base, evalfunc = None):
         if __debug__:
             assert not isinstance(base, omobj), base
-        # self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
-        self.base = omobj._getbase(base)
+        self.base = base
         self.evalfunc = evalfunc
     @staticmethod
-    def fromstr(base):
-        import control
-        return control.allkeywords[base] if base in control.allkeywords else omobj(base)
-        # return control.allkeywords[base] if base in control.allkeywords else omobj(base)
-    @staticmethod
-    def _getbase(base):
-        if not isinstance(base, str) or not (base or base.isalnum()):
+    def genobj(base, evalfunc = None):
+        if isinstance(base, omobj):
+            if __debug__:
+                assert evalfunc == None
             return base
+        if not isinstance(base, str):
+            if isinstance(base, list):
+                if __debug__:
+                    assert evalfunc == None
+                return array(base)
+            return omobj(base, evalfunc)
         import control
+        if base in control.allkeywords:
+            if __debug__:
+                assert evalfunc == None
+            return control.allkeywords[base]
+        if not(base or base.isalnum()):
+            return omobj(base, evalfunc)
+        # import control
         if base[0] in control.allquotes:
             if __debug__:
                 assert base[-1] in control.allquotes
-            return base
-        else:
-            try:
-                return eval(base)
-            except SyntaxError:
-                return control.allkeywords[base] if base in control.allkeywords else str(base)
-            except NameError:
-                return control.allkeywords[base] if base in control.allkeywords else str(base)
+            return omobj(base, evalfunc)
+        try:
+            return omobj(eval(base), evalfunc)
+        except SyntaxError:
+            return omobj(str(base), evalfunc)
+        except NameError:
+            return omobj(str(base), evalfunc)
 
     def __str__(self):
         return str(self.base)
@@ -47,20 +55,13 @@ class omobj:
         if str(self) in locls:
             return
         if self.evalfunc == None:
-            print(self.base)
-            if hasattr(self.base, '__getitem__'):
-                if __debug__:
-                    assert len(eles) == 0, 'only one index for the time being'
-                eles.eval(locls)
-                locls['$'] = self.base[locls['$']]
-            else:
-                locls['$'] = self.base
+            locls['$'] = self.base
         else:
             self.evalfunc(eles, locls)
 
 class oper(omobj):
 
-    def __init__(self, base, priority, evalfunc):
+    def __init__(self, base, priority, evalfunc = None):
         super().__init__(base, evalfunc)
         self.priority = priority
 
@@ -99,10 +100,14 @@ class oper(omobj):
             else:
                 raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
         elif name == ':':
-            if eles[0].basestr in locls:
-                locls[eles[0].basestr].base.eval(eles[1], locls)
-            else:
-                eles[0].base.eval(eles[1:],locls)
+            # assert 0, repr(eles)
+            # if eles[0].basestr in locls:
+            #     locls[eles[0].basestr].base.eval(eles[1], locls)
+            # else:
+            print('\':\' :: ',repr(eles[0]),repr(eles[1:]), locls)
+            if __debug__:
+                assert not eles[0] #just a thing i noticed, no hard and fast rule
+            eles[0].base.eval(eles[1:],locls)
         elif name == '||' or name == '&&':
             eles[0].eval(locls)
             element = locls['$']
@@ -113,8 +118,8 @@ class oper(omobj):
             if __debug__:
                 assert len(eles) == 2
             direc = name[0] == '<' and name[-1] == '-'
-            print('eles:',repr(eles),'\neles[0]',repr(eles[0]),
-                  '\neles[1]',repr(eles[1]),end='\n\n')
+            # print('eles:',repr(eles),'\neles[0]',repr(eles[0]),
+                  # '\neles[1]',repr(eles[1]),end='\n\n')
             if direc == 1:
                 eles[1].eval(locls)
                 value =locls['$']
@@ -122,7 +127,8 @@ class oper(omobj):
             else:
                 eles[0].eval(locls)
                 value =locls['$']
-                key = eles[1].basestr
+                eles[1].eval(locls)
+                key = locls['$']
                 name = '<' + name[1:-1] + '-'
             if __debug__:
                 assert name == '<-'  or\
@@ -190,7 +196,7 @@ class func(omobj):
                     assert len(eles) == 2, 'can only have for:(...):{ expression };'
                     assert len(eles[0]) == 3, 'can only have (initialize; condition; increment)'
                 eles[0][0].eval(locls) # initializes the for loop the condition
-                print(eles[0][0])
+                # print(eles[0][0])
                 while True:
                     eles[0][1].eval(locls) #check the conditoin
                     if not locls['$']:
@@ -199,3 +205,25 @@ class func(omobj):
                     eles[0][2].eval(locls)
             else:
                 raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))
+
+class array(omobj):
+    def __init__(self, base):
+        super().__init__(base, None)
+
+
+    def __repr__(self):
+        return 'array({})'.format(repr(self.base))
+
+    def eval(self, eles, locls):
+        assert 0
+        if hasattr(self.base, '__getitem__'):
+            if __debug__:
+                assert len(eles) == 0, 'only one index for the time being'
+            eles.eval(locls)
+            locls['$'] = self.base[locls['$']]
+
+
+
+
+
+

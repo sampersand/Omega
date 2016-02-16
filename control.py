@@ -10,8 +10,8 @@ nbwhitespace = ' \t\x0b\x0c'
 whitespace = nbwhitespace + linebreak
 allquotes = '\'\"`'
 
-delims = {'arraysep':(',', oper(',', 14, None)),
-          'etc':('|', oper('|', 14, None)),
+delims = {'arraysep':(',', oper(',', 14)),
+          'etc':('|', oper('|', 14)),
           'endline':(';', oper(';', 14, lambda x, y: y))
           }
 parens = {'l':'([{', 'r':')]}'}
