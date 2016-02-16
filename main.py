@@ -16,13 +16,13 @@ if __name__ == '__main__':
     if __debug__:
         print(evald)
 
+
 """
 @f1(arg)
    @f2
    def func(): pass
 
 """
-
 
 
 

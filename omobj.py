@@ -32,6 +32,11 @@ class omobj:
 
     def __bool__(self):
         return bool(str(self))
+    def __eq__(self, other):
+        if __debug__:
+            assert hasattr(other, 'base')
+            assert hasattr(other, 'evalfunc')
+        return self.base == other.base and self.evalfunc == other.evalfunc
 
     def eval(self, eles, locls):
         if self.evalfunc == None:
@@ -81,7 +86,7 @@ class oper(omobj):
                 locls['$'] = group(val = ret)# x = y
                 return
             else:
-                raise SyntaxError('Special Operator \'{}\' isn\'t defined yet!'.format(name))
+                raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
         elif name == ':':
             if eles[0].basestr in locls:
                 assert 0, 'when does this ever happen?'
@@ -110,7 +115,7 @@ class oper(omobj):
                        name == '->'  or\
                        name == '<?-' or\
                        name == '-?>' or\
-                       key in locls, '\'{}\' needs to be defined to perform \'{}\' on it!'.format(key, name)
+                       key in locls, "'{}' needs to be defined to perform '{}' on it!".format(key, name)
             if   name == '<-'  : locls[key] = value
             elif name == '<?-' : locls[key] = value if value else (locls[key] if key in locls else None)
             elif name == '<+-' : locls[key] += value
@@ -131,15 +136,15 @@ class func(omobj):
     def __init__(self, base):
         super().__init__(base, None)
     def eval(self, eles, locls):
-        print('attempting to eval eles \'{}\' with locls \'{}\' in func \'{}\''.format(eles, locls, self))
+        import control
+        print("attempting to eval eles '{}' with locls '{}' in func '{}'".format(eles, locls, self))
         if self.evalfunc != None:
             super().eval(eles, local)
         else:
-            assert 0, ele
             if 'disp' in str(self):
                 if __debug__:
                     if len(eles) != 0:
-                        assert eles[0].basestr == str(self), 'this shouldn\'t break'
+                        assert eles[0].basestr == str(self), "this shouldn't break"
                 if len(eles) == 0:
                     print(end = '' if str(self) == 'disp' else '\n')
                 elif len(eles[1]) == 0:
@@ -158,18 +163,16 @@ class func(omobj):
                         ele.eval(locls)
                         print(locls['$'], end = ', ' if ele is not eles[1][-1] else '\n')
             elif str(self) == 'abort':
-                if len(eles) == 0:
+                if eles.isfinal() and eles.base != control.funcs['abort']:
+                    locls['$'] = eles
+                elif '$' not in locls:
                     locls['$'] = ''
-                else:
-                    if __debug__:
-                        assert eles[0].basestr == str(self), 'this shouldn\'t break'
-                    eles[1].eval(locls)
                 if __debug__:
                     assert '$' in locls
-                quit('Aborting!' + ('' if locls['$'] == '' else ' Message: \'{}\''.format(str(locls['$']))))
+                quit('Aborting!' + (str(locls['$']) and " Message: '{}'".format(str(locls['$']))))
             elif str(self) == 'if':
                 if __debug__:
-                    assert eles[0].basestr == str(self), 'this shouldn\'t break'
+                    assert eles[0].basestr == str(self), "this shouldn't break"
                     assert len(eles) in (3, 4), 'can only have if:(cond):(if true)[:(if false)];'
                 eles[1].eval(locls) # evaluates the condition
                 if locls['$']:
@@ -178,7 +181,7 @@ class func(omobj):
                     eles[3].eval(locls)
             elif str(self) == 'for':
                 if __debug__:
-                    assert eles[0].basestr == str(self), 'this shouldn\'t break'
+                    assert eles[0].basestr == str(self), "this shouldn't break"
                     assert len(eles) == 3, 'can only have for:(...):{ expression };'
                     assert len(eles[1]) == 3, 'can only have (initialize; condition; increment)'
                 eles[1][0].eval(locls) # initializes the for loop the condition
@@ -189,4 +192,4 @@ class func(omobj):
                     eles[2].eval(locls)
                     eles[1][2].eval(locls) #increment
             else:
-                raise SyntaxError('function \'{}\' isn\'t defined yet!'.format(str(self)))
+                raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))

@@ -151,5 +151,5 @@ def applyrules(tokens):
 def _getomobj(base):
     if __debug__:
         if not isinstance(base, str):
-            print('warning: \'{}\' isnt not a string'.format(repr(base)))
+            print("warning: '{}' isnt not a string".format(repr(base)))
     return allfuncs[base] if base in allfuncs else omobj(base)

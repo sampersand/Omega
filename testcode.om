@@ -8,7 +8,7 @@
 ##for:(0->i, i < 3, 1-+>i):{dispc:([array:[i]])};
  #
 #[99,123,134] -> array;
-array:[i] -> a#
+array:[i] -> a##
 (1 + 2) * 3 -> a;
-(2 && 0)-> a;
-abort:a;
+(2 && 0)-> a;#
+abort;

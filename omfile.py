@@ -18,13 +18,14 @@ class omfile:
                 return linep, ''
             if __debug__:
                 # node structure should prevent this.
-                assert l[0].basestr not in control.delims['endline'] or not l[0].basestr, l[0].base
+                # assert 0, repr(l[0])
+                assert l[0].basestr not in control.delims['endline'][0] or not l[0].basestr, l[0].base
             ret = ''
             if l[0]:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
             if len(l) > 1:
-                if l[1].basestr not in control.delims['endline']:
+                if l[1].basestr not in control.delims['endline'][0]:
                     ret += '\n{}:  \t{}'.format(linep, l[1])
                     linep += 1
                 else:
@@ -32,7 +33,7 @@ class omfile:
                     ret += e[1]
                     linep += e[0]
             return linep, ret
-        return 'file \'{}\':\n==[start]==\n{}\n\n==[ end ]=='.format(self.filepath, getl(0, self.lines)[1])
+        return "file '{}':\n==[start]==\n{}\n\n==[ end ]==".format(self.filepath, getl(0, self.lines)[1])
 
     @staticmethod
     def _striptext(rawt):
@@ -121,14 +122,13 @@ class omfile:
                                 parens[last] += 1
                             if last in control.parens['r']:
                                 if __debug__:
-                                    assert control._invertparen(last) in parens, 'unmatched paren \'{}\'!'.format(last)
+                                    assert control._invertparen(last) in parens, "unmatched paren '{}'!".format(last)
                                 parens[control._invertparen(last)] -= 1
                     if __debug__:
                         assert str(toappend[-1]) in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (str(ele), str(toappend.pop()))
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
-
             return ret
         def findhighest(linegrp):
             if __debug__:
@@ -143,13 +143,14 @@ class omfile:
                     highest = elep
             if __debug__:
                 if not highest:
-                    raise SyntaxError('no operator for string \'{}\'!'.format(linegrp))
+                    raise SyntaxError("no operator for string '{}'!".format(linegrp))
             return highest
         def fixtkns(line):
             #combine tokens using order of operations
             if not line: return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
+                    print(line[0],type(line[0]),'@@@@@@')
                     return line[0]
                 else:
                     return fixtkns(line[0])
@@ -161,6 +162,7 @@ class omfile:
             current = group()
             while line:
                 e = line.pop(0) #was formerly .pop(0)
+                print(e,type(e),ret,type(ret),e.base,type(e.base), ret.base, type(ret.base))
                 if e.base == ret.base:
                     if current:
                         ret.append(fixtkns(current))
