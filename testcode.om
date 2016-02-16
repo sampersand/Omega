@@ -15,5 +15,9 @@
 t -> a;
 n -> b;
 1->c;
-if:(a=n):(t->b);dispc:(a, b, c, d);
-# if:(a=2):(1->b):{2}
+displ:a;
+for:(i=0,i<10,1-+>i):{displ:i}
+#dispc:[a,b];#
+#displ:[a,1];#
+# if:(a=n):(t->b);dispc:(a, b, c, d);#
+# if:(a=2):(1->b):{2}#

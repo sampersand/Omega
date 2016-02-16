@@ -24,7 +24,7 @@ consts = {
     'k'     : omobj(8.987551787368e9), 'i'  : omobj(complex(0, 1)), 'j' : omobj(complex(0, 1)),
     'rand'  : omobj(None, random()), 'nan'  : omobj(float('nan')), 'NaN': omobj(float('nan')),
     'inf'   : omobj(float('inf')),  '∞'     : omobj(float('inf')),
-    
+
     '½' : omobj(1 / 2), '⅓' : omobj(1 / 3), '⅔' : omobj(2 / 3), '¼' : omobj(1 / 4), '¾' : omobj(3 / 4),
     '⅕' : omobj(1 / 5), '⅖' : omobj(2 / 5), '⅗' : omobj(3 / 5), '⅘' : omobj(4 / 5), '⅙' : omobj(1 / 6),
     '⅚' : omobj(5 / 6), '⅛' : omobj(1 / 8), '⅜' : omobj(3 / 8), '⅝' : omobj(5 / 8), '⅞' : omobj(7 / 8),
@@ -132,9 +132,3 @@ def applyrules(tokens):
         assert tokens[1] == 'define', tokens[1] #currently, only 'define' is defined.
     assert 0, 'not implemented yet! todo: this'
     # fixedtokens = 
-
-def _getomobj(base):
-    if __debug__:
-        if not isinstance(base, str):
-            print("warning: '{}' isnt not a string".format(repr(base)))
-    return allkeywords[base] if base in allkeywords else omobj(base)

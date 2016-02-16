@@ -1,6 +1,8 @@
 class omobj:
     def __init__(self, base, evalfunc = None):
-        self.base = omobj._getbase(base)
+        print("@",base)
+        self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
+        print(self.base,type(self.base))
         self.evalfunc = evalfunc
 
     @staticmethod
@@ -8,7 +10,7 @@ class omobj:
         if not isinstance(base, str):
             return base
         import control
-        if base == '':
+        if not base.isalnum() or not base:
             return base
         if base[0] in control.allquotes:
             if __debug__:
@@ -25,6 +27,7 @@ class omobj:
                         return complex(base)
                     except ValueError:
                         return str(base)
+                        return control.allkeywords[base] if base in control.allkeywords else str(base)
 
     def __str__(self):
         return str(self.base)
@@ -36,11 +39,14 @@ class omobj:
         return bool(str(self))
     def __eq__(self, other):
         if __debug__:
+            assert isinstance(other, omobj), repr(other)
             assert hasattr(other, 'base'), "{} :: {}".format(repr(other), type(other))
             assert hasattr(other, 'evalfunc'), "{} :: {}".format(repr(other), type(other))
         return self.base == other.base and self.evalfunc == other.evalfunc
 
     def eval(self, eles, locls):
+        if str(self) in locls:
+            return
         if self.evalfunc == None:
             locls['$'] = self.base
         else:
@@ -75,7 +81,6 @@ class oper(omobj):
     def _specialoper(self, eles, locls):
         from group import group
         import control
-        print('todo: uncomment things in _specialoper')
         name = eles.basestr
         if name in control.alldelims:
             if name in control.delims['arraysep']:
@@ -151,7 +156,7 @@ class func(omobj):
                 end = sep == ', ' and '\n' or sep
                 if __debug__:
                     assert len(eles) <= 1
-                print(sep.join(x for x in pr(eles if len(eles) != 1 else eles[0], locls)), end = end)
+                print(sep.join(x for x in pr(eles[0] if len(eles) == 1 else eles, locls)), end = end)
             elif str(self) == 'abort':
                 if eles.isfinal() and eles.base != control.funcs['abort']:
                     locls['$'] = eles
@@ -170,14 +175,14 @@ class func(omobj):
                     eles[2].eval(locls)
             elif str(self) == 'for':
                 if __debug__:
-                    assert len(eles) == 3, 'can only have for:(...):{ expression };'
-                    assert len(eles[1]) == 3, 'can only have (initialize; condition; increment)'
-                eles[1][0].eval(locls) # initializes the for loop the condition
+                    assert len(eles) == 2, 'can only have for:(...):{ expression };'
+                    assert len(eles[0]) == 3, 'can only have (initialize; condition; increment)'
+                eles[0][0].eval(locls) # initializes the for loop the condition
                 while True:
-                    eles[1][1].eval(locls) #check the conditoin
+                    eles[0][1].eval(locls) #check the conditoin
                     if not locls['$']:
                         break
-                    eles[2].eval(locls)
-                    eles[1][2].eval(locls) #increment
+                    eles[1].eval(locls) #increment
+                    eles[0][2].eval(locls)
             else:
                 raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))

@@ -4,7 +4,8 @@ class group(list):
 
     def __init__(self, base = '', args = [], parens = ('','')):
         import control
-        self.base = control._getomobj(str(base))
+        import omobj
+        self.base = omobj.omobj(base)
         super().__init__(args)
         self.parens = parens
         if __debug__:

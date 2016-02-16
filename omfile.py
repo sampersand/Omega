@@ -99,7 +99,8 @@ class omfile:
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        return [control._getomobj(v) for v in ret]
+        import omobj
+        return [omobj.omobj(v) for v in ret]
 
     @staticmethod
     def _compresstokens(linetokens):
