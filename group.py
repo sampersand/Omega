@@ -5,7 +5,7 @@ class group(list):
     def __init__(self, base = '', args = [], parens = ('','')):
         import control
         import omobj
-        self.base = omobj.omobj(base)
+        self.base = base if isinstance(base,omobj.omobj) else omobj.omobj(base)
         super().__init__(args)
         self.parens = parens
         if __debug__:

@@ -4,6 +4,7 @@ import math
 from random import random
 linebreak = '\n\r' #linebreak is used for comments
 comment = '#'
+allkeywords = {}
 escape = '\\'
 datadef = '@'
 nbwhitespace = ' \t\x0b\x0c'
@@ -84,7 +85,7 @@ opers = {
         '-^>'  : oper('-^>',  13, None), # y ^= x 
         '-<>'  : oper('-<>',  13, None), # y <<= x 
         '->>'  : oper('->>',  13, None)  # y >>= x 
-         },\
+         },
     'unary':{
         'l':{'~':oper('~', 1, lambda x, y: ~y),
              'pos':oper('pos', 1, lambda x, y: +y),
@@ -92,10 +93,6 @@ opers = {
         'r':{'!':oper('!', 2, lambda x, y: not x)}
     }
 }
-for d in delims.values():
-    for val in d[0]:
-        opers['unary']['l'][val] = d[1]
-
 funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
     'if': func('if'),
@@ -105,6 +102,10 @@ funcs = {
     'displ': func('displ'),
     'dispc': func('dispc'), #commas bxn elements
 }
+
+for d in delims.values():
+    for val in d[0]:
+        opers['unary']['l'][val] = d[1]
 
 alldelims = ''.join(v[0] for v in delims.values())
 allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P

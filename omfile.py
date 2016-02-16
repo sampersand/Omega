@@ -16,13 +16,7 @@ class omfile:
                 if __debug__:
                     assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
                 return linep, ''
-            # if __debug__:
-                # node structure should prevent this.
-                # assert l[0].basestr not in control.delims['endline'][0] or not l[0].basestr, l[0].base
             ret = ''
-            # if l[0]:
-                # ret = '\n{}:  \t{}'.format(linep, l[0])
-                # linep += 1
             if len(l) > 0:
                 for ele in l[1:]:
                     if ele.basestr not in control.delims['endline'][0]:
@@ -100,7 +94,7 @@ class omfile:
                 control.applyrules(ret.pop(0))
             linep+=1
         import omobj
-        return [omobj.omobj(v) for v in ret]
+        return [omobj.omobj.fromstr(v) for v in ret]
 
     @staticmethod
     def _compresstokens(linetokens):

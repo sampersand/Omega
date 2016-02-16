@@ -1,32 +1,38 @@
 class omobj:
     def __init__(self, base, evalfunc = None):
-        self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
+        if __debug__:
+            assert not isinstance(base, omobj), base
+        # self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
+        self.base = omobj._getbase(base)
         self.evalfunc = evalfunc
         print('initialized:',self)
-
+    @staticmethod
+    def fromstr(base):
+        import control
+        return control.allkeywords[base] if base in control.allkeywords else str(base)
     @staticmethod
     def _getbase(base):
-        if not isinstance(base, str):
+        if not isinstance(base, str) or not (base or base.isalnum()):
             return base
         import control
-        if not base.isalnum() or not base:
-            return base
         if base[0] in control.allquotes:
             if __debug__:
                 assert base[-1] in control.allquotes
             return base
         else:
-            try:
-                return int(base)
-            except ValueError:
-                try:
-                    return float(base)
-                except ValueError:
-                    try:
-                        return complex(base)
-                    except ValueError:
-                        return str(base)
-                        # return control.allkeywords[base] if base in control.allkeywords else str(base)
+            return str(base)
+            # return control.allkeywords[base] if base in control.allkeywords else str(base)
+            # try:
+            #     return int(base)
+            # except ValueError:
+            #     try:
+            #         return float(base)
+            #     except ValueError:
+            #         try:
+            #             return complex(base)
+            #         except ValueError:
+            #             # return str(base)
+            #             return control.allkeywords[base] if base in control.allkeywords else str(base)
 
     def __str__(self):
         return str(self.base)

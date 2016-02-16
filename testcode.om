@@ -4,7 +4,8 @@
 t -> a;
 n -> b;
 1->c;
-displ:a;
+dispc:('b',);
+if:(a=n):(t->b);dispc:(a, b, c, d);
 #for:(i=0,i<10,1-+>i):{displ:i}#
 #dispc:[a,b];#
 #displ:[a,1];#
