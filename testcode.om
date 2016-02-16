@@ -1,13 +1,15 @@
 (43.2,2.3) -> arr;
-99 -> (arr:[0]);
-displ:'done';
+arr:[0] <- 1
 @eof
-#(arr:[0]) <- 999999; ##-> (array:[2]);#
-# dispc:(arr,);#
-#array:[i] -> a;#
-#displ:('1',array:[1],'2');#
-#displ:1;#
-#(1 + 2) * 3 -> a;#
-#(2 && 0)-> a;#
-#abort;#
+for:(1->i;i<10;1-+>i):(displ:i);
+@eof
+99 -> (arr:[0]);
+(arr:[0]) <- 999999; -> (array:[2]);
+ dispc:(arr,);
+array:[i] -> a;
+displ:('1',array:[1],'2');
+displ:1;
+(1 + 2) * 3 -> a;
+(2 && 0)-> a;
+abort;
  

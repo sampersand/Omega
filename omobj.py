@@ -53,7 +53,7 @@ class omobj:
 
     def eval(self, eles, locls):
         if str(self) in locls:
-            return
+            locls[str(self)].base.eval(eles, locls)
         if self.evalfunc == None:
             locls['$'] = self.base
         else:
@@ -104,7 +104,7 @@ class oper(omobj):
             # if eles[0].basestr in locls:
             #     locls[eles[0].basestr].base.eval(eles[1], locls)
             # else:
-            print('\':\' :: ',repr(eles[0]),repr(eles[1:]), locls)
+            print('\':\' :: ',repr(eles[0].base),repr(eles[1:]), locls)
             if __debug__:
                 assert not eles[0] #just a thing i noticed, no hard and fast rule
             eles[0].base.eval(eles[1:],locls)
@@ -120,15 +120,18 @@ class oper(omobj):
             direc = name[0] == '<' and name[-1] == '-'
             # print('eles:',repr(eles),'\neles[0]',repr(eles[0]),
                   # '\neles[1]',repr(eles[1]),end='\n\n')
-            if direc == 1:
+            if direc:
                 eles[1].eval(locls)
                 value =locls['$']
-                key = eles[0].basestr
+                eles[0].eval(locls)
+                key = locls['$']
             else:
                 eles[0].eval(locls)
-                value =locls['$']
-                eles[1].eval(locls)
-                key = locls['$']
+                value = locls['$']
+                key = eles[1].basestr
+                # eles[1].eval(locls)
+                # key = locls['$']
+                # print(name, key, value,eles,eles[0],eles[1])
                 name = '<' + name[1:-1] + '-'
             if __debug__:
                 assert name == '<-'  or\
@@ -215,11 +218,11 @@ class array(omobj):
         return 'array({})'.format(repr(self.base))
 
     def eval(self, eles, locls):
-        assert 0
         if hasattr(self.base, '__getitem__'):
             if __debug__:
-                assert len(eles) == 0, 'only one index for the time being'
-            eles.eval(locls)
+                assert len(eles) == 1, 'only one index for the time being'
+            eles[0].eval(locls)
+            print(locls['$'])
             locls['$'] = self.base[locls['$']]
 
 
