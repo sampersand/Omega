@@ -19,7 +19,7 @@ class omfile:
                 return linep, ''
             ret = ''
             if len(l) > 0:
-                for ele in l[1:]:
+                for ele in l:
                     if ele.basestr not in control.delims['endline'][0]:
                         ret += '\n{}:  \t{}'.format(linep, ele)
                         linep += 1
@@ -53,7 +53,7 @@ class omfile:
                     ret += char
         if '@eof' in ret:
             ret = ret[0:ret.find('@eof')]
-        return 'skip'+control.delims['endline'][0] + ret + control.delims['endline'][0]
+        return ret + control.delims['endline'][0]
     
     @staticmethod
     def _tokenize(rawt):
