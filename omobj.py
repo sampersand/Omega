@@ -2,6 +2,7 @@ class omobj:
     def __init__(self, base, evalfunc = None):
         self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
         self.evalfunc = evalfunc
+        print('initialized:',self)
 
     @staticmethod
     def _getbase(base):

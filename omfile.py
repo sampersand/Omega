@@ -25,13 +25,14 @@ class omfile:
                 ret = '\n{}:  \t{}'.format(linep, l[0])
                 linep += 1
             if len(l) > 1:
-                if l[1].basestr not in control.delims['endline'][0]:
-                    ret += '\n{}:  \t{}'.format(linep, l[1])
-                    linep += 1
-                else:
-                    e = getl(linep, l[1])
-                    ret += e[1]
-                    linep += e[0]
+                for ele in l[1:]:
+                    if ele.basestr not in control.delims['endline'][0]:
+                        ret += '\n{}:  \t{}'.format(linep, ele)
+                        linep += 1
+                    else:
+                        e = getl(linep, ele)
+                        ret += e[1]
+                        linep += e[0]
             return linep, ret
         return "file '{}':\n==[start]==\n{}\n\n==[ end ]==".format(self.filepath, getl(0, self.lines)[1])
 
