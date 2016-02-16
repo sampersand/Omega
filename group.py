@@ -44,7 +44,6 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return self.parens[0] + (self.basestr).join(str(e) for e in self) + str(self.parens[1])
         return ''.join((self.basestr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
-    
     def eval(self, locls):
         import control
         if __debug__:

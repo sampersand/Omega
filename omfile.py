@@ -56,7 +56,7 @@ class omfile:
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
-        return ret + (ret[-1] not in control.delims['endline'] and control.delims['endline'][0] or '')
+        return ret + (ret and (ret[-1] not in control.delims['endline'][0] and control.delims['endline'][0][0] or ''))
     
     @staticmethod
     def _tokenize(rawt):

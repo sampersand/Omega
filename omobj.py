@@ -5,6 +5,8 @@ class omobj:
 
     @staticmethod
     def _getbase(base):
+        if not isinstance(base, str):
+            return base
         import control
         if base == '':
             return base
@@ -34,8 +36,8 @@ class omobj:
         return bool(str(self))
     def __eq__(self, other):
         if __debug__:
-            assert hasattr(other, 'base')
-            assert hasattr(other, 'evalfunc')
+            assert hasattr(other, 'base'), "{} :: {}".format(repr(other), type(other))
+            assert hasattr(other, 'evalfunc'), "{} :: {}".format(repr(other), type(other))
         return self.base == other.base and self.evalfunc == other.evalfunc
 
     def eval(self, eles, locls):
@@ -83,7 +85,7 @@ class oper(omobj):
                 for ele in eles:
                     ele.eval(locls)
                     ret.append(locls['$'])
-                locls['$'] = group(val = ret)# x = y
+                locls['$'] = group(base = ret)# x = y
                 return
             else:
                 raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
@@ -92,7 +94,7 @@ class oper(omobj):
                 assert 0, 'when does this ever happen?'
                 locls[eles[0].basestr].eval(eles[1])
             else:
-                eles[0].base.eval(eles[1],locls)
+                eles[0].base.eval(eles[1:],locls)
         elif name == '||' or name == '&&':
             eles[0].eval(locls)
             element = locls['$']
@@ -137,31 +139,19 @@ class func(omobj):
         super().__init__(base, None)
     def eval(self, eles, locls):
         import control
-        print("attempting to eval eles '{}' with locls '{}' in func '{}'".format(eles, locls, self))
         if self.evalfunc != None:
             super().eval(eles, local)
         else:
             if 'disp' in str(self):
+                def pr(eles, locls):
+                    for ele in eles:
+                        ele.eval(locls)
+                        yield str(locls['$'])
+                sep = str(self) == 'displ' and '\n' or str(self) == 'dispc' and ', ' or ''
+                end = sep == ', ' and '\n' or sep
                 if __debug__:
-                    if len(eles) != 0:
-                        assert eles[0].basestr == str(self), "this shouldn't break"
-                if len(eles) == 0:
-                    print(end = '' if str(self) == 'disp' else '\n')
-                elif len(eles[1]) == 0:
-                    eles[1].eval(locls)
-                    print(locls['$'],end = '' if str(self) == 'disp' else '\n')
-                elif str(self) == 'disp':
-                    for ele in eles[1]:
-                        ele.eval(locls)
-                        print(locls['$'], end = '')
-                elif str(self) == 'displ':
-                    for ele in eles[1]:
-                        ele.eval(locls)
-                        print(locls['$'], end = '\n')
-                elif str(self) == 'dispc':
-                    for ele in eles[1]:
-                        ele.eval(locls)
-                        print(locls['$'], end = ', ' if ele is not eles[1][-1] else '\n')
+                    assert len(eles) <= 1
+                print(sep.join(x for x in pr(eles if len(eles) != 1 else eles[0], locls)), end = end)
             elif str(self) == 'abort':
                 if eles.isfinal() and eles.base != control.funcs['abort']:
                     locls['$'] = eles
@@ -172,16 +162,14 @@ class func(omobj):
                 quit('Aborting!' + (str(locls['$']) and " Message: '{}'".format(str(locls['$']))))
             elif str(self) == 'if':
                 if __debug__:
-                    assert eles[0].basestr == str(self), "this shouldn't break"
-                    assert len(eles) in (3, 4), 'can only have if:(cond):(if true)[:(if false)];'
-                eles[1].eval(locls) # evaluates the condition
+                    assert len(eles) in (2, 3), 'can only have if:(cond):(if true)[:(if false)];'
+                eles[0].eval(locls) # evaluates the condition
                 if locls['$']:
+                    eles[1].eval(locls)
+                elif len(eles) == 3:
                     eles[2].eval(locls)
-                elif len(eles) == 4:
-                    eles[3].eval(locls)
             elif str(self) == 'for':
                 if __debug__:
-                    assert eles[0].basestr == str(self), "this shouldn't break"
                     assert len(eles) == 3, 'can only have for:(...):{ expression };'
                     assert len(eles[1]) == 3, 'can only have (initialize; condition; increment)'
                 eles[1][0].eval(locls) # initializes the for loop the condition

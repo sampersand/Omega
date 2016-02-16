@@ -16,35 +16,18 @@ delims = {'arraysep':(',', oper(',', 14, None)),
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {
-    'True': True,   'False': False,     'None' : None, 'Null' : None, 'Nil' : None,
-    'true': True,   'false': False,     'none' : None, 'null' : None, 'nil' : None,
-    'T': True, 'F': False, 'N':None, #these can be overriden
-    't': True, 'f': False, 'n':None, #these can be overriden
-    'pi': math.pi,  'PI': math.pi,      'π': math.pi,   'Π': math.pi,
-    'e': math.e,    'E':  math.e,
-    'k': 8.9875517873681764E9, 'K': 8.9875517873681764E9,
-    'i': complex(0, 1), 'j':complex(0,1),
-    'nan':float('nan'), 'NAN': float('nan'),
-    'inf':float('inf'), '∞': float('inf'),
-    'rand':random(),
-    '½': 1 / 2,
-    '⅓': 1 / 3,
-    '⅔': 2 / 3,
-    '¼': 1 / 4,
-    '¾': 3 / 4,
-    '⅕': 1 / 5,
-    '⅖': 2 / 5,
-    '⅗': 3 / 5,
-    '⅘': 4 / 5,
-    '⅙': 1 / 6,
-    '⅚': 5 / 6,
-    '⅐': 1 / 7,
-    '⅛': 1 / 8,
-    '⅜': 3 / 8,
-    '⅝': 5 / 8,
-    '⅞': 7 / 8,
-    '⅑': 1 / 9,
-    '⅒': 1/ 10,
+    'True'  : omobj(True),          'False' : omobj(False),     'None'  : omobj(None),
+    'true'  : omobj(True),          'false' : omobj(False),     'none'  : omobj(None),
+    'T'     : omobj(True),          'F'     : omobj(False),     'N'     : omobj(None), #can be overode
+    't'     : omobj(True),          'f'     : omobj(False),     'n'     : omobj(None), #can be overode
+    'pi'    : omobj(math.pi),       'π'     : omobj(math.pi),   'e'     : omobj(math.e),
+    'k'     : omobj(8.987551787368e9), 'i'  : omobj(complex(0, 1)), 'j' : omobj(complex(0, 1)),
+    'rand'  : omobj(None, random()), 'nan'  : omobj(float('nan')), 'NaN': omobj(float('nan')),
+    'inf'   : omobj(float('inf')),  '∞'     : omobj(float('inf')),
+    
+    '½' : omobj(1 / 2), '⅓' : omobj(1 / 3), '⅔' : omobj(2 / 3), '¼' : omobj(1 / 4), '¾' : omobj(3 / 4),
+    '⅕' : omobj(1 / 5), '⅖' : omobj(2 / 5), '⅗' : omobj(3 / 5), '⅘' : omobj(4 / 5), '⅙' : omobj(1 / 6),
+    '⅚' : omobj(5 / 6), '⅛' : omobj(1 / 8), '⅜' : omobj(3 / 8), '⅝' : omobj(5 / 8), '⅞' : omobj(7 / 8),
 }
 opers = {
     'binary':{
@@ -112,6 +95,7 @@ opers = {
 for d in delims.values():
     for val in d[0]:
         opers['unary']['l'][val] = d[1]
+
 funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
     'if': func('if'),
@@ -128,6 +112,7 @@ import copy
 #crap i need a better way than this D:
 allopers = copy.copy(opers['binary']); allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
 allfuncs = copy.copy(allopers); allfuncs.update(funcs)
+allkeywords = copy.copy(allfuncs); allkeywords.update(consts)
 del copy
 
 sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
@@ -152,4 +137,4 @@ def _getomobj(base):
     if __debug__:
         if not isinstance(base, str):
             print("warning: '{}' isnt not a string".format(repr(base)))
-    return allfuncs[base] if base in allfuncs else omobj(base)
+    return allkeywords[base] if base in allkeywords else omobj(base)
