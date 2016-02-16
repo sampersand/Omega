@@ -1,7 +1,8 @@
-#0->i;#
+a <- 1;
+(if:((if:(a=1):2:0)->b):a:b)->c;
 for:(skip;((i<+-1)<10);skip):(displ:i);
-#for:(skip;((i<-i+1)<10);skip):(displ:i);#
 @eof
+for:(skip;((i<+-1)<10);skip):(displ:i);
 (43.2,2.3) -> arr;
 9912->a:[1];
 # for:((0->i);(i<10);(1-+>i)):(displ:i);#
@@ -11,7 +12,6 @@ for:(skip;((i<+-1)<10);skip):(displ:i);
 if:(a==1):(displ:'a'):(displ:'b');
 (11,2)->a;
 false -> a;
-#(if:((if:(a==1):2:0)->b):a:b)->c;#
 a -?> b
 
 

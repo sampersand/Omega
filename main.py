@@ -11,9 +11,9 @@ if __name__ == '__main__':
     f = omfile(filepath)
     if __debug__:
         print(f)
-        print('--')
+    print('--')
     evald = f.eval()
-    print('\n\nDone.')
+    print('--\n\nDone.')
     if __debug__:
         print('locals:',evald)
 
