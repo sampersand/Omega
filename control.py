@@ -1,5 +1,4 @@
 from omobj import oper, omobj, func
-__all__ = ['a']
 import math
 from random import random
 linebreak = '\n\r' #linebreak is used for comments

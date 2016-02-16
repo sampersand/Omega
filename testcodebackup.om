@@ -45,3 +45,33 @@ displ:0;
 ##       displ:b
 ## }
  #
+
+
+
+
+
+
+ t -> a;
+n -> b;
+1->c;
+#dispc:('b',1+c);
+ if:(a=n):(t->b);dispc:(a, b, c, d);
+dispc:[a,b];
+ for:(x<-0;x<10;1-+>x):{displ:(x,)}#
+#displ:[a,1];#
+# if:(a=n):(t->b);dispc:(a, b, c, d);#
+# if:(a=2):(1->b):{2}#
+# [1, 1, 2, 3, [5, 8, 13]]->array;
+##2 -> a, 1 -> b;
+##disp:$;
+##dispc:('a:', a, 1, 2);
+##dispc:('b:', b, 2, 3);
+##displ:(array);
+##for:(0->i, i < 3, 1-+>i):{dispc:([array:[i]])};
+ #
+[99,123,134] -> array;
+array:[i] -> a;
+(1 + 2) * 3 -> a;
+(2 && 0)-> a;
+abort;
+ 

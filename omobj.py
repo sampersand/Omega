@@ -5,7 +5,6 @@ class omobj:
         # self.base =  base.base if isinstance(base, omobj) else omobj._getbase(base)
         self.base = omobj._getbase(base)
         self.evalfunc = evalfunc
-        print('initialized:',self)
     @staticmethod
     def fromstr(base):
         import control
@@ -20,19 +19,17 @@ class omobj:
                 assert base[-1] in control.allquotes
             return base
         else:
-            return str(base)
-            # return control.allkeywords[base] if base in control.allkeywords else str(base)
-            # try:
-            #     return int(base)
-            # except ValueError:
-            #     try:
-            #         return float(base)
-            #     except ValueError:
-            #         try:
-            #             return complex(base)
-            #         except ValueError:
-            #             # return str(base)
-            #             return control.allkeywords[base] if base in control.allkeywords else str(base)
+            try:
+                return int(base)
+            except ValueError:
+                try:
+                    return float(base)
+                except ValueError:
+                    try:
+                        return complex(base)
+                    except ValueError:
+                        # return str(base)
+                        return control.allkeywords[base] if base in control.allkeywords else str(base)
 
     def __str__(self):
         return str(self.base)
@@ -101,8 +98,7 @@ class oper(omobj):
                 raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
         elif name == ':':
             if eles[0].basestr in locls:
-                assert 0, 'when does this ever happen?'
-                locls[eles[0].basestr].eval(eles[1])
+                locls[eles[0].basestr].base.eval(eles[1], locls)
             else:
                 eles[0].base.eval(eles[1:],locls)
         elif name == '||' or name == '&&':
@@ -158,14 +154,20 @@ class func(omobj):
                         ele.eval(locls)
                         yield str(locls['$'])
                 sep = str(self) == 'displ' and '\n' or str(self) == 'dispc' and ', ' or ''
-                end = sep == ', ' and '\n' or sep
-                if __debug__:
-                    assert len(eles) <= 1
-                print(sep.join(x for x in pr(eles[0] if len(eles) == 1 else eles, locls)), end = end)
+                if len(eles) == 0:
+                    print(end=sep)
+                else:
+                    if __debug__:
+                        assert len(eles) == 1
+                    if len(eles[0]) == 0:
+                        print(eles[0], end = sep)
+                    else:
+                        print(sep.join(x for x in pr(eles[0] if len(eles) == 1 else eles, locls)), end = sep)
             elif str(self) == 'abort':
-                if eles.isfinal() and eles.base != control.funcs['abort']:
+                if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
                     locls['$'] = eles
-                elif '$' not in locls:
+                elif str(eles.base) == str(control.funcs['abort']): 
+                    #'$' not in locls:
                     locls['$'] = ''
                 if __debug__:
                     assert '$' in locls
@@ -183,6 +185,7 @@ class func(omobj):
                     assert len(eles) == 2, 'can only have for:(...):{ expression };'
                     assert len(eles[0]) == 3, 'can only have (initialize; condition; increment)'
                 eles[0][0].eval(locls) # initializes the for loop the condition
+                print(eles[0][0])
                 while True:
                     eles[0][1].eval(locls) #check the conditoin
                     if not locls['$']:

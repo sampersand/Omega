@@ -145,7 +145,6 @@ class omfile:
             if not line: return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
-                    print(line[0],type(line[0]),'@@@@@@')
                     return line[0]
                 else:
                     return fixtkns(line[0])
@@ -157,7 +156,6 @@ class omfile:
             current = group()
             while line:
                 e = line.pop(0) #was formerly .pop(0)
-                print(e,type(e),ret,type(ret),e.base,type(e.base), ret.base, type(ret.base))
                 if e.base == ret.base:
                     if current:
                         ret.append(fixtkns(current))
