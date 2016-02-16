@@ -1,6 +1,7 @@
 [99,123,134] -> array;
 array:[1] -> a;
-displ:((array:[2]));
+displ:a;
+displ:((array:2),a);
 #array:[i] -> a;#
 #displ:('1',array:[1],'2');#
 #displ:1;#

@@ -54,8 +54,9 @@ class omobj:
                 if __debug__:
                     assert len(eles) == 0, 'only one index for the time being'
                 eles.eval(locls)
-                return self.base[locls['$']]
-            locls['$'] = self.base
+                locls['$'] = self.base[locls['$']]
+            else:
+                locls['$'] = self.base
         else:
             self.evalfunc(eles, locls)
 
@@ -154,21 +155,15 @@ class func(omobj):
             super().eval(eles, local)
         else:
             if 'disp' in str(self):
-                def pr(eles, locls):
-                    for ele in eles:
-                        ele.eval(locls)
-                        yield str(locls['$'])
                 sep = str(self) == 'displ' and '\n' or str(self) == 'dispc' and ', ' or ''
-                if len(eles) == 0:
+                if len(eles) == 0: #aka just 'disp;'
                     print(end=sep)
                 else:
                     if __debug__:
                         assert len(eles) == 1
-                    if len(eles[0]) == 0:
-                        eles[0].eval(locls)
+                    for element in eles:
+                        element.eval(locls)
                         print(locls['$'], end = sep)
-                    else:
-                        print(sep.join(x for x in pr(eles[0] if len(eles) == 1 else eles, locls)), end = sep)
             elif str(self) == 'abort':
                 if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
                     locls['$'] = eles
