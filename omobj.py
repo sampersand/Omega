@@ -1,3 +1,4 @@
+from group import group
 class omobj:
     def __init__(self, base, evalfunc = None):
         if __debug__:
@@ -60,6 +61,7 @@ class omobj:
             locls['$'] = self
         else:
             locls['$'] = self.evalfunc(eles, locls)
+        assert isinstance(locls['$'], group), repr(locls['$'])
         return locls['$']
 
     def _updatebase(self, fname, value):
@@ -97,11 +99,15 @@ class omobj:
     
     def _updateEles(self, eles, locls, direc):
         keystr = str(eles[direc])
-        valueobj = eles[not direc].eval(locls)
+        if __debug__:
+            assert isinstance(eles[not direc], group), repr(eles[not direc])
+        valueobj = eles[not direc].base.eval(eles, locls)
+        if __debug__:
+            assert isinstance(valueobj, group)
         if keystr not in locls:
             import copy
             locls[keystr] = copy.copy(valueobj) #oh boy this was giving issues...
-        elif isinstance(locls[keystr], omobj):
+        elif isinstance(locls[keystr], group): #used to be obj base
             locls[keystr]._updatebase(str(self)[1:-1], valueobj)
         locls['$'] = locls[keystr]
 
@@ -124,9 +130,11 @@ class oper(omobj):
             if __debug__:
                 assert eles, 'this shouldn"t break!'
             ret = eles[0].eval(locls)
+            if __debug__:
+                assert isinstance(ret, 1)
             name = eles.basestr
             for ele in eles[1:]:
-                ret = omobj(self.evalfunc(ret.base, ele.eval(locls).base))
+                ret = gself.evalfunc(ret.base, ele.eval(locls).base)
             locls['$'] = ret #do i even need this
         return locls['$']
 
@@ -134,21 +142,26 @@ class oper(omobj):
         from group import group
         import control
         name = str(self)
+        if __debug__:
+            if str(self) != ';':
+                assert 0, repr(self)
         if name in control.alldelims:
             if name in control.delims['arraysep'][0]:
                 ret = []
                 name = eles.basestr
                 for ele in eles:
-                    ret.append(ele.eval(locls))
+                    ret.append(group(base = ele).eval(locls))
                 locls['$'] = group(base = ret)
             elif name in control.delims['endline'][0]:
                 for ele in eles:
-                    ele.eval(locls) #will set locls by itself
+                    group(base = ele).eval(locls) #will set locls by itself
             else:
                 raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
         elif name == ':':
+            # if __debug__:
+                # assert not eles[0], eles[0] #just a thing i noticed, no hard and fast rule
             if __debug__:
-                assert not eles[0] #just a thing i noticed, no hard and fast rule
+                assert 0, 'come back'
             eles[0].base.eval(eles[1:],locls) #already set themselves to '$'
         elif name == '||' or name == '&&':
             typ = name == '&&'
@@ -167,16 +180,20 @@ class oper(omobj):
         return locls['$']
 
     def _updateEles(self, eles, locls, direc):
-        if str(eles[direc].base) != ':':
-            #aka, if the recieving end doesn't have colons, or isnt an array
+        if str(eles[direc].base) == ':':
+            if __debug__:
+                assert len(eles[direc]) == 2, 'currently, only \'array:[position]\''
+                assert eles[direc][0].basestr in locls,'cannot perform operation on empty elements!'
+                assert not len(locls[eles[direc][0].basestr]), 'uh, why did this happen?? ' + repr(eles)
+                assert isinstance(locls[eles[direc][0].basestr].base, array), 'ATM, only can get elements from arrays!'
+            valueobj = eles[not direc].eval(eles, locls)
+            locls[eles[direc][0].basestr].base._updatebase(str(self)[1:-1], valueobj, eles[direc][1].eval(locls))
+        if str(eles[not direc].base) == ':':
+            # print(eles[not direc], type(eles[not direc]))
+            eles[not direc] = eles[not direc].base.eval(eles, locls)
             return super()._updateEles(eles, locls, direc)
-        if __debug__:
-            assert len(eles[direc]) == 2, 'currently, only \'array:[position]\''
-            assert eles[direc][0].basestr in locls,'cannot perform operation on empty elements!'
-            assert not len(locls[eles[direc][0].basestr]), 'uh, why did this happen?? ' + repr(eles)
-            assert isinstance(locls[eles[direc][0].basestr].base, array), 'ATM, only can get elements from arrays!'
-        valueobj = eles[not direc].eval(locls)
-        locls[eles[direc][0].basestr].base._updatebase(str(self)[1:-1], valueobj, eles[direc][1].eval(locls))
+        else:
+            return super()._updateEles(eles, locls, direc)
         # locls['$'] = locls[keystr]
 
 
@@ -208,9 +225,9 @@ class func(omobj):
                             print(locls['$'], end = sep)
             elif str(self.base) == 'abort':
                 if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
-                    locls['$'] = eles
+                    locls['$'] = group(base = eles)
                 elif str(eles.base) == str(control.funcs['abort']): 
-                    locls['$'] = null()
+                    locls['$'] = group(base = null())
                 quit('Aborting!' + (str(locls['$']) and " Message: '{}'".format(str(locls['$']))))
             elif str(self) == 'if':
                 if __debug__:
@@ -233,7 +250,7 @@ class func(omobj):
                     eles[0][2].eval(locls) #increment
             elif str(self) == 'skip':
                 if '$' not in locls:
-                    locls['$'] = null()
+                    locls['$'] = group(args = null())
             elif str(self) == 'del':
                 if str(eles) == "'*'":
                     locls.clear()
@@ -241,7 +258,7 @@ class func(omobj):
                     if str(ele) in locls:
                         del locls[str(ele)]
                 if '$' not in locls:
-                    locls['$'] = null()
+                    locls['$'] = group(args = null())
             else:
                 raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))
         if __debug__:
@@ -258,8 +275,8 @@ class array(omobj):
     def eval(self, eles, locls):
         if hasattr(self.base, '__getitem__'):
             if __debug__:
-                assert len(eles) == 1, 'only one index for the time being ' + repr(eles)
-            eles[0].eval(locls)
+                assert len(eles) == 1, 'only one index for the time being ' + repr(eles) + str(len(eles))
+            group(base = eles[0]).eval(locls)
             locls['$'] = self.base[locls['$'].base]
         return locls['$']
     def _updatebase(self, fname, value, position = 0):

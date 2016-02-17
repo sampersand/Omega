@@ -1,8 +1,8 @@
 (43.2, 2.3) -> arr
 arr:1 -> a
-displ:(1\
-,a)
+displ:locls
 @eof
+99999 -> arr:1
 2->b
 9912->arr:[4]
 arr <- (null, null)

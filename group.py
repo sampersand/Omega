@@ -59,4 +59,6 @@ class group(list):
             locls['$'] = locls[self.basestr]
         else:
             locls['$'] = self.base.eval(self, locls)
+        if __debug__:
+            assert isinstance(locls['$'], group)
         return locls['$']
