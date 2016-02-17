@@ -1,5 +1,5 @@
 (43.2, 2.3) -> arr;
-True-?>arr:[1];
+9912->arr:[4];
 @eof
 a <- 1;
 for:(skip;((i<+-1)<10);skip):(displ:i);

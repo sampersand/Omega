@@ -1,4 +1,4 @@
-from omobj import oper, omobj, func
+from omobj import oper, omobj, func, null
 import math
 from random import random
 linebreak = '\n\r' #linebreak is used for comments
@@ -17,7 +17,7 @@ delims = {'arraysep':(',', oper(',', 14)),
 parens = {'l':'([{', 'r':')]}'}
 consts = {
     'True'  : omobj(True),          'False' : omobj(False),     'None'  : omobj(None),
-    'true'  : omobj(True),          'false' : omobj(False),     'none'  : omobj(None),
+    'true'  : omobj(True),          'false' : omobj(False),     'None'  : omobj(None), 'null'  : null(),
 #    'T'     : omobj(True),          'F'     : omobj(False),     'N'     : omobj(None), #can be overode
 #    't'     : omobj(True),          'f'     : omobj(False),     'n'     : omobj(None), #can be overode
     'pi'    : omobj(math.pi),       'π'     : omobj(math.pi),   'e'     : omobj(math.e),

@@ -254,16 +254,25 @@ class array(omobj):
             assert 0
             locls['$'] = self.base[locls['$']]
     def _updatebase(self, fname, value, position = 0):
+        if position.base >= len(self.base):
+            import control
+            self.base.extend(null() for x in range(position.base - len(self.base) + 1))
         if fname == '':
             self.base[position.base] = value
         else:
             self.base[position.base]._updatebase(fname, value)
-        # else:
-            # print('warning: function \'{}\' is not implemented yet!'.format(fname))
-            # return NotImplemented
         return self
 
-
-
-
-
+class null(omobj):
+    def __init__(self):
+        super().__init__(None, None)
+    def __repr__(self):
+        return 'null()'
+    def __str__(self):
+        return 'null'
+    def __eq__(self, other):
+        return isinstance(other, null)
+    def __bool__(self):
+        return False
+    def _updatebase(self, fname, value):
+        return value
