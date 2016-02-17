@@ -208,7 +208,7 @@ class func(omobj):
                 if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
                     locls['$'] = eles
                 elif str(eles.base) == str(control.funcs['abort']): 
-                    locls['$'] = ''
+                    locls['$'] = null()
                 quit('Aborting!' + (str(locls['$']) and " Message: '{}'".format(str(locls['$']))))
             elif str(self) == 'if':
                 if __debug__:
@@ -231,7 +231,13 @@ class func(omobj):
                     eles[0][2].eval(locls) #increment
             elif str(self) == 'skip':
                 if '$' not in locls:
-                    locls['$'] = omobj(None)
+                    locls['$'] = null()
+            elif str(self) == 'del':
+                for ele in eles:
+                    if str(ele) in locls:
+                        del locls[str(ele)]
+                if '$' not in locls:
+                    locls['$'] = null()
             else:
                 raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))
         if __debug__:

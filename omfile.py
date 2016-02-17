@@ -40,7 +40,7 @@ class omfile:
                 data ^= 0b10
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
-            elif char in control.linebreak:
+            elif char in control.linebreak and char not in control.delims['endline'][0]:
                 continue
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns
                     # ret += char
@@ -171,7 +171,8 @@ class omfile:
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
-        locls = {}
+        import omobj
+        locls = {'$': omobj.null()}
         self.lines.eval(locls)
         if '$' in locls and not __debug__:
             del locls['$']

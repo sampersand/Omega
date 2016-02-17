@@ -12,7 +12,7 @@ allquotes = '\'\"`'
 
 delims = {'arraysep':(',', oper(',', 14)),
           'etc':('|', oper('|', 14)),
-          'endline':(';', oper(';', 14))
+          'endline':('\n;', oper('\n', 14))
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {
@@ -99,7 +99,8 @@ funcs = {
     'abort': func('abort'),
     'displ': func('displ'),
     'dispc': func('dispc'), #commas bxn elements
-    'skip': func('skip'), #commas bxn elements
+    'skip': func('skip'), #ignore that line
+    'del': func('del'), #commas bxn elements
 }
 
 for d in delims.values():

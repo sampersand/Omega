@@ -1,5 +1,6 @@
-(43.2, 2.3) -> arr;
-9912->arr:[4];
+(43.2, 2.3) -> arr; 9912->arr:[4]; arr <- (null, null); del:(arr
+    $)
+abort
 @eof
 a <- 1;
 for:(skip;((i<+-1)<10);skip):(displ:i);
