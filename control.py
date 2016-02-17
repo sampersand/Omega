@@ -12,7 +12,7 @@ allquotes = '\'\"`'
 
 delims = {'arraysep':(',', oper(',', 14)),
           'etc':('|', oper('|', 14)),
-          'endline':('\n;', oper('\n', 14))
+          'endline':(';\n', oper(';', 14))
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {

@@ -40,14 +40,15 @@ class omfile:
                 data ^= 0b10
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
-            elif char in control.linebreak and char not in control.delims['endline'][0]:
-                continue
+            elif char in control.linebreak:
+                if char in control.delims['endline'][0] and not (data & 0b10):
+                    ret += control.delims['endline'][0][0]
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns
                     # ret += char
                 # data &= 0b10 #remove comments
             else:
-                if data & 0b10:
-                    ret += control.escape
+                # if data & 0b10:
+                #     ret += control.escape
                 data &= 0b01
                 if not data & 0b01:
                     ret += char
