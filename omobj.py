@@ -52,8 +52,10 @@ class omobj:
         return self.base == other.base and self.evalfunc == other.evalfunc
     def eval(self, eles, locls):
         if str(self) in locls:
-            assert 0, 'when does this happen?'
-            locls[str(self.base)].eval(eles, locls)
+            # assert 0, 'when does this happen? ' + repr(self)
+            if __debug__:
+                assert len(locls[str(self.base)]) == 0, 'why doenst this work??'
+            locls[str(self.base)].base.eval(eles, locls)
         if self.evalfunc == None:
             locls['$'] = self
         else:
@@ -233,6 +235,8 @@ class func(omobj):
                 if '$' not in locls:
                     locls['$'] = null()
             elif str(self) == 'del':
+                if str(eles) == "'*'":
+                    locls.clear()
                 for ele in eles:
                     if str(ele) in locls:
                         del locls[str(ele)]
@@ -254,11 +258,10 @@ class array(omobj):
     def eval(self, eles, locls):
         if hasattr(self.base, '__getitem__'):
             if __debug__:
-                assert len(eles) == 1, 'only one index for the time being'
+                assert len(eles) == 1, 'only one index for the time being ' + repr(eles)
             eles[0].eval(locls)
-            # print(locls['$'])
-            assert 0
-            locls['$'] = self.base[locls['$']]
+            locls['$'] = self.base[locls['$'].base]
+        return locls['$']
     def _updatebase(self, fname, value, position = 0):
         if position.base >= len(self.base):
             import control

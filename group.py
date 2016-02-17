@@ -55,6 +55,7 @@ class group(list):
         if __debug__:
             assert self.basestr != None
         if self.basestr in locls: #short cut
+            print('i\'m in locls::',self.basestr, repr(locls[self.basestr]))
             locls['$'] = locls[self.basestr]
         else:
             locls['$'] = self.base.eval(self, locls)

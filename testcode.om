@@ -1,9 +1,25 @@
 (43.2, 2.3) -> arr
+arr:1 -> a
+displ:(1\
+,a)
+@eof
+2->b
 9912->arr:[4]
 arr <- (null, null)
-del:(arr,$)
 displ:locls;
-abort
+
+1 -> arr:[0]
+99 -> (arr:[0]);
+(arr:[0]) <- 999999; 
+displ:b
+b -> arr:[2]
+dispc:(arr)
+displ:('1',arr:[1],'2');
+displ:1;
+(1 + 2) * 3 -> a;
+(2 && 0)-> a;
+abort;
+ 
 @eof
 a <- 1;
 for:(skip;((i<+-1)<10);skip):(displ:i);
@@ -17,17 +33,3 @@ if:(a==1):(displ:'a'):(displ:'b');
 (11,2)->a;
 false -> a;
 a -?> b
-
-
-@eof
-(arr:[0]) <- 1
-99 -> (arr:[0]);
-(arr:[0]) <- 999999; -> (array:[2]);
- dispc:(arr,);
-array:[i] -> a;
-displ:('1',array:[1],'2');
-displ:1;
-(1 + 2) * 3 -> a;
-(2 && 0)-> a;
-abort;
- 
