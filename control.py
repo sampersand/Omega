@@ -16,13 +16,13 @@ delims = {'arraysep':(',', oper(',', 14)),
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {
-    'True'  : omobj(True),          'False' : omobj(False),     'None'  : omobj(None),
-    'true'  : omobj(True),          'false' : omobj(False),     'None'  : omobj(None), 'null'  : null(),
-#    'T'     : omobj(True),          'F'     : omobj(False),     'N'     : omobj(None), #can be overode
-#    't'     : omobj(True),          'f'     : omobj(False),     'n'     : omobj(None), #can be overode
-    'pi'    : omobj(math.pi),       'π'     : omobj(math.pi),   'e'     : omobj(math.e),
-    'k'     : omobj(8.987551787368e9),'imag': omobj(complex(0, 1)),
-    'rand'  : omobj(None, random()), 'nan'  : omobj(float('nan')), 'NaN': omobj(float('nan')),
+    'True'  : omobj(True),          'False' : omobj(False),     'None'   : omobj(None),
+    'true'  : omobj(True),          'false' : omobj(False),     'None'   : omobj(None), 'null'  : null(),
+#    'T'     : omobj(True),          'F'     : omobj(False),     'N'      : omobj(None), #can be overode
+#    't'     : omobj(True),          'f'     : omobj(False),     'n'      : omobj(None), #can be overode
+    'pi'    : omobj(math.pi),       'π'     : omobj(math.pi),   'e'      : omobj(math.e),
+    'k'     : omobj(8.987551787368e9),'imag': omobj(complex(0,1)),'locls': omobj(None, lambda ele, locls: str(locls)), 
+    'rand'  : omobj(None, lambda ele, locls: random()), 'nan'  : omobj(float('nan')), 'NaN': omobj(float('nan')),
     'inf'   : omobj(float('inf')),  '∞'     : omobj(float('inf')),
 
     '½' : omobj(1 / 2), '⅓' : omobj(1 / 3), '⅔' : omobj(2 / 3), '¼' : omobj(1 / 4), '¾' : omobj(3 / 4),

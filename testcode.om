@@ -1,9 +1,8 @@
-(43.2, 2.3) -> \
-arr
+(43.2, 2.3) -> arr
 9912->arr:[4]
 arr <- (null, null)
-del:(arr
-    $)
+del:(arr,$)
+displ:locls;
 abort
 @eof
 a <- 1;
