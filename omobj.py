@@ -112,6 +112,7 @@ class oper(omobj):
             name = eles.basestr
             for ele in eles[1:]:
                 ret = omobj(self.evalfunc(ret.base, ele.eval(locls).base))
+            return ret #do i even need this
             locls['$'] = ret #do i even need this
         return locls['$']
 
@@ -149,22 +150,15 @@ class oper(omobj):
             name = name[1:-1]
             keystr = str(eles[direc])
             # print(eles[not direc])
-            # if '$' in locls:
-            #     del locls['$']
             # print(locls)
             # print(str(eles[direc]),eles[not direc])
             valueobj = eles[not direc].eval(locls)
-            # print(repr(locls),repr(keystr),repr(valueobj),repr(eles[direc]),repr(eles[not direc]), repr(eles), sep = '\t|\t')
-            # assert 0, repr(eles[n])
+            print(repr(locls),repr(keystr),repr(valueobj),repr(eles[direc]),repr(eles[not direc]), repr(eles), sep = '*\n*')
             # assert keystr not in locls or locls['$'] is not locls[keystr]
             # print('@here:',keystr,valueobj,... if keystr not in locls else locls[keystr])
-            # if name == '':
-                # locls[keystr] = valueobj
-            # else:
-            # if __debug__:
-            #     assert keystr in locls, 'cant update a non-existant object!'
             if keystr not in locls:
-                locls[keystr] = valueobj
+                import copy
+                locls[keystr] = copy.copy(valueobj) #oh boy this was giving issues...
             elif isinstance(locls[keystr], omobj):
                 locls[keystr].update(valueobj, name)
             locls['$'] = locls[keystr]
@@ -265,9 +259,9 @@ class func(omobj):
                     assert len(eles) in (2, 3), 'can only have if:(cond):(if true)[:(if false)];'
                  # evaluates the condition
                 if eles[0].eval(locls):
-                    eles[1].eval(locls)
+                    locls['$'] = eles[1].eval(locls)
                 elif len(eles) == 3:
-                    eles[2].eval(locls)
+                    locls['$'] = eles[2].eval(locls)
             elif str(self) == 'for':
                 if __debug__:
                     assert len(eles) == 2, 'can only have for:(...):{ expression };'
@@ -277,15 +271,15 @@ class func(omobj):
                     eles[0][1].eval(locls) #check the conditoin
                     if not locls['$']:
                         break
-                    eles[1].eval(locls) #increment
-                    eles[0][2].eval(locls)
+                    eles[1].eval(locls) #do the expression
+                    eles[0][2].eval(locls) #increment
             elif str(self) == 'skip':
-                pass
+                if '$' not in locls:
+                    locls['$'] = omobj(None)
             else:
                 raise SyntaxError("function '{}' isn't defined yet!".format(str(self)))
-        if '$' not in locls:
-            assert 0
-            locls['$'] = omobj(None)
+        if __debug__:
+            assert '$' in locls
         return locls['$']
 class array(omobj):
     def __init__(self, base):

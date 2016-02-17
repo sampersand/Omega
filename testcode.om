@@ -1,7 +1,8 @@
 a <- 1;
-(if:((if:(a=1):2:0)->b):a:b)->c;
+#0->i;#
 for:(skip;((i<+-1)<10);skip):(displ:i);
 @eof
+(if:((if:(a=1):2:0)->b):a:b)->c;
 for:(skip;((i<+-1)<10);skip):(displ:i);
 (43.2,2.3) -> arr;
 9912->a:[1];
