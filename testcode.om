@@ -1,10 +1,10 @@
+(43.2, 2.3) -> arr;
+True-?>arr:[1];
+@eof
 a <- 1;
 for:(skip;((i<+-1)<10);skip):(displ:i);
-@eof
 (if:((if:(a=1):2:0)->b):a:b)->c;
 for:(skip;((i<+-1)<10);skip):(displ:i);
-(43.2,2.3) -> arr;
-9912->a:[1];
 # for:((0->i);(i<10);(1-+>i)):(displ:i);#
 1->a;
 0->b;

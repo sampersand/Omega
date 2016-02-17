@@ -60,11 +60,11 @@ class omobj:
             locls['$'] = self.evalfunc(eles, locls)
         return locls['$']
 
-    def update(self, value, fname):
+    def _updatebase(self, fname, value):
         if fname == '':
             self.base = value.base
         elif fname == '?':
-            assert 0, 'todo'
+            self.base = value.base or self.base
         elif fname == '+':
             self.base += value.base
         elif fname == '-':
@@ -87,7 +87,21 @@ class omobj:
             self.base <<= value.base 
         elif fname == '>':
             self.base >>= value.base
+        else:
+            print('warning: function \'{}\' is not implemented yet!'.format(fname))
+            return NotImplemented
         return self
+
+    
+    def _updateEles(self, eles, locls, direc):
+        keystr = str(eles[direc])
+        valueobj = eles[not direc].eval(locls)
+        if keystr not in locls:
+            import copy
+            locls[keystr] = copy.copy(valueobj) #oh boy this was giving issues...
+        elif isinstance(locls[keystr], omobj):
+            locls[keystr]._updatebase(str(self)[1:-1], valueobj)
+        locls['$'] = locls[keystr]
 
 class oper(omobj):
 
@@ -125,7 +139,7 @@ class oper(omobj):
                 for ele in eles:
                     ret.append(ele.eval(locls))
                 locls['$'] = group(base = ret)
-            if name in control.delims['endline'][0]:
+            elif name in control.delims['endline'][0]:
                 for ele in eles:
                     ele.eval(locls) #will set locls by itself
             else:
@@ -133,30 +147,39 @@ class oper(omobj):
         elif name == ':':
             if __debug__:
                 assert not eles[0] #just a thing i noticed, no hard and fast rule
-            locls['$'] = eles[0].base.eval(eles[1:],locls)
+            eles[0].base.eval(eles[1:],locls) #already set themselves to '$'
         elif name == '||' or name == '&&':
             typ = name == '&&'
             
             element = eles[0].eval(locls)
             if (typ and element) or (not typ and not element):
                 return 99
-            locls['$'] = eles[1].eval(locls)
+            eles[1].eval(locls) #already set themselves to '$'
         else:
             if __debug__:
                 assert len(eles) == 2
-            direc = name[0] == '-'
+            direc = str(self)[0] == '-'
             if __debug__:
                  assert direc and name[-1] == '>' or not direc and name[0] == '<'
-            keystr = str(eles[direc])
-            valueobj = eles[not direc].eval(locls)
-            if keystr not in locls:
-                import copy
-                locls[keystr] = copy.copy(valueobj) #oh boy this was giving issues...
-            elif isinstance(locls[keystr], omobj):
-                locls[keystr].update(valueobj, name[1:-1])
-            locls['$'] = locls[keystr]
+            self._updateEles(eles, locls, direc) #already sets itself to '$'
         return locls['$']
 
+    def _updateEles(self, eles, locls, direc):
+        if str(eles[direc].base) != ':':
+            #aka, if the recieving end doesn't have colons, or isnt an array
+            return super()._updateEles(eles, locls, direc)
+        if __debug__:
+            assert len(eles[direc]) == 2, 'currently, only \'array:[position]\''
+            assert eles[direc][0].basestr in locls,'cannot perform operation on empty elements!'
+            assert not len(locls[eles[direc][0].basestr]), 'uh, why did this happen?? ' + repr(eles)
+            assert isinstance(locls[eles[direc][0].basestr].base, array), 'ATM, only can get elements from arrays!'
+        valueobj = eles[not direc].eval(locls)
+        locls[eles[direc][0].basestr].base._updatebase(str(self)[1:-1], valueobj, eles[direc][1].eval(locls))
+        # locls['$'] = locls[keystr]
+
+
+
+        #eles[0].base.eval(eles[1:],locls) #already set themselves to '$'
 
 class func(omobj):
     def __init__(self, base):
@@ -192,9 +215,9 @@ class func(omobj):
                     assert len(eles) in (2, 3), 'can only have if:(cond):(if true)[:(if false)];'
                  # evaluates the condition
                 if eles[0].eval(locls):
-                    locls['$'] = eles[1].eval(locls)
+                    eles[1].eval(locls) #already set themselves to '$'
                 elif len(eles) == 3:
-                    locls['$'] = eles[2].eval(locls)
+                    eles[2].eval(locls) #already set themselves to '$'
             elif str(self) == 'for':
                 if __debug__:
                     assert len(eles) == 2, 'can only have for:(...):{ expression };'
@@ -230,7 +253,15 @@ class array(omobj):
             # print(locls['$'])
             assert 0
             locls['$'] = self.base[locls['$']]
-
+    def _updatebase(self, fname, value, position = 0):
+        if fname == '':
+            self.base[position.base] = value
+        else:
+            self.base[position.base]._updatebase(fname, value)
+        # else:
+            # print('warning: function \'{}\' is not implemented yet!'.format(fname))
+            # return NotImplemented
+        return self
 
 
 

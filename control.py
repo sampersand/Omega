@@ -32,7 +32,6 @@ consts = {
 opers = {
     'binary':{
         ':'   : oper(':',      0, None), # association
-        '??'  : oper(':',      0, None), # association todo: remove
         '**'  : oper('**',     3, lambda x, y: x ** y), # power of
         '*'   : oper('*',      4, lambda x, y: x *  y), # mult
         '/'   : oper('/',      4, lambda x, y: x /  y), # div
