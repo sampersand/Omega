@@ -13,10 +13,10 @@ namespace Constants
     static const str WHTSPC = NONBRWHTSPC + LNBRK;
     static const str QUOTES = "'\"`";
 
-    static const str getvs(const std::vector<str> * v){
+    static const str getvs(const std::vector<str> * v, bool commas = false){
         str ret = "";
         for (std::vector<str>::const_iterator i = v->begin(); i != v->end(); ++i)
-            ret += *i;
+            ret += *i + (commas ? ", " : "");
         return ret;
     }
 

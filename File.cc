@@ -1,4 +1,3 @@
-
 #include "Constants.cc"
 #include <iostream> 
 #include <stack>
