@@ -1,15 +1,26 @@
-#include "File.cc"
-#include "Object.cc"
+// #include <queue>
+// #include <fstream>
+// #include <iostream> 
 #include <vector>
-typedef std::vector<Object<void*> > objv;
-int main()
-{
+#include "Constants.cc"
+#include "Object.cc"
+#include "ObjectConstants.cc"
+#include "File.cc"
+
+#ifndef str
+#define str Constants::str
+#endif
+int main(){
     File file("/Users/westerhack/code/python/Omega/testcode.om");
+
     std::cout << file.tostr() << std::endl;
-    objv v;
-    v.push_back(new Object<double>(123.4));
-    Object<double> o(99.23, v);
-    o.parens[1] = '1';
+
+    std::vector<Object<str> > v;
+    v.push_back(*new Object<> ("argument 1"));
+    v.push_back(*new Object<> ("argument 2"));
+    Object<str> o("function", v);
+    o.setpar('(', ')');
+
     std::cout << o.tostr() << std::endl;
     return 0;
 }

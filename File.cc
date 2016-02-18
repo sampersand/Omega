@@ -1,44 +1,57 @@
-#include "Constants.cc"
-#include <iostream> 
-#include <stack>
-#include <queue>
 #include <vector>
-#include <fstream>
-#include <string>
-
-typedef std::string str;
+namespace FileConstants
+{
+    static const Constants::str TEST;
+    static const Constants::str ESCP = "\\";
+    static const Constants::str ENDL = "\n;";
+    static const Constants::str CMMNT = "#";
+    static const Constants::str LNBRK = "\n\r";
+    static const Constants::str DATADEF = "@";
+    static const Constants::str NONBRWHTSPC = " \t\x0b\x0c";
+    static const Constants::str WHTSPC = NONBRWHTSPC + LNBRK;
+    static const Constants::str QUOTES = "'\"`";
+    template<class T>
+    static const Constants::str getvs(const std::vector<T> * v, bool commas = false){
+        Constants::str ret = "";
+        for (typename std::vector<T>::const_iterator i = v->begin(); i != v->end(); ++i)
+            ret += *i + (commas ? ", " : "");
+        return ret;
+    }
+    static const inline bool in(char c, Constants::str s){
+        return s.find(c) != Constants::str::npos;
+    }
+}
 
 class File
 {
-    std::vector<str> pv; //processed vector
-    str filename;
+    std::vector<Constants::str> pv; //processed vector
+    Constants::str filename;
     std::queue<char> readfile();
-    std::queue<str> parsefile(const std::queue<char> rawdat);
-    std::vector<str> proccessfile(const std::queue<str> rawdat);
+    std::queue<Constants::str> parsefile(const std::queue<char> rawdat);
+    std::vector<Constants::str> proccessfile(const std::queue<Constants::str> rawdat);
     public:
         File() {};
-        File(str pfile): filename(pfile){
+        File(Constants::str pfile): filename(pfile){
             pv = proccessfile(parsefile(readfile()));
         };
-        str tostr();
+        Constants::str tostr();
 };
-str File::tostr(){
-    return "File '" + filename + "':\n==[start]==\n\n" + Constants::getvs(&pv) +"\n\n==[ end ]==";
+Constants::str File::tostr(){
+    return "File '" + filename + "':\n==[start]==\n\n" + FileConstants::getvs(&pv) +"\n\n==[ end ]==";
 }
-std::vector<str> File::proccessfile(std::queue<str> dat){
-    std::vector<str> ret;
-
+std::vector<Constants::str> File::proccessfile(std::queue<Constants::str> dat){
+    std::vector<Constants::str> ret;
     return ret;
 }
-std::queue<str> File::parsefile(std::queue<char> rawdat) {
+std::queue<Constants::str> File::parsefile(std::queue<char> rawdat) {
     //break function 
-    std::queue<str> ret;
-    str last = "";
+    std::queue<Constants::str> ret;
+    Constants::str last = "";
     char c;
     while(!rawdat.empty()){
         c = rawdat.front();
         last += c;
-        if(Constants::in(c, Constants::ENDL)){
+        if(FileConstants::in(c, FileConstants::ENDL)){
             ret.push(last);
             last.clear();
         }
@@ -50,7 +63,7 @@ std::queue<str> File::parsefile(std::queue<char> rawdat) {
     return ret;
 }
 std::queue<char> File::readfile() {
-        using namespace Constants;
+        using namespace FileConstants;
         std::queue<char> q;
         std::ifstream myfile;
         myfile.open(filename);
