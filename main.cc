@@ -1,24 +1,20 @@
-// #include <queue>
-// #include <fstream>
-// #include <iostream> 
+#include <iostream>
 #include <vector>
-#include "Constants.cc"
+#include "ObjectTypes.cc"
 #include "Object.cc"
-#include "ObjectConstants.cc"
 #include "File.cc"
-
-#ifndef str
-#define str Constants::str
-#endif
 int main(){
     File file("/Users/westerhack/code/python/Omega/testcode.om");
 
+    #ifndef str
+    #define str std::string
+    #endif
     std::cout << file.tostr() << std::endl;
 
-    std::vector<Object<str> > v;
-    v.push_back(*new Object<> ("argument 1"));
-    v.push_back(*new Object<> ("argument 2"));
-    Object<str> o("function", v);
+    std::vector<Object> v;
+    v.push_back(*new Object(new ObjectTypes::String("argument 1")));
+    v.push_back(*new Object(new ObjectTypes::String("argument 2")));
+    Object o(new ObjectTypes::String("function name"), v);
     o.setpar('(', ')');
 
     std::cout << o.tostr() << std::endl;

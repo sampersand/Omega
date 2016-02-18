@@ -1,52 +1,55 @@
+#include <iostream>
 #include <vector>
+#include <fstream>
+#include <queue>
 namespace FileConstants
 {
-    static const Constants::str TEST;
-    static const Constants::str ESCP = "\\";
-    static const Constants::str ENDL = "\n;";
-    static const Constants::str CMMNT = "#";
-    static const Constants::str LNBRK = "\n\r";
-    static const Constants::str DATADEF = "@";
-    static const Constants::str NONBRWHTSPC = " \t\x0b\x0c";
-    static const Constants::str WHTSPC = NONBRWHTSPC + LNBRK;
-    static const Constants::str QUOTES = "'\"`";
+    static const std::string TEST;
+    static const std::string ESCP = "\\";
+    static const std::string ENDL = "\n;";
+    static const std::string CMMNT = "#";
+    static const std::string LNBRK = "\n\r";
+    static const std::string DATADEF = "@";
+    static const std::string NONBRWHTSPC = " \t\x0b\x0c";
+    static const std::string WHTSPC = NONBRWHTSPC + LNBRK;
+    static const std::string QUOTES = "'\"`";
     template<class T>
-    static const Constants::str getvs(const std::vector<T> * v, bool commas = false){
-        Constants::str ret = "";
+    static const std::string getvs(const std::vector<T> * v, bool commas = false){
+        std::string ret = "";
         for (typename std::vector<T>::const_iterator i = v->begin(); i != v->end(); ++i)
             ret += *i + (commas ? ", " : "");
         return ret;
     }
-    static const inline bool in(char c, Constants::str s){
-        return s.find(c) != Constants::str::npos;
+    static const inline bool in(char c, std::string s){
+        return s.find(c) != std::string::npos;
     }
 }
 
 class File
 {
-    std::vector<Constants::str> pv; //processed vector
-    Constants::str filename;
+    std::vector<std::string> pv; //processed vector
+    std::string filename;
     std::queue<char> readfile();
-    std::queue<Constants::str> parsefile(const std::queue<char> rawdat);
-    std::vector<Constants::str> proccessfile(const std::queue<Constants::str> rawdat);
+    std::queue<std::string> parsefile(const std::queue<char> rawdat);
+    std::vector<std::string> proccessfile(const std::queue<std::string> rawdat);
     public:
         File() {};
-        File(Constants::str pfile): filename(pfile){
+        File(std::string pfile): filename(pfile){
             pv = proccessfile(parsefile(readfile()));
         };
-        Constants::str tostr();
+        std::string tostr();
 };
-Constants::str File::tostr(){
+std::string File::tostr(){
     return "File '" + filename + "':\n==[start]==\n\n" + FileConstants::getvs(&pv) +"\n\n==[ end ]==";
 }
-std::vector<Constants::str> File::proccessfile(std::queue<Constants::str> dat){
-    std::vector<Constants::str> ret;
+std::vector<std::string> File::proccessfile(std::queue<std::string> dat){
+    std::vector<std::string> ret;
     return ret;
 }
-std::queue<Constants::str> File::parsefile(std::queue<char> rawdat) {
+std::queue<std::string> File::parsefile(std::queue<char> rawdat) {
     //break function 
-    std::queue<Constants::str> ret;
-    Constants::str last = "";
+    std::queue<std::string> ret;
+    std::string last = "";
     char c;
     while(!rawdat.empty()){
         c = rawdat.front();
