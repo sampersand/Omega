@@ -1,0 +1,136 @@
+from oldomobj import oldomobj, func, null
+from obj import operobj, obj, funcobj, numobj
+import math
+import random
+linebreak = '\n\r' #linebreak is used for comments
+comment = '#'
+allkeywords = {}
+escape = '\\'
+datadef = '@'
+nbwhitespace = ' \t\x0b\x0c'
+whitespace = nbwhitespace + linebreak
+allquotes = '\'\"`'
+
+delims = {'arraysep':(',', operobj(',', 14)),
+          'etc':('|', operobj('|', 14)),
+          'endline':(';\n', operobj(';', 14))
+          }
+parens = {'l':'([{', 'r':')]}'}
+consts = {
+    'True'  : boolobj(True),          'False'    : boolobj(False),     'None'   : boolobj(None),
+    'true'  : boolobj(True),          'false'    : boolobj(False),     'None'   : boolobj(None), 'null'  : nullobj(),
+#    'T'     : obj(True),          'F'     : obj(False),     'N'      : obj(None), #can be overode
+#    't'     : obj(True),          'f'     : obj(False),     'n'      : obj(None), #can be overode
+    'pi'    : numobj(math.pi),            'π': numobj(math.pi),         'e': numobj(math.e),
+    'k'     : numobj(8.987551787368e9),'imag': numobj(complex(0,1)),'locls': funcobj(lambda ele, locls: str(locls)), 
+    'rand'  : funcobj(random.random), 'nan'  : numobj(float('nan')),  'NaN': numobj(float('nan')),
+    'inf'   : numobj(float('inf')),       '∞': numobj(float('inf')),
+
+    '½' : numobj(1 / 2), '⅓' : numobj(1 / 3), '⅔' : numobj(2 / 3), '¼' : numobj(1 / 4), '¾' : numobj(3 / 4),
+    '⅕' : numobj(1 / 5), '⅖' : numobj(2 / 5), '⅗' : numobj(3 / 5), '⅘' : numobj(4 / 5), '⅙' : numobj(1 / 6),
+    '⅚' : numobj(5 / 6), '⅛' : numobj(1 / 8), '⅜' : numobj(3 / 8), '⅝' : numobj(5 / 8), '⅞' : numobj(7 / 8),
+}
+opers = {
+    'binary':{
+        ':'   : operobj(':',      0, None), # association
+        '**'  : operobj('**',     3, lambda x, y: x ** y), # power of
+        '*'   : operobj('*',      4, lambda x, y: x *  y), # mult
+        '/'   : operobj('/',      4, lambda x, y: x /  y), # div
+        '%'   : operobj('%',      4, lambda x, y: x %  y), # mod
+        '+'   : operobj('+',      5, lambda x, y: x +  y), # plus
+        '-'   : operobj('-',      5, lambda x, y: x -  y), # minus
+        'b<<' : operobj('b<<',    6, lambda x, y: x << y), # bitwise <<
+        'b>>' : operobj('b<<',    6, lambda x, y: x >> y), # bitwise >>
+        'b&'  : operobj('b&',     7, lambda x, y: x &  y), # bitwise &
+        'b^'  : operobj('b^',     8, lambda x, y: x ^  y), # bitwise ^
+        'b|'  : operobj('b|',     9, lambda x, y: x |  y), # bitwise |
+        '<'   : operobj('<',     10, lambda x, y: x <  y), # less than
+        '>'   : operobj('>',     10, lambda x, y: x >  y), # greater than
+        '<='  : operobj('<=',    10, lambda x, y: x <= y), # less than or equal
+        '>='  : operobj('>=',    10, lambda x, y: x >= y), # greater than or equal
+        '=='  : operobj('==',    10, lambda x, y: x == y), # equal to
+        '='   : operobj('=',     10, lambda x, y: x == y), # equal to
+        '<>'  : operobj('<>',    10, lambda x, y: x != y), # equal to
+        '!='  : operobj('!=',    10, lambda x, y: x != y), # not equal to
+        '&&'  : operobj('&&',    11, None), # boolean and
+        '||'  : operobj('||',    12, None), # booleon or
+        #assignment operators
+        # all notes are in form of "x OPERATOR y" like 'x <- y'
+        '<-'   : operobj('<-',   13, None), # x = y
+        '<?-'  : operobj('<?-',  13, None), # x = bool(y) ? y : None
+        '<+-'  : operobj('<+-',  13, None), # x += y
+        '<--'  : operobj('<--',  13, None), # x -= y
+        '<*-'  : operobj('<*-',  13, None), # x *= y
+        '</-'  : operobj('</-',  13, None), # x /= y
+        '<**-' : operobj('<**-', 13, None), # x **= y
+        '<%-'  : operobj('<%-',  13, None), # x %= y
+        '<&-'  : operobj('<&-',  13, None), # x &= y
+        '<|-'  : operobj('<|-',  13, None), # x |= y
+        '<^-'  : operobj('<^-',  13, None), # x ^= y
+        '<<-'  : operobj('<<-',  13, None), # x <<= y
+        '<>-'  : operobj('<>-',  13, None), # x >>= y
+        #inverted assignment operators
+        # all notes are in form of "x OPERATOR y" like 'x -> y'
+        '->'   : operobj('->',   13, None), # y = x
+        '-?>'  : operobj('-?>',  13, None), # y = bool(x) ? x : None
+        '-+>'  : operobj('-+>',  13, None), # y += x
+        '-->'  : operobj('-->',  13, None), # y -= x 
+        '-*>'  : operobj('-*>',  13, None), # y *= x 
+        '-/>'  : operobj('-/>',  13, None), # y /= x 
+        '-**>' : operobj('-**>', 13, None), # y **= x 
+        '-%>'  : operobj('-%>',  13, None), # y %= x 
+        '-&>'  : operobj('-&>',  13, None), # y &= x 
+        '-|>'  : operobj('-|>',  13, None), # y |= x 
+        '-^>'  : operobj('-^>',  13, None), # y ^= x 
+        '-<>'  : operobj('-<>',  13, None), # y <<= x 
+        '->>'  : operobj('->>',  13, None)  # y >>= x 
+         },
+    'unary':{
+        'l':{'~':operobj('~', 1, lambda x, y: ~y),
+             'pos':operobj('pos', 1, lambda x, y: +y),
+             'neg':operobj('neg', 1, lambda x, y: -y)},
+        'r':{'!':operobj('!', 2, lambda x, y: not x)}
+    }
+}
+funcs = {
+    #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
+    'if': func('if'),
+    'for': func('for'),
+    'disp': func('disp'),
+    'abort': func('abort'),
+    'displ': func('displ'),
+    'dispc': func('dispc'), #commas bxn elements
+    'skip': func('skip'), #ignore that line
+    'del': func('del'), #commas bxn elements
+}
+
+for d in delims.values():
+    for val in d[0]:
+        opers['unary']['l'][val] = d[1]
+
+alldelims = ''.join(v[0] for v in delims.values())
+allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
+import copy
+#crap i need a better way than this D:
+allopers = copy.copy(opers['binary']); allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
+allfuncs = copy.copy(allopers); allfuncs.update(funcs)
+allkeywords = copy.copy(allfuncs); allkeywords.update(consts)
+del copy
+
+sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
+
+punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
+
+def _invertparen(paren):
+    return {'(':')', ')':'(',
+            '[':']', ']':'[',
+            '{':'}', '}':'{'}[paren]
+
+
+def applyrules(tokens):
+    print(tokens)
+    if __debug__:
+        assert tokens[0] == '@'
+        assert tokens[1] == 'define', tokens[1] #currently, only 'define' is defined.
+    assert 0, 'not implemented yet! todo: this'
+    # fixedtokens = 

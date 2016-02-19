@@ -1,9 +1,7 @@
-2 -> b
+2 -> b;
 1 -> a;;
 
 
 
-c <- b + a
-disp:c
-
-a
+c <- b + a;
+disp:c;
