@@ -22,25 +22,25 @@ def evaloper(base, eles, locls):
             raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
     elif '<' == name[0] and name[-1] == '-' or name[0] == '-' and name[-1] == '>':
         """
-        hm... take the following code:
+            hm... take the following code:
 
-                a <- 4;
-                b <- 2;
-                1 + 2 -+> a -+> b 
+                    a <- 4;
+                    b <- 2;
+                    1 + 2 -+> a -+> b 
 
-        regardless of how '-+>' is percieved,
+            regardless of how '-+>' is percieved,
 
-                a == 7
+                    a == 7
 
-        However, should:
+            However, should:
 
-                b == 5 #(aka the '$' from 1 + 2 and b's old value)#
+                    b == 5 #(aka the '$' from 1 + 2 and b's old value)#
 
-        or should:
+            or should:
 
-                b == 9 #(aka the '$' right before it's evaluated and b's old value)#
+                    b == 9 #(aka the '$' right before it's evaluated and b's old value)#
 
-        I think i'll go wtih the second option.
+            I think i'll go wtih the second option.
         """
         if name[0] == '-':
             eles[0].eval(locls)
