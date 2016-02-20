@@ -6,6 +6,7 @@ class obj():
         if __debug__:
             assert not isinstance(base, obj), type(obj) #only allowed to pass non-objs
         self.base = base
+
     @staticmethod
     def frombase(ele):
         """
@@ -60,6 +61,7 @@ class operobj(funcobj):
     def __init__(self, base, priority, func = None):
         super().__init__(base, func)
         self.priority = priority
+
     def __repr__(self):
         return 'operobj({},{},func={})'.format(self.base, self.priority, self.func)
 
@@ -101,3 +103,8 @@ class boolobj(numobj):
 
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
+
+
+
+
+
