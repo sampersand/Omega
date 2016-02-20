@@ -1,5 +1,4 @@
-from oldomobj import oldomobj, func, null
-from obj import operobj, obj, funcobj, numobj
+from obj import *#operobj, obj, funcobj,'',  numobj
 import math
 import random
 linebreak = '\n\r' #linebreak is used for comments
@@ -17,14 +16,17 @@ delims = {'arraysep':(',', operobj(',', 14)),
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {
-    'True'  : boolobj(True),          'False'    : boolobj(False),     'None'   : boolobj(None),
-    'true'  : boolobj(True),          'false'    : boolobj(False),     'None'   : boolobj(None), 'null'  : nullobj(),
-#    'T'     : obj(True),          'F'     : obj(False),     'N'      : obj(None), #can be overode
-#    't'     : obj(True),          'f'     : obj(False),     'n'      : obj(None), #can be overode
-    'pi'    : numobj(math.pi),            'π': numobj(math.pi),         'e': numobj(math.e),
-    'k'     : numobj(8.987551787368e9),'imag': numobj(complex(0,1)),'locls': funcobj(lambda ele, locls: str(locls)), 
-    'rand'  : funcobj(random.random), 'nan'  : numobj(float('nan')),  'NaN': numobj(float('nan')),
-    'inf'   : numobj(float('inf')),       '∞': numobj(float('inf')),
+    'true' : boolobj(True),
+    'false': boolobj(False),
+    'null' : nullobj(),
+    'pi'   : numobj(math.pi), 'π': numobj(math.pi),
+    'e'    : numobj(math.e),
+    'k'    : numobj(8.987551787368e9),
+    'imag' : numobj(complex(0,1)),
+    'locls': funcobj('locls', None), #todo, make this return locals
+    'rand' : funcobj('rand', random.random),
+    'nan'  : numobj(float('nan')), 'NaN': numobj(float('nan')),
+    'inf'  : numobj(float('inf')), '∞': numobj(float('inf')),
 
     '½' : numobj(1 / 2), '⅓' : numobj(1 / 3), '⅔' : numobj(2 / 3), '¼' : numobj(1 / 4), '¾' : numobj(3 / 4),
     '⅕' : numobj(1 / 5), '⅖' : numobj(2 / 5), '⅗' : numobj(3 / 5), '⅘' : numobj(4 / 5), '⅙' : numobj(1 / 6),
@@ -94,14 +96,14 @@ opers = {
 }
 funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
-    'if': func('if'),
-    'for': func('for'),
-    'disp': func('disp'),
-    'abort': func('abort'),
-    'displ': func('displ'),
-    'dispc': func('dispc'), #commas bxn elements
-    'skip': func('skip'), #ignore that line
-    'del': func('del'), #commas bxn elements
+    'if': funcobj('if'),
+    'for': funcobj('for'),
+    'disp': funcobj('disp'),
+    'abort': funcobj('abort'),
+    'displ': funcobj('displ'),
+    'dispc': funcobj('dispc'), #commas bxn elements
+    'skip': funcobj('skip'), #ignore that line
+    'del': funcobj('del'), #commas bxn elements
 }
 
 for d in delims.values():
@@ -133,4 +135,3 @@ def applyrules(tokens):
         assert tokens[0] == '@'
         assert tokens[1] == 'define', tokens[1] #currently, only 'define' is defined.
     assert 0, 'not implemented yet! todo: this'
-    # fixedtokens = 

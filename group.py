@@ -1,8 +1,9 @@
 class group:
     def __init__(self, base = None, args = [], parens = ('', '')):
         self.base = base
-        import obj
-        self.args = obj.frombase(base)
+        from obj import obj
+        self.base = obj.frombase(base)
+        self.args = args
         self.parens = parens
 
     def __bool__(self):
@@ -10,6 +11,11 @@ class group:
 
     def isfinal(self):
         return len(self) == 0
+        
+    def pop(self, pos):
+        return self.args.pop(pos)
+    def append(self, item):
+        return self.args.append(item)
     # def hasparens(self):
     #     return bool(self.parens[0] or self.parens[1])
 

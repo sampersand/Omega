@@ -1,6 +1,5 @@
-
 import control
-from oldgroup import oldgroup
+from group import group
 class omfile:
     def __init__(self, filepath, encoding = 'utf-8'):
         self.filepath = filepath
@@ -97,19 +96,19 @@ class omfile:
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        import oldomobj
-        return [oldomobj.oldomobj.genobj(v) for v in ret]
+        from obj import obj
+        return [obj.frombase(v) for v in ret]
 
     @staticmethod
     def _compresstokens(linetokens):
         def compresstokens(linegrp): #this is non-stable
-            ret = oldgroup(parens = linegrp.parens) #universe
+            ret = group(parens = linegrp.parens) #universe
             while linegrp:
                 ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
                 if str(ele) not in control.allparens:
-                    ret.append(oldgroup(base = ele))
+                    ret.append(group(base = ele))
                 else:
-                    toappend = oldgroup()
+                    toappend = group()
                     parens = {str(ele):1}
                     while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
@@ -155,25 +154,25 @@ class omfile:
             fhp = findhighest(line)
             
             if __debug__:
-                assert isinstance(line[fhp], oldgroup), 'expected a oldgroup for fhp! (not %s)' % line[fhp]
-            ret = oldgroup(base = line[fhp].base, parens = line.parens)
-            current = oldgroup()
+                assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
+            ret = group(base = line[fhp].base, parens = line.parens)
+            current = group()
             while line:
                 e = line.pop(0) #was formerly .pop(0)
                 if e.base == ret.base:
                     if current:
                         ret.append(fixtkns(current))
-                    current = oldgroup()
+                    current = group()
                 else:
                     current.append(e)
             if current:
                 ret.append(fixtkns(current))
             return ret
-        return fixtkns(compresstokens(oldgroup(args = linetokens)))
+        return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
-        import oldomobj
-        locls = {'$': oldomobj.null()}
+        import control
+        locls = {'$': control.consts['null']}
         self.lines.eval(locls)
         if '$' in locls and not __debug__:
             del locls['$']

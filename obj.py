@@ -1,17 +1,23 @@
 class obj():
+    """
+    The base class for all of the objects.
+    """
     def __init__(self, base):
         if __debug__:
             assert not isinstance(base, obj), type(obj) #only allowed to pass non-objs
         self.base = base
     @staticmethod
     def frombase(ele):
-        """ used when passing a string to determine which base to use """
+        """
+        Used when passing a string to determine which base to use.
+        """
+        if ele == None:
+            return nullobj()
+        if isinstance(ele, obj):
+            return obj
         if __debug__:
-            assert isinstance(ele, str) #can only read strs. otherwise, use appropriate subclass.
+            assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
         return obj(ele)
-
-    def __getattr__(self, attr):
-        return self.base.__getattr__(attr)
 
     def __str__(self):
         return str(self.base)
@@ -20,7 +26,10 @@ class obj():
         return 'obj({})'.format(self.base)
 
 class funcobj(obj):
-    def __init__(self, func, base = None):
+    """
+    The class that represents a function.
+    """
+    def __init__(self, base, func = None):
         #warning this is backwards...
         super().__init__(base)
         if __debug__:
@@ -30,13 +39,20 @@ class funcobj(obj):
         return 'funcobj({},base={})'.format(self.func, self.base)
 
 class operobj(funcobj):
+    """
+    The class that represents operators on objects.
+    """
     def __init__(self, base, priority, func = None):
-        super().__init__(func, base)
+        super().__init__(base, func)
         self.priority = priority
     def __repr__(self):
         return 'operobj({},{},func={})'.format(self.base, self.priority, self.func)
 
 class nullobj(obj):
+    """
+    The class that represents a null object.
+    In reality, it is representing a 'None' object type, but there is no way to access 'None'.
+    """
     def __init__(self):
         super().__init__(None)
 
@@ -44,12 +60,19 @@ class nullobj(obj):
         return 'nullobj()'
 
 class numobj(obj):
+    """
+    The class that represents a number.
+    This will probably be subclassed in the future.
+    """
     def __init__(self, base):
         if __debug__:
             assert isinstance(base, (int, float, complex)), type(base)
         super().__init__(base)
 
 class boolobj(numobj):
+    """
+    The classthat represents a boolean.
+    """
     def __init__(self, base):
         if __debug__:
             assert isinstance(base, bool), type(base)
@@ -57,6 +80,3 @@ class boolobj(numobj):
 
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
-n = numobj
-no = n(1.0)
-print(repr(no),str(no))
