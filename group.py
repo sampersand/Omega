@@ -59,7 +59,7 @@ class group(list):
             if __debug__:
                 print("I'm in locls. Why exactly? ::",  self.basestr, repr(locls[self.basestr]))
             import copy
-            locls['$'] = copy.copy(locls[self.basestr])
+            locls['$'] = copy.deepcopy(locls[self.basestr]) #oh boy this is slooow
         else:
             self.base.eval(self, locls)
             if __debug__:
