@@ -55,7 +55,7 @@ class omfile:
                     ret += char
         if '@eof' in ret:
             ret = ret[0:ret.find('@eof')]
-        return ret + control.delims['endline'][0][0] #';'
+        return ret + (control.delims['endline'][0][0] if ret[-1] not in control.delims['endline'][0] else '') #';'
     
     @staticmethod
     def _tokenize(rawt):
@@ -98,10 +98,7 @@ class omfile:
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        from obj import obj
-        # return [obj.frombase(v) for v in ret]
         return ret
-
     @staticmethod
     def _compresstokens(linetokens):
         def compresstokens(linegrp): #this is non-stable
@@ -140,7 +137,6 @@ class omfile:
             highest = None
             for elep in range(len(linegrp)):
                 ele = linegrp[elep].basestr
-                assert 'displ' not in control.allopers, control.allopers.keys()
                 if ele in control.allopers and (highest == None or
                         control.allopers[ele] > control.allopers[linegrp[highest].basestr]):
                     highest = elep
@@ -150,17 +146,19 @@ class omfile:
             return highest
         def fixtkns(line):
             #combine tokens using order of operations
-            if not line: return line
+            if not line:
+                return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
                     return line[0]
                 else:
                     return fixtkns(line[0])
-            fhp = findhighest(line)
-            
+            fhp = line[findhighest(line)]
             if __debug__:
-                assert isinstance(line[fhp], group), 'expected a group for fhp! (not %s)' % line[fhp]
-            ret = group(base = line[fhp].base, parens = line.parens)
+                assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
+                assert not fhp and fhp.base, fhp
+            ret = group(base = fhp.base, parens = line.parens)
+
             current = group()
             while line:
                 e = line.pop(0) #was formerly .pop(0)
@@ -171,6 +169,7 @@ class omfile:
                 else:
                     current.append(e)
             if current:
+                # print(current, '<---current, line-->', line, '   ret-->',ret)
                 ret.append(fixtkns(current))
             return ret
         return fixtkns(compresstokens(group(args = linetokens)))

@@ -11,10 +11,10 @@ class obj():
         """
         Used when passing a string to determine which base to use.
         """
-        if ele == None:
-            return nullobj()
         if isinstance(ele, obj):
             return ele
+        if ele == None:
+            return nullobj()
         if __debug__:
             assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
         return obj(ele)
@@ -25,6 +25,10 @@ class obj():
     def __repr__(self):
         return 'obj({})'.format(self.base)
 
+    def __eq__(self, other):
+        return isinstance(other, obj) and self.base == other.base
+    def __bool__(self):
+        return bool(self.base)
 class funcobj(obj):
     """
     The class that represents a function.
@@ -47,6 +51,12 @@ class operobj(funcobj):
         self.priority = priority
     def __repr__(self):
         return 'operobj({},{},func={})'.format(self.base, self.priority, self.func)
+
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+    def __gt__(self, other):
+        return self.priority > other.priority
 
 class nullobj(obj):
     """

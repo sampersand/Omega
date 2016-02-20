@@ -1,9 +1,9 @@
+from obj import *
 class group(list):
     def __new__(self, base = None, args = [], parens = ('', '')):
         return super().__new__(self, args)
     def __init__(self, base = None, args = [], parens = ('', '')):
         super().__init__(args)
-        from obj import obj
         self.base = obj.frombase(base)
         self.parens = parens
 
@@ -15,11 +15,10 @@ class group(list):
 
     @property
     def basestr(self):
-        print('basestr:',str(self.base))
-        return str(self.base)
+        return '' if isinstance(self.base, nullobj) else str(self.base)
     
-    # def hasparens(self):
-    #     return bool(self.parens[0] or self.parens[1])
+    def _hasparens(self):
+        return bool(self.parens[0] or self.parens[1])
 
     # @property
     # def basestr(self):
@@ -34,9 +33,9 @@ class group(list):
             ret += 'base = ' + repr(self.base) + ', '
         if self:
             ret += 'args = ' + super().__repr__() + ', '
-        if self.hasparens():
+        if self._hasparens():
             ret += 'parens = ' + repr(self.parens)
-        if not self.hasparens() and (self.base or self):
+        if not self._hasparens() and (self.base or self):
             ret = ret[:-2]
         return ret + ')'
 
