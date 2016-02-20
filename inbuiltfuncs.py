@@ -53,7 +53,7 @@ def _ifunc(sname, ele, locls): #sname == stripped name
     if sname == '':
         #that str is so bad lolol. when arrays are used, this should be fixed.
         locls[str(ele)] = locls['$']
-        locls['$'] = str(ele) #so its pointing to this object
+        locls['$'] = locls[str(ele)]
     else:
         assert 0, 'no known stripped name \''+sname+'\''
 

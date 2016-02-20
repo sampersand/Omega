@@ -80,9 +80,6 @@ class operobj(funcobj):
     def __repr__(self):
         return 'operobj({},{})'.format(self.base, self.priority, self.func)
 
-    def __lt__(self, other):
-        return self.priority < other.priority
-
     def __gt__(self, other):
         return self.priority > other.priority
 

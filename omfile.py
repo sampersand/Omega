@@ -169,7 +169,6 @@ class omfile:
                 else:
                     current.append(e)
             if current:
-                # print(current, '<---current, line-->', line, '   ret-->',ret)
                 ret.append(fixtkns(current))
             return ret
         return fixtkns(compresstokens(group(args = linetokens)))
