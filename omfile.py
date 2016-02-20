@@ -40,7 +40,9 @@ class omfile:
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
             elif char in control.linebreak:
-                if char in control.delims['endline'][0] and not (data & 0b10):
+                if char in control.delims['endline'][0] and\
+                     not (data & 0b10) and\
+                     ret[-1] not in control.delims['endline'][0]:
                     ret += control.delims['endline'][0][0]
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns
                     # ret += char
@@ -53,7 +55,7 @@ class omfile:
                     ret += char
         if '@eof' in ret:
             ret = ret[0:ret.find('@eof')]
-        return ret + control.delims['endline'][0]
+        return ret + control.delims['endline'][0][0] #';'
     
     @staticmethod
     def _tokenize(rawt):
@@ -97,6 +99,7 @@ class omfile:
                 control.applyrules(ret.pop(0))
             linep+=1
         from obj import obj
+        assert 0, [obj.frombase(v) for v in ret]
         return [obj.frombase(v) for v in ret]
 
     @staticmethod
