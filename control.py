@@ -16,7 +16,8 @@ allquotes = '\'\"`'
 
 delims = {'arraysep':(',', operobj(',', 14)),
           'etc':('|', operobj('|', 14)),
-          'endline':(';\n', operobj(';', 14))
+          'endline':(';\n', operobj(';', 14)),
+          'applier':(':', operobj(':', 0)),
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {
@@ -38,7 +39,6 @@ consts = {
 }
 opers = {
     'binary':{
-        ':'   : operobj(':',      0), # association
         '**'  : operobj('**',     3), # power of
         '*'   : operobj('*',      4), # mult
         '/'   : operobj('/',      4), # div

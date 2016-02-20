@@ -7,7 +7,12 @@ def evaloper(base, eles, locls):
         assert base is eles.base #shouldn't be any other way...
         assert name in control.allopers #how would it get passed here??
     if name in control.alldelims:
-        if name in control.delims['arraysep'][0]:
+        if name in control.delims['endline'][0]:
+            for ele in eles:
+                ele.eval(locls) # _should_ set locls['$'] by itself
+        elif name in control.delims['applier'][0]:
+            assert 0, repr(eles)
+        elif name in control.delims['arraysep'][0]:
             from group import group
             from obj import arrayobj
             ret = arrayobj()
@@ -15,9 +20,6 @@ def evaloper(base, eles, locls):
                 ele.eval(locls)
                 ret.base.append(locls['$'])
             locls['$'] = group(base = ret)
-        elif name in control.delims['endline'][0]:
-            for ele in eles:
-                ele.eval(locls) # _should_ set locls['$'] by itself
         else:
             raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
     elif '<' == name[0] and name[-1] == '-' or name[0] == '-' and name[-1] == '>':
