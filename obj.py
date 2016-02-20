@@ -27,8 +27,13 @@ class obj():
 
     def __eq__(self, other):
         return isinstance(other, obj) and self.base == other.base
+
     def __bool__(self):
         return bool(self.base)
+
+    def eval(self, eles, locls):
+        locls['$'] = self.base
+
 class funcobj(obj):
     """
     The class that represents a function.
@@ -39,9 +44,13 @@ class funcobj(obj):
         if __debug__:
             assert func == None or hasattr(func, '__call__'), type(func)
         self.func = func
+
     def __repr__(self):
         return 'funcobj({},base={})'.format(self.func, self.base)
 
+    def eval(self, eles, locls):
+        if self.func == None:
+            pass
 class operobj(funcobj):
     """
     The class that represents operators on objects.
