@@ -18,6 +18,9 @@ class obj():
             return nullobj()
         if __debug__:
             assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
+        import control
+        if ele in control.allfuncs:
+            return control.allfuncs[ele]
         return obj(ele)
 
     def __str__(self):
@@ -33,14 +36,15 @@ class obj():
         return bool(self.base)
 
     def eval(self, eles, locls):
-        locls['$'] = self.base
+        if __debug__:
+            assert eles.base is self
+        locls['$'] = eles
 
 class funcobj(obj):
     """
     The class that represents a function.
     """
     def __init__(self, base, func = None):
-        #warning this is backwards...
         super().__init__(base)
         if __debug__:
             assert func == None or hasattr(func, '__call__'), type(func)
@@ -50,26 +54,53 @@ class funcobj(obj):
         return 'funcobj({},base={})'.format(self.func, self.base)
 
     def eval(self, eles, locls):
-        if self.func == None:
-            import builtins
-            builtins
+        if __debug__:
+            assert eles.base is self
+        import control
+        if self.base in control.funcs:
+            if __debug__:
+                assert self.func == None, str(self) + " can't be in control.functions & have a function defined! \
+(supposed to be defined in inbuiltfuncs)"
+            import inbuiltfuncs
+            return inbuiltfuncs.evalfunc(self, eles, locls)
+        if __debug__:
+            x = locls['$']
+        self.func(eles, locls)
+        if __debug__:
+            assert locls['$'] is not x, "function {} didn't do anything!".format(self)
 
 class operobj(funcobj):
     """
     The class that represents operators on objects.
     """
-    def __init__(self, base, priority, func = None):
-        super().__init__(base, func)
+    def __init__(self, base, priority):
+        super().__init__(base, None)
         self.priority = priority
 
     def __repr__(self):
-        return 'operobj({},{},func={})'.format(self.base, self.priority, self.func)
+        return 'operobj({},{})'.format(self.base, self.priority, self.func)
 
     def __lt__(self, other):
         return self.priority < other.priority
 
     def __gt__(self, other):
         return self.priority > other.priority
+
+    def eval(self, eles, locls):
+        if __debug__:
+            assert eles.base is self
+            import control
+            assert self.base in control.allopers, str(self) + " needs to be in control.allopers!"
+            assert self.func == None, str(self) +" can't be in control.functions & have a fun\
+(supposed to be defined in inbuiltfuncs)"
+        import inbuiltfuncs
+        if __debug__:
+            x = locls['$']
+        inbuiltfuncs.evaloper(self, eles, locls)
+        if __debug__:
+            assert locls['$'] is not x, "operator {} didn't do anything!".format(self)
+
+
 
 class nullobj(obj):
     """
@@ -103,6 +134,9 @@ class boolobj(numobj):
 
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
+
+
+
 
 
 

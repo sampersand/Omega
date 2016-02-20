@@ -55,12 +55,38 @@ class group(list):
         return super().__getitem__(item)
 
     def eval(self, locls):
-        if self.basestr in locls: #short cut
-            if __debug__:
-                print("I'm in locls. Why exactly? ::",  self.basestr, repr(locls[self.basestr]))
-            locls['$'] = locls[self.basestr]
-        else:
-            locls['$'] = self.base.eval(self, locls)
+        # if self.basestr in locls: #short cut
+        #     if __debug__:
+        #         print("I'm in locls. Why exactly? ::",  self.basestr, repr(locls[self.basestr]))
+        #     locls['$'] = locls[self.basestr]
+        # else:
+        self.base.eval(self, locls)
         if __debug__:
-            assert isinstance(locls['$'], group)
+            assert isinstance(locls['$'], group), locls
         return locls['$']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

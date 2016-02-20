@@ -34,64 +34,68 @@ consts = {
 }
 opers = {
     'binary':{
-        ':'   : operobj(':',      0, None), # association
-        '**'  : operobj('**',     3, lambda x, y: x ** y), # power of
-        '*'   : operobj('*',      4, lambda x, y: x *  y), # mult
-        '/'   : operobj('/',      4, lambda x, y: x /  y), # div
-        '%'   : operobj('%',      4, lambda x, y: x %  y), # mod
-        '+'   : operobj('+',      5, lambda x, y: x +  y), # plus
-        '-'   : operobj('-',      5, lambda x, y: x -  y), # minus
-        'b<<' : operobj('b<<',    6, lambda x, y: x << y), # bitwise <<
-        'b>>' : operobj('b<<',    6, lambda x, y: x >> y), # bitwise >>
-        'b&'  : operobj('b&',     7, lambda x, y: x &  y), # bitwise &
-        'b^'  : operobj('b^',     8, lambda x, y: x ^  y), # bitwise ^
-        'b|'  : operobj('b|',     9, lambda x, y: x |  y), # bitwise |
-        '<'   : operobj('<',     10, lambda x, y: x <  y), # less than
-        '>'   : operobj('>',     10, lambda x, y: x >  y), # greater than
-        '<='  : operobj('<=',    10, lambda x, y: x <= y), # less than or equal
-        '>='  : operobj('>=',    10, lambda x, y: x >= y), # greater than or equal
-        '=='  : operobj('==',    10, lambda x, y: x == y), # equal to
-        '='   : operobj('=',     10, lambda x, y: x == y), # equal to
-        '<>'  : operobj('<>',    10, lambda x, y: x != y), # equal to
-        '!='  : operobj('!=',    10, lambda x, y: x != y), # not equal to
-        '&&'  : operobj('&&',    11, None), # boolean and
-        '||'  : operobj('||',    12, None), # booleon or
+        ':'   : operobj(':',      0), # association
+        '**'  : operobj('**',     3), # power of
+        '*'   : operobj('*',      4), # mult
+        '/'   : operobj('/',      4), # div
+        '%'   : operobj('%',      4), # mod
+        '+'   : operobj('+',      5), # plus
+        '-'   : operobj('-',      5), # minus
+        'b<<' : operobj('b<<',    6), # bitwise <<
+        'b>>' : operobj('b<<',    6), # bitwise >>
+        'b&'  : operobj('b&',     7), # bitwise &
+        'b^'  : operobj('b^',     8), # bitwise ^
+        'b|'  : operobj('b|',     9), # bitwise |
+        '<'   : operobj('<',     10), # less than
+        '>'   : operobj('>',     10), # greater than
+        '<='  : operobj('<=',    10), # less than or equal
+        '>='  : operobj('>=',    10), # greater than or equal
+        '=='  : operobj('==',    10), # equal to
+        '='   : operobj('=',     10), # equal to
+        '<>'  : operobj('<>',    10), # equal to
+        '!='  : operobj('!=',    10), # not equal to
+        '&&'  : operobj('&&',    11), # boolean and
+        '||'  : operobj('||',    12), # booleon or
         #assignment operators
         # all notes are in form of "x OPERATOR y" like 'x <- y'
-        '<-'   : operobj('<-',   13, None), # x = y
-        '<?-'  : operobj('<?-',  13, None), # x = bool(y) ? y : None
-        '<+-'  : operobj('<+-',  13, None), # x += y
-        '<--'  : operobj('<--',  13, None), # x -= y
-        '<*-'  : operobj('<*-',  13, None), # x *= y
-        '</-'  : operobj('</-',  13, None), # x /= y
-        '<**-' : operobj('<**-', 13, None), # x **= y
-        '<%-'  : operobj('<%-',  13, None), # x %= y
-        '<&-'  : operobj('<&-',  13, None), # x &= y
-        '<|-'  : operobj('<|-',  13, None), # x |= y
-        '<^-'  : operobj('<^-',  13, None), # x ^= y
-        '<<-'  : operobj('<<-',  13, None), # x <<= y
-        '<>-'  : operobj('<>-',  13, None), # x >>= y
+        '<-'   : operobj('<-',   13), # x = y
+        '<?-'  : operobj('<?-',  13), # x = bool(y) ? y : None
+        '<+-'  : operobj('<+-',  13), # x += y
+        '<--'  : operobj('<--',  13), # x -= y
+        '<*-'  : operobj('<*-',  13), # x *= y
+        '</-'  : operobj('</-',  13), # x /= y
+        '<**-' : operobj('<**-', 13), # x **= y
+        '<%-'  : operobj('<%-',  13), # x %= y
+        '<&-'  : operobj('<&-',  13), # x &= y
+        '<|-'  : operobj('<|-',  13), # x |= y
+        '<^-'  : operobj('<^-',  13), # x ^= y
+        '<<-'  : operobj('<<-',  13), # x <<= y
+        '<>-'  : operobj('<>-',  13), # x >>= y
         #inverted assignment operators
         # all notes are in form of "x OPERATOR y" like 'x -> y'
-        '->'   : operobj('->',   13, None), # y = x
-        '-?>'  : operobj('-?>',  13, None), # y = bool(x) ? x : None
-        '-+>'  : operobj('-+>',  13, None), # y += x
-        '-->'  : operobj('-->',  13, None), # y -= x 
-        '-*>'  : operobj('-*>',  13, None), # y *= x 
-        '-/>'  : operobj('-/>',  13, None), # y /= x 
-        '-**>' : operobj('-**>', 13, None), # y **= x 
-        '-%>'  : operobj('-%>',  13, None), # y %= x 
-        '-&>'  : operobj('-&>',  13, None), # y &= x 
-        '-|>'  : operobj('-|>',  13, None), # y |= x 
-        '-^>'  : operobj('-^>',  13, None), # y ^= x 
-        '-<>'  : operobj('-<>',  13, None), # y <<= x 
-        '->>'  : operobj('->>',  13, None)  # y >>= x 
+        '->'   : operobj('->',   13), # y = x
+        '-?>'  : operobj('-?>',  13), # y = bool(x) ? x : None
+        '-+>'  : operobj('-+>',  13), # y += x
+        '-->'  : operobj('-->',  13), # y -= x 
+        '-*>'  : operobj('-*>',  13), # y *= x 
+        '-/>'  : operobj('-/>',  13), # y /= x 
+        '-**>' : operobj('-**>', 13), # y **= x 
+        '-%>'  : operobj('-%>',  13), # y %= x 
+        '-&>'  : operobj('-&>',  13), # y &= x 
+        '-|>'  : operobj('-|>',  13), # y |= x 
+        '-^>'  : operobj('-^>',  13), # y ^= x 
+        '-<>'  : operobj('-<>',  13), # y <<= x 
+        '->>'  : operobj('->>',  13)  # y >>= x 
          },
     'unary':{
-        'l':{'~':operobj('~', 1, lambda x, y: ~y),
-             'pos':operobj('pos', 1, lambda x, y: +y),
-             'neg':operobj('neg', 1, lambda x, y: -y)},
-        'r':{'!':operobj('!', 2, lambda x, y: not x)}
+        'l':{
+            '~'  :operobj('~',    1),
+            'pos':operobj('pos',  1),
+            'neg':operobj('neg',  1),
+            },
+        'r':{
+            '!'  :operobj('!',    2),
+            }
     }
 }
 funcs = {
@@ -103,7 +107,7 @@ funcs = {
     'displ': funcobj('displ'),
     'dispc': funcobj('dispc'), #commas bxn elements
     'skip': funcobj('skip'), #ignore that line
-    'del': funcobj('del'), #commas bxn elements
+    'del': funcobj('del'),
 }
 
 for d in delims.values():
