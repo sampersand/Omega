@@ -108,8 +108,6 @@ funcs = {
     'for': funcobj('for'),
     'disp': funcobj('disp'),
     'abort': funcobj('abort'),
-    'displ': funcobj('displ'),
-    'dispc': funcobj('dispc'), #commas bxn elements
     'skip': funcobj('skip'), #ignore that line
     'del': funcobj('del'),
 }

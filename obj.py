@@ -71,8 +71,6 @@ class funcobj(obj):
         return 'funcobj({},base={})'.format(self.func, self.base)
 
     def eval(self, eles, locls):
-        if __debug__:
-            assert eles.base is self
         import control
         if self.base in control.funcs:
             if __debug__:

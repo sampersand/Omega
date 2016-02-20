@@ -1,5 +1,10 @@
 def evalfunc(base, eles, locls):
-    pass
+    name = str(base)
+    if name == 'disp':
+        print(repr(eles))
+        # sep = ', ' 
+    else:
+        raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
     name = str(base)
     import control
@@ -11,7 +16,7 @@ def evaloper(base, eles, locls):
             for ele in eles:
                 ele.eval(locls) # _should_ set locls['$'] by itself
         elif name in control.delims['applier'][0]:
-            assert 0, repr(eles)
+            eles[0].base.eval(eles[1:], locls)
         elif name in control.delims['arraysep'][0]:
             from group import group
             from obj import arrayobj
@@ -23,27 +28,6 @@ def evaloper(base, eles, locls):
         else:
             raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
     elif '<' == name[0] and name[-1] == '-' or name[0] == '-' and name[-1] == '>':
-        """
-            hm... take the following code:
-
-                    a <- 4;
-                    b <- 2;
-                    1 + 2 -+> a -+> b 
-
-            regardless of how '-+>' is percieved,
-
-                    a == 7
-
-            However, should:
-
-                    b == 5 #(aka the '$' from 1 + 2 and b's old value)#
-
-            or should:
-
-                    b == 9 #(aka the '$' right before it's evaluated and b's old value)#
-
-            I think i'll go wtih the second option.
-        """
         d = name[0] == '-'
         name = name[1:-1]
         eles[1 - d].eval(locls)
@@ -57,7 +41,34 @@ def evaloper(base, eles, locls):
             locls['$'].base.updatebase(name, last.base)
 
 def _ioperfunc(sname, ele, locls): #sname == stripped name
-    #DO NOT USE STR IN THE FUTURE. IT WILL MESS EVERYTHING UP!
+    """
+
+        !!! DO NOT USE STR IN THE FUTURE. IT WILL MESS EVERYTHING UP !!!
+
+        aka, remove locls[str(eles)]
+
+
+        hm... take the following code:
+
+                a <- 4;
+                b <- 2;
+                1 + 2 -+> a -+> b 
+
+        regardless of how '-+>' is percieved,
+
+                a == 7
+
+        However, should:
+
+                b == 5 #(aka the '$' from 1 + 2 and b's old value)#
+
+        or should:
+
+                b == 9 #(aka the '$' right before it's evaluated and b's old value)#
+
+        I think i'll go wtih the second option.
+    """
+
     if sname == '':
         locls[str(ele)] = locls['$']
     else:
