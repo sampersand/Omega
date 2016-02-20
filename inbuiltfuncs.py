@@ -51,12 +51,14 @@ def evaloper(base, eles, locls):
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
-            _operfunc(name, ele, locls)
-def _operfunc(name, ele, locls):
-    if __debug__:
-        assert str(ele) in locls
-    if name == '+':
-        locls['$'] =
+            last = locls['$']
+            ele.eval(locls)
+            if __debug__:
+                from group import group
+                assert isinstance(locls['$'], group)
+            last.base = last.base.dofunc(name,locls['$'].base)
+            locls['$'] = last
+
 def _ioperfunc(sname, ele, locls): #sname == stripped name
     #assuming the direction is '->'
     if sname == '':

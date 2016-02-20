@@ -6,6 +6,10 @@ comment = '#'
 allkeywords = {}
 escape = '\\'
 datadef = '@'
+
+import re
+numre = re.compile(r'^(?:0[oxbeOXBE])?[\d.]+$')
+
 nbwhitespace = ' \t\x0b\x0c'
 whitespace = nbwhitespace + linebreak
 allquotes = '\'\"`'

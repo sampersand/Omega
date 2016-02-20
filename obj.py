@@ -21,6 +21,9 @@ class obj():
         import control
         if ele in control.allfuncs:
             return control.allfuncs[ele]
+        import re
+        if re.fullmatch(control.numre, ele):
+            return numobj.fromstr(ele)
         return obj(ele)
 
     def __str__(self):
@@ -39,6 +42,21 @@ class obj():
         if __debug__:
             assert eles.base is self
         locls['$'] = eles
+
+    def dofunc(self, name, other):
+        if   name == '+' : self.base += other.base
+        elif name == '-' : self.base -= other.base
+        elif name == '%' : self.base %= other.base
+        elif name == '/' : self.base /= other.base
+        elif name == '*' : self.base *= other.base
+        elif name == '**': self.base **= other.base
+        elif name == 'b>': self.base >>= other.base
+        elif name == 'b<': self.base <<= other.base
+        elif name == 'b^': self.base ^= other.base
+        elif name == 'b|': self.base |= other.base
+        elif name == 'b&': self.base &= other.base
+        else: raise ValueError("Unkown operator '{}'".format(name))
+        return self
 
 class funcobj(obj):
     """
@@ -91,12 +109,7 @@ class operobj(funcobj):
             assert self.func == None, str(self) +" can't be in control.functions & have a fun\
 (supposed to be defined in inbuiltfuncs)"
         import inbuiltfuncs
-        if __debug__:
-            x = locls['$']
         inbuiltfuncs.evaloper(self, eles, locls)
-        if __debug__:
-            assert locls['$'] is not x, "operator {} didn't do anything!".format(self)
-
 
 
 class nullobj(obj):
@@ -115,12 +128,23 @@ class numobj(obj):
     The class that represents a number.
     This will probably be subclassed in the future.
     """
+    TYPES = (int, float, complex)
     def __init__(self, base):
         if __debug__:
-            assert isinstance(base, (int, float, complex)), type(base)
+            assert isinstance(base, numobj.TYPES), type(base)
         super().__init__(base)
     def __repr__(self):
         return 'numobj({})'.format(self.base)
+
+    @staticmethod
+    def fromstr(base):
+        for typ in numobj.TYPES:
+            try:
+                return numobj(typ(base))
+            except:
+                pass
+        raise SyntaxError("Cannot convert string '{}' to numobj".format(base))
+
 class boolobj(numobj):
     """
     The class that represents a boolean.
