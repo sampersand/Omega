@@ -50,7 +50,9 @@ class funcobj(obj):
 
     def eval(self, eles, locls):
         if self.func == None:
-            pass
+            import builtins
+            builtins
+
 class operobj(funcobj):
     """
     The class that represents operators on objects.
