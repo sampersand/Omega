@@ -99,8 +99,8 @@ class omfile:
                 control.applyrules(ret.pop(0))
             linep+=1
         from obj import obj
-        assert 0, [obj.frombase(v) for v in ret]
-        return [obj.frombase(v) for v in ret]
+        # return [obj.frombase(v) for v in ret]
+        return ret
 
     @staticmethod
     def _compresstokens(linetokens):
@@ -113,6 +113,7 @@ class omfile:
                 else:
                     toappend = group()
                     parens = {str(ele):1}
+                    print(parens)
                     while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
                         if str(toappend[-1]) in control.allparens:
@@ -130,6 +131,7 @@ class omfile:
                     toappend.parens = (str(ele), str(toappend.pop()))
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
+            print('compresstokens: ', ret)
             return ret
         def findhighest(linegrp):
             if __debug__:

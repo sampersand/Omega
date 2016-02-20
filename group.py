@@ -15,6 +15,7 @@ class group(list):
 
     @property
     def basestr(self):
+        print('basestr:',str(self.base))
         return str(self.base)
     
     # def hasparens(self):

@@ -14,7 +14,7 @@ class obj():
         if ele == None:
             return nullobj()
         if isinstance(ele, obj):
-            return obj
+            return ele
         if __debug__:
             assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
         return obj(ele)
