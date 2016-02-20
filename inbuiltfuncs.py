@@ -45,17 +45,43 @@ def evaloper(base, eles, locls):
         if name[0] == '-':
             eles[0].eval(locls)
             for ele in eles[1:]:
-                _ifunc(name[1:-1], ele, locls)
+                _ioperfunc(name[1:-1], ele, locls)
         else:
             assert 0, 'not ready for backwards arrows yet'
-def _ifunc(sname, ele, locls): #sname == stripped name
+    else:
+        eles[0].eval(locls)
+        for ele in eles[1:]:
+            _operfunc(name, ele, locls)
+def _operfunc(name, ele, locls):
+    if __debug__:
+        assert str(ele) in locls
+    if name == '+':
+        locls['$'] =
+def _ioperfunc(sname, ele, locls): #sname == stripped name
     #assuming the direction is '->'
     if sname == '':
-        #that str is so bad lolol. when arrays are used, this should be fixed.
+        #DO NOT USE STR IN THE FUTURE. IT WILL MESS EVERYTHING UP!
         locls[str(ele)] = locls['$']
         locls['$'] = locls[str(ele)]
     else:
-        assert 0, 'no known stripped name \''+sname+'\''
+        if str(ele) not in locls:
+            locls[str(ele)] = locls['$']
+            locls['$'] = locls[str(ele)]
+            return
+        else:
+            import control
+            from group import group
+            group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']]).eval(locls)
+            locls[str(ele)] = locls['$']
+            locls['$'] = locls[str(ele)]
+
+
+
+
+
+
+
+
 
 
 
