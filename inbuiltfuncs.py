@@ -47,7 +47,9 @@ def evaloper(base, eles, locls):
             for ele in eles[1:]:
                 _ioperfunc(name[1:-1], ele, locls)
         else:
-            assert 0, 'not ready for backwards arrows yet'
+            eles[-1].eval(locls)
+            for ele in eles[:-1]:
+                _ioperfunc(name[1:-1], ele, locls)
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
