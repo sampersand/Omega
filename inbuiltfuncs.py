@@ -42,46 +42,34 @@ def evaloper(base, eles, locls):
 
             I think i'll go wtih the second option.
         """
-        if name[0] == '-':
-            eles[0].eval(locls)
-            for ele in eles[1:]:
-                _ioperfunc(name[1:-1], ele, locls)
-        else:
-            eles[-1].eval(locls)
-            for ele in eles[:-1]:
-                _ioperfunc(name[1:-1], ele, locls)
+        d = name[0] == '-'
+        name = name[1:-1]
+        eles[1 - d].eval(locls)
+        for ele in eles[slice(d or None, 1 - d or None, None)]:
+            _ioperfunc(name, ele, locls)
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
             last = locls['$']
             ele.eval(locls)
-            if __debug__:
-                from group import group
-                assert isinstance(locls['$'], group)
-            last.base.updatebase(name,locls['$'].base)
-            locls['$'] = last
+            locls['$'].base.updatebase(name, last.base)
 
 def _ioperfunc(sname, ele, locls): #sname == stripped name
-    #assuming the direction is '->'
-    import copy
+    #DO NOT USE STR IN THE FUTURE. IT WILL MESS EVERYTHING UP!
     if sname == '':
-        #DO NOT USE STR IN THE FUTURE. IT WILL MESS EVERYTHING UP!
         locls[str(ele)] = locls['$']
-        # locls['$'] = locls[str(ele)]
     else:
         if str(ele) not in locls:
             assert 0, 'what happens here??'
             locls[str(ele)] = locls['$']
-            # locls['$'] = locls[str(ele)]
             return
         else:
             import control
             from group import group
             g = group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']])
-            print(g[0] is locls['a'])
             g.eval(locls)
+            import copy
             locls[str(ele)] = copy.deepcopy(locls['$'])
-            # locls['$'] = locls[str(ele)]
 
 
 
