@@ -53,11 +53,9 @@ class group(list):
             return group(base = self.base, args = super().__getitem__(item), parens = self.parens)
         return super().__getitem__(item)
     def eval(self, locls):
-        import control
-        if __debug__:
-            assert self.basestr != None
         if self.basestr in locls: #short cut
-            print('i\'m in locls::',self.basestr, repr(locls[self.basestr]))
+            if __debug__:
+                print("I'm in locls. Why exactly? ::",  self.basestr, repr(locls[self.basestr]))
             locls['$'] = locls[self.basestr]
         else:
             locls['$'] = self.base.eval(self, locls)
