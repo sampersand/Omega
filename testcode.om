@@ -1,6 +1,7 @@
+disp::1
+@eof
 3 -> a;
 b<-a+(a<+-1);
-disp::1
 @eof
 disp:(1,2,3)::1
 

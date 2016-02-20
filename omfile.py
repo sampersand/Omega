@@ -110,7 +110,6 @@ class omfile:
                 else:
                     toappend = group()
                     parens = {str(ele):1}
-                    print(parens)
                     while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
                         if str(toappend[-1]) in control.allparens:
@@ -128,7 +127,6 @@ class omfile:
                     toappend.parens = (str(ele), str(toappend.pop()))
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
-            print('compresstokens: ', ret)
             return ret
         def findhighest(linegrp):
             if __debug__:
@@ -147,6 +145,8 @@ class omfile:
         def fixtkns(line):
             #combine tokens using order of operations
             if not line:
+                # if __debug__:
+                    # assert 0, "when does this ever happen??"
                 return line
             if len(line) == 1: #if the line is literally a single element
                 if len(line[0]) == 0: #if the line is literally a single constant
@@ -158,19 +158,20 @@ class omfile:
                 assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
                 assert not fhp and fhp.base, fhp
             ret = group(base = fhp.base, parens = line.parens)
-
             current = group()
             while line:
                 e = line.pop(0) #was formerly .pop(0)
                 if e.base == ret.base:
-                    if current:
-                        ret.append(fixtkns(current))
+                    # if current: #these used to strip out null values, but is ignored now
+                    #     ret.append(fixtkns(current))
+                    ret.append(fixtkns(current))
                     current = group()
                 else:
                     current.append(e)
             if current:
                 ret.append(fixtkns(current))
             return ret
+        assert 0, str(fixtkns(compresstokens(group(args = linetokens))))
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
