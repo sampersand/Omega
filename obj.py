@@ -43,7 +43,7 @@ class obj():
             assert eles.base is self
         locls['$'] = eles
 
-    def dofunc(self, name, other):
+    def updatebase(self, name, other):
         if   name == '+' : self.base += other.base
         elif name == '-' : self.base -= other.base
         elif name == '%' : self.base %= other.base
@@ -56,7 +56,6 @@ class obj():
         elif name == 'b|': self.base |= other.base
         elif name == 'b&': self.base &= other.base
         else: raise ValueError("Unkown operator '{}'".format(name))
-        return self
 
 class funcobj(obj):
     """

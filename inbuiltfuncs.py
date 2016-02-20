@@ -58,26 +58,30 @@ def evaloper(base, eles, locls):
             if __debug__:
                 from group import group
                 assert isinstance(locls['$'], group)
-            last.base = last.base.dofunc(name,locls['$'].base)
+            last.base.updatebase(name,locls['$'].base)
             locls['$'] = last
 
 def _ioperfunc(sname, ele, locls): #sname == stripped name
     #assuming the direction is '->'
+    import copy
     if sname == '':
         #DO NOT USE STR IN THE FUTURE. IT WILL MESS EVERYTHING UP!
         locls[str(ele)] = locls['$']
-        locls['$'] = locls[str(ele)]
+        # locls['$'] = locls[str(ele)]
     else:
         if str(ele) not in locls:
+            assert 0, 'what happens here??'
             locls[str(ele)] = locls['$']
-            locls['$'] = locls[str(ele)]
+            # locls['$'] = locls[str(ele)]
             return
         else:
             import control
             from group import group
-            group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']]).eval(locls)
-            locls[str(ele)] = locls['$']
-            locls['$'] = locls[str(ele)]
+            g = group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']])
+            print(g[0] is locls['a'])
+            g.eval(locls)
+            locls[str(ele)] = copy.deepcopy(locls['$'])
+            # locls['$'] = locls[str(ele)]
 
 
 
