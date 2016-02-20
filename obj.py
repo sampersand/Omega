@@ -122,10 +122,11 @@ class numobj(obj):
         if __debug__:
             assert isinstance(base, (int, float, complex)), type(base)
         super().__init__(base)
-
+    def __repr__(self):
+        return 'numobj({})'.format(self.base)
 class boolobj(numobj):
     """
-    The classthat represents a boolean.
+    The class that represents a boolean.
     """
     def __init__(self, base):
         if __debug__:
@@ -135,7 +136,16 @@ class boolobj(numobj):
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
 
-
+class arrayobj(numobj):
+    """
+    The class that represents an array.
+    """
+    def __init__(self, base):
+        if __debug__:
+            assert isinstance(base, list), type(base) #atm, no tuples or sets or whatnot
+        super().__init__(base)
+    def __repr__(self):
+        return 'arrayobj({})'.format(self.base)
 
 
 
