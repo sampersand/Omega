@@ -58,6 +58,15 @@ class obj():
         elif name == 'b&': self.base &= other.base
         else: raise ValueError("Unkown operator '{}'".format(name))
 
+    def comparebase(self, name, other):
+        if   name == '<' :                 self.base <  other.base
+        elif name == '>' :                 self.base >  other.base
+        elif name == '<=':                 self.base <= other.base
+        elif name == '>=':                 self.base >= other.base
+        elif name == '==' or name == '=':  self.base == other.base
+        elif name == '!=' or name == '<>': self.base != other.base
+        else: raise ValueError("Unkown comparator '{}'".format(name))
+
 class funcobj(obj):
     """
     The class that represents a function.
@@ -121,6 +130,9 @@ class nullobj(obj):
     def __repr__(self):
         return 'nullobj()'
 
+    def eval(self, eles, locls):
+        pass #do not change this
+
 class numobj(obj):
     """
     The class that represents a number.
@@ -163,10 +175,10 @@ class strobj(obj):
         if __debug__:
             assert isinstance(base, str), type(base)
         import control
-        if base and base[0] in control.allquotes:
-            base = base[1:]
-        if base and base[-1] in control.allquotes:
-            base = base[:-1]
+        # if base and base[0] in control.allquotes:
+        #     base = base[1:]
+        # if base and base[-1] in control.allquotes:
+        #     base = base[:-1]
         super().__init__(base)
 
     def __repr__(self):
@@ -177,10 +189,10 @@ class strobj(obj):
         base = self.base
         for c in control.escapechars:
             base = base.replace(c, control.escapechars[c])
+        if base and base[0] in control.allquotes:  base = base[1:]
+        if base and base[-1] in control.allquotes: base = base[:-1]
         return base
 
-    def __str__(self):
-        return repr(self.base)
 class arrayobj(numobj):
     """
     The class that represents an array.

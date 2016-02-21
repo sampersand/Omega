@@ -2,23 +2,37 @@ def evalfunc(base, eles, locls):
     name = str(base)
     if name == 'disp':
         from obj import strobj
-        args, sep, end = [''], ', ', '\n'
+        args, sep, end = ('', ), ', ', '\n'
         if len(eles) > 0:
             from obj import nullobj
             if not isinstance(eles[0].base, nullobj):
-                args = (strobj(str(a)).scrub() for a in eles[0])
+                args = (strobj(str(eles[0])).scrub(),) or (strobj(str(a)).scrub() for a in eles[0])
             if len(eles) > 1:
-                if __debug__:
-                    assert isinstance(eles[1].base, strobj)
                 if not isinstance(eles[1].base, nullobj):
+                    if __debug__:
+                        assert isinstance(eles[1].base, strobj)
                     sep = eles[1].base.scrub()
                 if len(eles) > 2:
-                    if __debug__:
-                        assert isinstance(eles[2].base, strobj)
                     if not isinstance(eles[2].base, nullobj):
+                        if __debug__:
+                            assert isinstance(eles[2].base, strobj)
                         end = eles[2].base.scrub()
         print(*args, sep = sep, end = end)
-    
+    elif name == 'if':
+        from group import group
+        cond, iftrue, iffalse = group(), group(), group()
+        if len(eles) > 0:
+            cond = eles[0]
+            if len(eles) > 1:
+                iftrue = eles[1]
+                if len(eles) > 2:
+                    iffalse = eles[2]
+                    if __debug__:
+                        if len(eles) > 3:
+                            raise SyntaxError('Not allowed to have more than 3 arguments for if statements!')
+        cond.eval(locls)
+        print('@', cond, iftrue, iffalse, locls,sep='\t|\t')
+        (iftrue if cond else iffalse).eval(locls)
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
@@ -49,6 +63,12 @@ def evaloper(base, eles, locls):
         eles[1 - d].eval(locls)
         for ele in eles[slice(d or None, 1 - d or None, None)]:
             _ioperfunc(name, ele, locls)
+    elif name in {'<', '>', '<=', '>=', '==', '=', '<>', '!='}:
+        eles[0].eval(locls)
+        for ele in eles[1:]:
+            last = locls['$']
+            ele.eval(locls)
+            locls['$'].base.comparebase(name, last.base)
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:

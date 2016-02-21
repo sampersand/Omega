@@ -18,10 +18,10 @@ strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
 escapechars = {'\\n': '\n',
                '\\t': '\t',
                '\\r': '\r'}
-delims = {'arraysep':(',', operobj(',', 14)),
-          'etc':('|', operobj('|', 14)),
-          'endline':(';\n', operobj(';', 14)),
-          'applier':(':', operobj(':', 0)),
+delims = {'arraysep':(',', operobj(',', 15)),
+          'etc':('|', operobj('|', 15)),
+          'endline':(';\n', operobj(';', 15)),
+          'applier':(':', operobj(':', 13)),
           }
 parens = {'l':'([{', 'r':')]}'}
 consts = {
@@ -66,34 +66,34 @@ opers = {
         '||'  : operobj('||',    12), # booleon or
         #assignment operators
         # all notes are in form of "x OPERATOR y" like 'x <- y'
-        '<-'   : operobj('<-',   13), # x = y
-        '<?-'  : operobj('<?-',  13), # x = bool(y) ? y : None
-        '<+-'  : operobj('<+-',  13), # x += y
-        '<--'  : operobj('<--',  13), # x -= y
-        '<*-'  : operobj('<*-',  13), # x *= y
-        '</-'  : operobj('</-',  13), # x /= y
-        '<**-' : operobj('<**-', 13), # x **= y
-        '<%-'  : operobj('<%-',  13), # x %= y
-        '<&-'  : operobj('<&-',  13), # x &= y
-        '<|-'  : operobj('<|-',  13), # x |= y
-        '<^-'  : operobj('<^-',  13), # x ^= y
-        '<<-'  : operobj('<<-',  13), # x <<= y
-        '<>-'  : operobj('<>-',  13), # x >>= y
+        '<-'   : operobj('<-',   14), # x = y
+        '<?-'  : operobj('<?-',  14), # x = bool(y) ? y : None
+        '<+-'  : operobj('<+-',  14), # x += y
+        '<--'  : operobj('<--',  14), # x -= y
+        '<*-'  : operobj('<*-',  14), # x *= y
+        '</-'  : operobj('</-',  14), # x /= y
+        '<**-' : operobj('<**-', 14), # x **= y
+        '<%-'  : operobj('<%-',  14), # x %= y
+        '<&-'  : operobj('<&-',  14), # x &= y
+        '<|-'  : operobj('<|-',  14), # x |= y
+        '<^-'  : operobj('<^-',  14), # x ^= y
+        '<<-'  : operobj('<<-',  14), # x <<= y
+        '<>-'  : operobj('<>-',  14), # x >>= y
         #inverted assignment operators
         # all notes are in form of "x OPERATOR y" like 'x -> y'
-        '->'   : operobj('->',   13), # y = x
-        '-?>'  : operobj('-?>',  13), # y = bool(x) ? x : None
-        '-+>'  : operobj('-+>',  13), # y += x
-        '-->'  : operobj('-->',  13), # y -= x 
-        '-*>'  : operobj('-*>',  13), # y *= x 
-        '-/>'  : operobj('-/>',  13), # y /= x 
-        '-**>' : operobj('-**>', 13), # y **= x 
-        '-%>'  : operobj('-%>',  13), # y %= x 
-        '-&>'  : operobj('-&>',  13), # y &= x 
-        '-|>'  : operobj('-|>',  13), # y |= x 
-        '-^>'  : operobj('-^>',  13), # y ^= x 
-        '-<>'  : operobj('-<>',  13), # y <<= x 
-        '->>'  : operobj('->>',  13)  # y >>= x 
+        '->'   : operobj('->',   14), # y = x
+        '-?>'  : operobj('-?>',  14), # y = bool(x) ? x : None
+        '-+>'  : operobj('-+>',  14), # y += x
+        '-->'  : operobj('-->',  14), # y -= x 
+        '-*>'  : operobj('-*>',  14), # y *= x 
+        '-/>'  : operobj('-/>',  14), # y /= x 
+        '-**>' : operobj('-**>', 14), # y **= x 
+        '-%>'  : operobj('-%>',  14), # y %= x 
+        '-&>'  : operobj('-&>',  14), # y &= x 
+        '-|>'  : operobj('-|>',  14), # y |= x 
+        '-^>'  : operobj('-^>',  14), # y ^= x 
+        '-<>'  : operobj('-<>',  14), # y <<= x 
+        '->>'  : operobj('->>',  14)  # y >>= x 
          },
     'unary':{
         'l':{

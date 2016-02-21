@@ -56,11 +56,11 @@ class group(list):
 
     def eval(self, locls):
         if self.basestr in locls: #short cut
-            if __debug__:
-                print("I'm in locls. Why exactly? ::",  self.basestr, repr(locls[self.basestr]))
             import copy
             locls['$'] = copy.deepcopy(locls[self.basestr]) #oh boy this is slooow
-        else:
+            return locls['$']
+        from obj import nullobj
+        if not isinstance(self.base, nullobj):
             self.base.eval(self, locls)
             if __debug__:
                 assert isinstance(locls['$'], group), locls
