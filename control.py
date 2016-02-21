@@ -6,14 +6,18 @@ comment = '#'
 allkeywords = {}
 escape = '\\'
 datadef = '@'
-
-import re
-numre = re.compile(r'^(?:0[oxbeOXBE])?[\d.]+$')
-
 nbwhitespace = ' \t\x0b\x0c'
 whitespace = nbwhitespace + linebreak
 allquotes = '\'\"`'
 
+import re
+numre = re.compile(r'^(?:0[oxbeOXBE])?[\d.]+$')
+strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
+
+
+escapechars = {'\\n': '\n',
+               '\\t': '\t',
+               '\\r': '\r'}
 delims = {'arraysep':(',', operobj(',', 14)),
           'etc':('|', operobj('|', 14)),
           'endline':(';\n', operobj(';', 14)),
@@ -133,7 +137,6 @@ def _invertparen(paren):
     return {'(':')', ')':'(',
             '[':']', ']':'[',
             '{':'}', '}':'{'}[paren]
-
 
 def applyrules(tokens):
     print(tokens)

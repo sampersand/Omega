@@ -35,7 +35,10 @@ class omfile:
         ret = ''
         data = 0b00 # 0b10 = escaped, 0b01 = commented
         for char in rawt:
-            if char in control.escape  and not data & 0b10:
+            if data & 0b10:
+                ret += '\\' + char
+                data &= 0b01
+            elif char in control.escape  and not data & 0b10:
                 data ^= 0b10
             elif char in control.comment and not data & 0b10:
                 data ^= 0b01
@@ -171,12 +174,10 @@ class omfile:
             if current:
                 ret.append(fixtkns(current))
             return ret
-        assert 0, str(fixtkns(compresstokens(group(args = linetokens))))
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
-        import control
-        locls = {'$': control.consts['null']}
+        locls = {'$': group(base = control.consts['null'])}
         self.lines.eval(locls)
         if '$' in locls and not __debug__:
             del locls['$']

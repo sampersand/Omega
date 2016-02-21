@@ -1,7 +1,19 @@
 def evalfunc(base, eles, locls):
     name = str(base)
     if name == 'disp':
-        print(repr(eles))
+        from obj import strobj
+        args, sep, end = [''], ', ', '\n'
+        if len(eles) > 0:
+            from obj import nullobj
+            if len(eles) > 1:
+                if len(eles) > 2:
+                    if not isinstance(eles[2].base, nullobj):
+                        end = eles[2].base.scrub()
+                if not isinstance(eles[1].base, nullobj):
+                    sep = eles[1].base.scrub()
+            if not isinstance(eles[0].base, nullobj):
+                args = (strobj(str(a)).scrub() for a in eles[0])
+        print(*args, sep = sep, end = end)
         # sep = ', ' 
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))

@@ -21,9 +21,10 @@ class obj():
         import control
         if ele in control.allfuncs:
             return control.allfuncs[ele]
-        import re
-        if re.fullmatch(control.numre, ele):
+        if control.numre.fullmatch(ele):
             return numobj.fromstr(ele)
+        if control.strre.fullmatch(ele):
+            return strobj(ele)
         return obj(ele)
 
     def __str__(self):
@@ -126,7 +127,7 @@ class numobj(obj):
     This will probably be subclassed in the future.
     """
     TYPES = (int, float, complex)
-    def __init__(self, base):
+    def __init__(self, base = 0):
         if __debug__:
             assert isinstance(base, numobj.TYPES), type(base)
         super().__init__(base)
@@ -146,7 +147,7 @@ class boolobj(numobj):
     """
     The class that represents a boolean.
     """
-    def __init__(self, base):
+    def __init__(self, base = False):
         if __debug__:
             assert isinstance(base, bool), type(base)
         super().__init__(base)
@@ -154,11 +155,34 @@ class boolobj(numobj):
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
 
+class strobj(obj):
+    """
+    The class that represents a boolean.
+    """
+    def __init__(self, base = ''):
+        if __debug__:
+            assert isinstance(base, str), type(base)
+        import control
+        if base and base[0] in control.allquotes:
+            base = base[1:]
+        if base and base[-1] in control.allquotes:
+            base = base[:-1]
+        super().__init__(base)
+
+    def __repr__(self):
+        return 'strobj({})'.format(self.base)
+
+    def scrub(self):
+        import control
+        base = self.base
+        for c in control.escapechars:
+            base = base.replace(c, control.escapechars[c])
+        return base
 class arrayobj(numobj):
     """
     The class that represents an array.
     """
-    def __init__(self, base):
+    def __init__(self, base = []):
         if __debug__:
             assert isinstance(base, list), type(base) #atm, no tuples or sets or whatnot
         super().__init__(base)
