@@ -5,14 +5,19 @@ def evalfunc(base, eles, locls):
         args, sep, end = [''], ', ', '\n'
         if len(eles) > 0:
             from obj import nullobj
-            if len(eles) > 1:
-                if len(eles) > 2:
-                    if not isinstance(eles[2].base, nullobj):
-                        end = eles[2].base.scrub()
-                if not isinstance(eles[1].base, nullobj):
-                    sep = eles[1].base.scrub()
             if not isinstance(eles[0].base, nullobj):
                 args = (strobj(str(a)).scrub() for a in eles[0])
+            if len(eles) > 1:
+                if __debug__:
+                    assert isinstance(eles[1].base, strobj)
+                if not isinstance(eles[1].base, nullobj):
+                    sep = eles[1].base.scrub()
+                if len(eles) > 2:
+                    if __debug__:
+                        assert isinstance(eles[2].base, strobj)
+                    if not isinstance(eles[2].base, nullobj):
+                        end = eles[2].base.scrub()
+        print('@@@@',args,sep,end)
         print(*args, sep = sep, end = end)
         # sep = ', ' 
     else:

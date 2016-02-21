@@ -94,7 +94,6 @@ class omfile:
                 ret[-1] += token
             else:
                 ret.append(token)
-
         #@define stuff
         linep = 0
         while linep < len(ret): 
@@ -142,8 +141,8 @@ class omfile:
                         control.allopers[ele] > control.allopers[linegrp[highest].basestr]):
                     highest = elep
             if __debug__:
-                if not highest:
-                    raise SyntaxError("no operator for string '{}'!".format(linegrp))
+                if highest == None:
+                    raise SyntaxError("no operator for string '{}'!".format(repr(linegrp)))
             return highest
         def fixtkns(line):
             #combine tokens using order of operations
