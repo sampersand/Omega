@@ -17,9 +17,7 @@ def evalfunc(base, eles, locls):
                         assert isinstance(eles[2].base, strobj)
                     if not isinstance(eles[2].base, nullobj):
                         end = eles[2].base.scrub()
-        print('@@@@',args,sep,end)
         print(*args, sep = sep, end = end)
-        # sep = ', ' 
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
