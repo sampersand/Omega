@@ -59,12 +59,12 @@ class obj():
         else: raise ValueError("Unkown operator '{}'".format(name))
 
     def comparebase(self, name, other):
-        if   name == '<' :                 self.base <  other.base
-        elif name == '>' :                 self.base >  other.base
-        elif name == '<=':                 self.base <= other.base
-        elif name == '>=':                 self.base >= other.base
-        elif name == '==' or name == '=':  self.base == other.base
-        elif name == '!=' or name == '<>': self.base != other.base
+        if   name == '<' :                 return other if self.base <  other.base else None
+        elif name == '>' :                 return other if self.base >  other.base else None
+        elif name == '<=':                 return other if self.base <= other.base else None
+        elif name == '>=':                 return other if self.base >= other.base else None
+        elif name == '==' or name == '=':  return other if self.base == other.base else None
+        elif name == '!=' or name == '<>': return other if self.base != other.base else None
         else: raise ValueError("Unkown comparator '{}'".format(name))
 
 class funcobj(obj):
