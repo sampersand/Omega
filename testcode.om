@@ -1,6 +1,7 @@
 3 -> a;
 #if:a=4;#
 if:(a==3):{disp:'a == 3!'}:{disp:"a != 3!"}
+disp:(a=4)
 @eof
 b<-a+(a<+-1);
 @eof

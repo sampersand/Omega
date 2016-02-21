@@ -68,7 +68,7 @@ def evaloper(base, eles, locls):
         for ele in eles[1:]:
             last = locls['$']
             ele.eval(locls)
-            locls['$'] = locls['$'].base.comparebase(name, last) or locls['$']
+            locls['$'] = locls['$'] if locls['$'].base.comparebase(name, last) else last
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
