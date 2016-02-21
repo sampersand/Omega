@@ -1,6 +1,6 @@
-disp;
-@eof
 3 -> a;
+if:(a=3):{disp:'a == 3!'}:{disp:"a != 3!"}
+@eof
 b<-a+(a<+-1);
 @eof
 disp:(1,2,3)::1

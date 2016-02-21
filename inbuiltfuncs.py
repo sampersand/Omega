@@ -18,6 +18,7 @@ def evalfunc(base, eles, locls):
                     if not isinstance(eles[2].base, nullobj):
                         end = eles[2].base.scrub()
         print(*args, sep = sep, end = end)
+    
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
