@@ -77,7 +77,8 @@ class omfile:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
-        tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
+        tokens = [token for token in tokenize(rawt)]
+        # tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
             
         ret = []
         currentquote = None
@@ -100,7 +101,18 @@ class omfile:
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
             linep+=1
-        return ret
+        ret2 = []
+        for token in ret:
+            if token:
+                if token[0] not in control.allquotes:
+                    if token.strip(control.nbwhitespace):
+                        if __debug__:
+                            assert token[-1] not in control.allquotes
+                        ret2.append(token.strip(control.nbwhitespace))
+                else:
+                    ret2.append(token)
+
+        return ret2
     @staticmethod
     def _compresstokens(linetokens):
         def compresstokens(linegrp): #this is non-stable
