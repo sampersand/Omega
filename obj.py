@@ -178,6 +178,9 @@ class strobj(obj):
         for c in control.escapechars:
             base = base.replace(c, control.escapechars[c])
         return base
+
+    def __str__(self):
+        return repr(self.base)
 class arrayobj(numobj):
     """
     The class that represents an array.
