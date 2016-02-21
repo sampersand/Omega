@@ -6,7 +6,14 @@ def evalfunc(base, eles, locls):
         if len(eles) > 0:
             from obj import nullobj
             if not isinstance(eles[0].base, nullobj):
-                args = (strobj(str(eles[0])).scrub(),) or (strobj(str(a)).scrub() for a in eles[0])
+                if not eles[0]:
+                    args = (eles[0], )
+                else:
+                    def gen(eles, locls):
+                        for ele in eles:
+                            ele.eval(locls)
+                            yield locls['$']
+                    args = gen(eles, locls)
             if len(eles) > 1:
                 if not isinstance(eles[1].base, nullobj):
                     if __debug__:
