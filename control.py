@@ -43,6 +43,7 @@ consts = {
 }
 opers = {
     'binary':{
+    #TODO: make assignment operators in here
         '**'  : operobj('**',     3), # power of
         '*'   : operobj('*',      4), # mult
         '/'   : operobj('/',      4), # div

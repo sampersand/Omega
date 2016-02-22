@@ -64,7 +64,7 @@ def evaloper(base, eles, locls):
             locls['$'] = group(base = ret)
         else:
             raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
-    elif '<' == name[0] and name[-1] == '-' or name[0] == '-' and name[-1] == '>':
+    elif '<' == name[0] and name[-1] == '-' or name[0] == '-' and name[-1] == '>': #aka assignment
         d = name[0] == '-'
         name = name[1:-1]
         eles[1 - d].eval(locls)
