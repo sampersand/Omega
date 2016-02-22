@@ -91,12 +91,11 @@ class omfile:
                         currentquote = None
                     ret[-1] += token
             elif currentquote:
-                ret[-1] += token + "@"
+                ret[-1] += token
             else:
                 ret.append(token)
         #@define stuff
         linep = 0
-        print(ret)
         while linep < len(ret): 
             if ret[linep] and ret[linep] in control.datadef:
                 control.applyrules(ret.pop(0))
@@ -111,8 +110,6 @@ class omfile:
                         ret2.append(token.strip(control.nbwhitespace))
                 else:
                     ret2.append(token)
-
-        print('ret2',ret2)
         return ret2
     @staticmethod
     def _compresstokens(linetokens):
