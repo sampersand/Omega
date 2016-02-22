@@ -44,57 +44,62 @@ consts = {
 opers = {
     'binary':{
     #TODO: make assignment operators in here
-        '**'  : operobj('**',     3), # power of
-        '*'   : operobj('*',      4), # mult
-        '/'   : operobj('/',      4), # div
-        '%'   : operobj('%',      4), # mod
-        '+'   : operobj('+',      5), # plus
-        '-'   : operobj('-',      5), # minus
-        'b<<' : operobj('b<<',    6), # bitwise <<
-        'b>>' : operobj('b<<',    6), # bitwise >>
-        'b&'  : operobj('b&',     7), # bitwise &
-        'b^'  : operobj('b^',     8), # bitwise ^
-        'b|'  : operobj('b|',     9), # bitwise |
-        '<'   : operobj('<',     10), # less than
-        '>'   : operobj('>',     10), # greater than
-        '<='  : operobj('<=',    10), # less than or equal
-        '>='  : operobj('>=',    10), # greater than or equal
-        '=='  : operobj('==',    10), # equal to
-        '='   : operobj('=',     10), # equal to
-        '<>'  : operobj('<>',    10), # equal to
-        '!='  : operobj('!=',    10), # not equal to
-        '&&'  : operobj('&&',    11), # boolean and
-        '||'  : operobj('||',    12), # booleon or
-        #assignment operators
-        # all notes are in form of "x OPERATOR y" like 'x <- y'
-        '<-'   : operobj('<-',   14), # x = y
-        '<?-'  : operobj('<?-',  14), # x = bool(y) ? y : None
-        '<+-'  : operobj('<+-',  14), # x += y
-        '<--'  : operobj('<--',  14), # x -= y
-        '<*-'  : operobj('<*-',  14), # x *= y
-        '</-'  : operobj('</-',  14), # x /= y
-        '<**-' : operobj('<**-', 14), # x **= y
-        '<%-'  : operobj('<%-',  14), # x %= y
-        '<&-'  : operobj('<&-',  14), # x &= y
-        '<|-'  : operobj('<|-',  14), # x |= y
-        '<^-'  : operobj('<^-',  14), # x ^= y
-        '<<-'  : operobj('<<-',  14), # x <<= y
-        '<>-'  : operobj('<>-',  14), # x >>= y
-        #inverted assignment operators
-        # all notes are in form of "x OPERATOR y" like 'x -> y'
-        '->'   : operobj('->',   14), # y = x
-        '-?>'  : operobj('-?>',  14), # y = bool(x) ? x : None
-        '-+>'  : operobj('-+>',  14), # y += x
-        '-->'  : operobj('-->',  14), # y -= x 
-        '-*>'  : operobj('-*>',  14), # y *= x 
-        '-/>'  : operobj('-/>',  14), # y /= x 
-        '-**>' : operobj('-**>', 14), # y **= x 
-        '-%>'  : operobj('-%>',  14), # y %= x 
-        '-&>'  : operobj('-&>',  14), # y &= x 
-        '-|>'  : operobj('-|>',  14), # y |= x 
-        '-^>'  : operobj('-^>',  14), # y ^= x 
-        '-<>'  : operobj('-<>',  14), # y <<= x 
-        '->>'  : operobj('->>',  14)  # y >>= x 
+        'misc':{
+            '**'  : operobj('**',     3), # power of
+            '*'   : operobj('*',      4), # mult
+            '/'   : operobj('/',      4), # div
+            '%'   : operobj('%',      4), # mod
+            '+'   : operobj('+',      5), # plus
+            '-'   : operobj('-',      5), # minus
+            'b<<' : operobj('b<<',    6), # bitwise <<
+            'b>>' : operobj('b<<',    6), # bitwise >>
+            'b&'  : operobj('b&',     7), # bitwise &
+            'b^'  : operobj('b^',     8), # bitwise ^
+            'b|'  : operobj('b|',     9), # bitwise |
+        },
+        'compare':{
+            '<'   : operobj('<',     10), # less than
+            '>'   : operobj('>',     10), # greater than
+            '<='  : operobj('<=',    10), # less than or equal
+            '>='  : operobj('>=',    10), # greater than or equal
+            '=='  : operobj('==',    10), # equal to
+            '='   : operobj('=',     10), # equal to
+            '<>'  : operobj('<>',    10), # equal to
+            '!='  : operobj('!=',    10), # not equal to
+            '&&'  : operobj('&&',    11), # boolean and
+            '||'  : operobj('||',    12), # booleon or
+            },
+        'assignment':{
+            # all notes are in form of "x OPERATOR y" like 'x <- y'
+            '<-'   : operobj('<-',   14), # x = y
+            '<?-'  : operobj('<?-',  14), # x = bool(y) ? y : None
+            '<+-'  : operobj('<+-',  14), # x += y
+            '<--'  : operobj('<--',  14), # x -= y
+            '<*-'  : operobj('<*-',  14), # x *= y
+            '</-'  : operobj('</-',  14), # x /= y
+            '<**-' : operobj('<**-', 14), # x **= y
+            '<%-'  : operobj('<%-',  14), # x %= y
+            '<&-'  : operobj('<&-',  14), # x &= y
+            '<|-'  : operobj('<|-',  14), # x |= y
+            '<^-'  : operobj('<^-',  14), # x ^= y
+            '<<-'  : operobj('<<-',  14), # x <<= y
+            '<>-'  : operobj('<>-',  14), # x >>= y
+            #inverted assignment operators
+            # all notes are in form of "x OPERATOR y" like 'x -> y'
+            '->'   : operobj('->',   14), # y = x
+            '-?>'  : operobj('-?>',  14), # y = bool(x) ? x : None
+            '-+>'  : operobj('-+>',  14), # y += x
+            '-->'  : operobj('-->',  14), # y -= x 
+            '-*>'  : operobj('-*>',  14), # y *= x 
+            '-/>'  : operobj('-/>',  14), # y /= x 
+            '-**>' : operobj('-**>', 14), # y **= x 
+            '-%>'  : operobj('-%>',  14), # y %= x 
+            '-&>'  : operobj('-&>',  14), # y &= x 
+            '-|>'  : operobj('-|>',  14), # y |= x 
+            '-^>'  : operobj('-^>',  14), # y ^= x 
+            '-<>'  : operobj('-<>',  14), # y <<= x 
+            '->>'  : operobj('->>',  14)  # y >>= x 
+            },
          },
     'unary':{
         'l':{
@@ -125,7 +130,12 @@ alldelims = ''.join(v[0] for v in delims.values())
 allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
 import copy
 #crap i need a better way than this D:
-allopers = copy.copy(opers['binary']); allopers.update(opers['unary']['l']); allopers.update(opers['unary']['r'])
+allopers = copy.copy(opers['binary']['misc'])
+allopers.update(opers['binary']['assignment'])
+allopers.update(opers['binary']['compare'])
+allopers.update(opers['unary']['l'])
+allopers.update(opers['unary']['r'])
+
 allfuncs = copy.copy(allopers); allfuncs.update(funcs)
 allkeywords = copy.copy(allfuncs); allkeywords.update(consts)
 del copy

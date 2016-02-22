@@ -64,13 +64,13 @@ def evaloper(base, eles, locls):
             locls['$'] = group(base = ret)
         else:
             raise SyntaxError("Special Operator '{}' isn't defined yet!".format(name))
-    elif '<' == name[0] and name[-1] == '-' or name[0] == '-' and name[-1] == '>': #aka assignment
+    elif name in control.opers['binary']['assignment']: #aka assignment
         d = name[0] == '-'
         name = name[1:-1]
         eles[1 - d].eval(locls)
         for ele in eles[slice(d or None, 1 - d or None, None)]:
             _ioperfunc(name, ele, locls)
-    elif name in {'<', '>', '<=', '>=', '==', '=', '<>', '!='}:
+    elif name in control.opers['binary']['compare']:
         eles[0].eval(locls)
         for ele in eles[1:]:
             last = locls['$']
