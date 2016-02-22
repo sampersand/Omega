@@ -77,9 +77,8 @@ class omfile:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
-        tokens = [token for token in tokenize(rawt)]
-        # tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
-            
+        # tokens = [token for token in tokenize(rawt) if token.]
+        tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
         ret = []
         currentquote = None
         for token in tokens:
