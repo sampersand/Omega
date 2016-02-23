@@ -55,16 +55,23 @@ class obj():
         elif name == 'b<': self.base <<= other.base
         elif name == 'b^': self.base ^= other.base
         elif name == 'b|': self.base |= other.base
-        elif name == 'b&': self.base &= other.base
+        elif name == 'b&': self.base &= other.base2
         else: raise ValueError("Unkown operator '{}'".format(name))
 
-    def comparebase(self, name, other):
-        if   name == '<' :                 return bool(self.base <  other.base)
-        elif name == '>' :                 return bool(self.base >  other.base)
-        elif name == '<=':                 return bool(self.base <= other.base)
-        elif name == '>=':                 return bool(self.base >= other.base)
-        elif name == '==' or name == '=':  return bool(self.base == other.base)
-        elif name == '!=' or name == '<>': return bool(self.base != other.base)
+    @staticmethod
+    def comparebase(this, name, other):
+        from group import group
+        if __debug__:
+            assert isinstance(this, group), this
+            assert isinstance(other, group), other
+        if   name == '<' :                 return group(boolobj(this.base.base <   other.base.base))
+        elif name == '>' :                 return group(boolobj(this.base.base >   other.base.base))
+        elif name == '<=':                 return group(boolobj(this.base.base <=  other.base.base))
+        elif name == '>=':                 return group(boolobj(this.base.base >=  other.base.base))
+        elif name == '==' or name == '=':  return group(boolobj(this.base.base ==  other.base.base))
+        elif name == '!=' or name == '<>': return group(boolobj(this.base.base !=  other.base.base))
+        elif name == 'or' or name == '||': return this or other #todo these
+        elif name == 'and'or name == '&&': return this and other
         else: raise ValueError("Unkown comparator '{}'".format(name))
 
 class funcobj(obj):

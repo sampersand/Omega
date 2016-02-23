@@ -1,8 +1,9 @@
 4 -> a;
-#if:a=4;#
-if:(a==3):{disp:'a == 3!'}:{disp:"a != 3!"};
-#disp:(2;3):'abc + def';#
+a=3 -> b;
+disp:a=3;
+if:(a=3):{disp:'a == 3!'}:{disp:"a != 3!"};
 @eof
+#disp:(2;3):'abc + def';#
 b<-a+(a<+-1);
 @eof
 disp:(1,2,3)::1

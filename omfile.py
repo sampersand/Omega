@@ -77,8 +77,7 @@ class omfile:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
-        # tokens = [token for token in tokenize(rawt) if token.]
-        tokens = [token for token in (token.strip(control.nbwhitespace) for token in tokenize(rawt)) if token]
+        tokens = tokenize(rawt)
         ret = []
         currentquote = None
         for token in tokens:
@@ -110,7 +109,8 @@ class omfile:
                         ret2.append(token.strip(control.nbwhitespace))
                 else:
                     ret2.append(token)
-        return ret2
+
+        return [e for e in (e.strip(control.nbwhitespace) for e in ret2) if e]
     @staticmethod
     def _compresstokens(linetokens):
         def compresstokens(linegrp): #this is non-stable

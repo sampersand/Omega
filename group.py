@@ -43,7 +43,7 @@ class group(list):
         import control
         if not self:
             return ''.join((str(self.parens[0]), self.basestr, str(self.parens[1])))
-        if self.basestr in control.opers['binary']:
+        if self.basestr in control.binopers:
             if __debug__:
                 assert len(self.parens) == 2, repr(self)
             return self.parens[0] + (self.basestr).join(str(e) for e in self) + str(self.parens[1])

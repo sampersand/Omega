@@ -130,9 +130,10 @@ alldelims = ''.join(v[0] for v in delims.values())
 allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
 import copy
 #crap i need a better way than this D:
-allopers = copy.copy(opers['binary']['misc'])
-allopers.update(opers['binary']['assignment'])
-allopers.update(opers['binary']['compare'])
+binopers = copy.copy(opers['binary']['misc'])
+binopers.update(opers['binary']['assignment'])
+binopers.update(opers['binary']['compare'])
+allopers = copy.copy(binopers)
 allopers.update(opers['unary']['l'])
 allopers.update(opers['unary']['r'])
 
