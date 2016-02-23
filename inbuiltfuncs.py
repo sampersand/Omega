@@ -90,8 +90,6 @@ def evaloper(base, eles, locls):
         eles[1 - d].eval(locls)
         for ele in eles[slice(d or None, 1 - d or None, None)]:
             _ioperfunc(name, ele, locls)
-        # locls['$'] = 
-        print(locls)
     elif name in control.opers['binary']['compare']:
         eles[0].eval(locls)
         for ele in eles[1:]:
@@ -138,12 +136,12 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
 
     if sname == '':
         locls[str(ele)] = locls['$']
-        locls['$'] = locls[str(ele)]
+        # locls['$'] = locls[str(ele)]
     else:
         if str(ele) not in locls:
-            assert 0, 'what happens here??'
             locls[str(ele)] = locls['$']
-            locls['$'] = locls[str(ele)]
+            # locls['$'] = locls[str(ele)]
+            assert 0, 'what happens here??' + str(ele) #oh i know, its when the ele isnt defined
             return
         else:
             import control
@@ -152,7 +150,6 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
             g.eval(locls)
             import copy
             locls[str(ele)] = copy.deepcopy(locls['$'])
-            locls['$'] = locls[str(ele)]
 
 
 

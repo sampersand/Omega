@@ -1,27 +1,4 @@
+3->a;
+a+(a<+-1);
+@eof
 8->a;
-(a<+-1)+a;
-@eof
-#b<-a+(a<+-1);#
-disp:b;
-1;
-null->$;
-3 -> a;
-disp:$;
-4->b;
-if:a=3:skip:{disp:'a != 3'};
-disp:$
-
-@eof
-#disp:(2;3):'abc + def';#
-@eof
-disp:(1,2,3)::1
-
-@eof
-9b&2->d;
-(2->a)-+>b;
-@eof
-1+2;
-1 + 2 -> b;
-1 * (2 + 3) -> b;
-1 -> a;
-c <- b + a;
