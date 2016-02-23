@@ -5,9 +5,10 @@ def evalfunc(base, eles, locls):
         args, sep, end = ('', ), ', ', '\n'
         if len(eles) > 0:
             from obj import nullobj
-            if not isinstance(eles[0].base, nullobj):
+            if not eles[0].base.isnull():
                 if not eles[0]:
-                    args = (eles[0], )
+                    eles[0].eval(locls)
+                    args = (locls['$'], )
                 else:
                     def gen(eles, locls):
                         for ele in eles:
@@ -15,12 +16,12 @@ def evalfunc(base, eles, locls):
                             yield locls['$'].strobj.scrub()
                     args = gen(eles, locls)
             if len(eles) > 1:
-                if not isinstance(eles[1].base, nullobj):
+                if not eles[1].base.isnull():
                     if __debug__:
                         assert isinstance(eles[1].base, strobj)
                     sep = eles[1].base.scrub()
                 if len(eles) > 2:
-                    if not isinstance(eles[2].base, nullobj):
+                    if not eles[2].base.isnull():
                         if __debug__:
                             assert isinstance(eles[2].base, strobj)
                         end = eles[2].base.scrub()
@@ -38,7 +39,7 @@ def evalfunc(base, eles, locls):
                         if len(eles) > 3:
                             raise SyntaxError('Not allowed to have more than 3 arguments for if statements!')
         cond.eval(locls)
-        (iftrue if locls['$'] else iffalse).eval(locls)
+        (iftrue if locls['$'].base else iffalse).eval(locls)
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
@@ -113,10 +114,12 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
 
     if sname == '':
         locls[str(ele)] = locls['$']
+        locls['$'] = locls[str(ele)]
     else:
         if str(ele) not in locls:
             assert 0, 'what happens here??'
             locls[str(ele)] = locls['$']
+            locls['$'] = locls[str(ele)]
             return
         else:
             import control
@@ -125,6 +128,7 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
             g.eval(locls)
             import copy
             locls[str(ele)] = copy.deepcopy(locls['$'])
+            locls['$'] = locls[str(ele)]
 
 
 

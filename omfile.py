@@ -92,7 +92,6 @@ class omfile:
             elif currentquote:
                 ret[-1] += token
             else:
-                print(token, currentquote)
                 ret.append(token)
         #@define stuff
         linep = 0
@@ -187,7 +186,14 @@ class omfile:
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
-        locls = {'$': group(base = control.consts['null'])}
+        class _d(dict):
+            def __setitem__(self, key, val):
+                from group import group
+                assert isinstance(val, group)
+                print(key,repr(val))
+                return super().__setitem__(key, val)
+        locls = _d({'$': group(base = control.consts['null'])})
+        # locls = {'$': group(base = control.consts['null'])}
         self.lines.eval(locls)
         if '$' in locls and not __debug__:
             del locls['$']

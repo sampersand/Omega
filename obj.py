@@ -79,6 +79,8 @@ class obj():
         elif name == 'and'or name == '&&': return this and other
         else: raise ValueError("Unkown comparator '{}'".format(name))
 
+    def isnull(self):
+        return isinstance(self, nullobj)
 class funcobj(obj):
     """
     The class that represents a function.

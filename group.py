@@ -15,7 +15,7 @@ class group(list):
 
     @property
     def basestr(self):
-        return '' if isinstance(self.base, nullobj) else str(self.base)
+        return '' if self.base.isnull() else str(self.base)
     
     def _hasparens(self):
         return bool(self.parens[0] or self.parens[1])
@@ -29,13 +29,13 @@ class group(list):
         
     def __repr__(self):
         ret = 'group('
-        if self.base:
-            ret += 'base = ' + repr(self.base) + ', '
+        if not self.base.isnull():
+            ret += 'base = ' + repr(self.base)  + ', '
         if self:
             ret += 'args = ' + super().__repr__() + ', '
         if self._hasparens():
             ret += 'parens = ' + repr(self.parens)
-        if not self._hasparens() and (self.base or self):
+        if not self._hasparens() and (not self.base.isnull() or self):
             ret = ret[:-2]
         return ret + ')'
 
@@ -59,8 +59,7 @@ class group(list):
             import copy
             locls['$'] = copy.deepcopy(locls[self.basestr]) #oh boy this is slooow
             return locls['$']
-        from obj import nullobj
-        if not isinstance(self.base, nullobj):
+        if not self.base.isnull():
             self.base.eval(self, locls)
             if __debug__:
                 assert isinstance(locls['$'], group), locls
