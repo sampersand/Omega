@@ -157,8 +157,9 @@ def evalunary(base, eles, locls):
     import control
     if __debug__:
         assert base is eles.base #not necessary, just figured.
-        assert eles[name in control.opers['unary']['r']].base.isnull() #unary l should have null on the left (~X has no left term)
     if name == '>+' or name == '>-':
+        if __debug__:
+            assert eles[0].base.isnull() #unary l should have null on the left (~X has no left term)
         from group import group
         from obj import numobj
         group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]). eval(locls)
@@ -166,9 +167,13 @@ def evalunary(base, eles, locls):
         from group import group
         from obj import numobj
         if __debug__:
-            assert str(eles[1]) in locls, "can't increment nothing!"
-        ret = locls[str(eles[1])];
-        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]). eval(locls)
+            if __debug__:
+                assert len(eles) == 1 #unary r doesn't have null on the right side, as opposed to unary l
+            assert str(eles[0]) in locls, "can't increment nothing!"
+        import copy;
+        ret = copy.deepcopy(locls[str(eles[0])]);
+        group(base = control.allopers['-%s>'%name[0]], args = [ group(base = numobj(1)), eles[0]]). eval(locls)
+        locls['$'] = ret
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
     
