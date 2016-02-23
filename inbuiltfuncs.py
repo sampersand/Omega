@@ -41,7 +41,25 @@ def evalfunc(base, eles, locls):
         cond.eval(locls)
         (iftrue if locls['$'].base else iffalse).eval(locls)
     elif name == 'skip':
-        pass;
+        pass #keep this here.
+    elif name == 'del':
+        if not eles:
+            locls.reset()
+        else:
+            if __debug__:
+                assert len(eles) == 1, "only 1 thing after the semicolon..."
+            if not eles[0]:
+                del locls[str(eles[0])]
+            else:
+                for ele in eles[0]:
+                    del locls[str(ele)]
+        if '$' not in locls:
+            from group import group
+            locls['$'] = group()
+    # elif name == 'for':
+    #     pass
+    # elif name == 'abort':
+    #     pass
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
