@@ -1,13 +1,18 @@
+8->a;
+a+(a<+-1);
+@eof
+#b<-a+(a<+-1);#
+disp:b;
+1;
+null->$;
 3 -> a;
 disp:$;
 4->b;
 if:a=3:skip:{disp:'a != 3'};
-null->$;
 disp:$
 
 @eof
 #disp:(2;3):'abc + def';#
-b<-a+(a<+-1);
 @eof
 disp:(1,2,3)::1
 

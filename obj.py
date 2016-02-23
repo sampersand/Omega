@@ -23,8 +23,10 @@ class obj():
             return control.allfuncs[ele]
         if control.numre.fullmatch(ele):
             return numobj.fromstr(ele)
-        if control.strre.fullmatch(ele):
+        if control.strre.fullmatch(ele): #starts & ends with quotes
             return strobj(ele)
+        if ele in control.allconsts:
+            return control.allconsts[ele]
         return obj(ele)
 
     def __str__(self):
@@ -155,7 +157,7 @@ class numobj(obj):
     TYPES = (int, float, complex)
     def __init__(self, base = 0):
         if __debug__:
-            assert isinstance(base, numobj.TYPES), type(base)
+            assert isinstance(base, numobj.TYPES), repr(base)
         super().__init__(base)
     def __repr__(self):
         return 'numobj({})'.format(self.base)
@@ -207,7 +209,7 @@ class strobj(obj):
         if base and base[-1] in control.allquotes: base = base[:-1]
         return base
 
-class arrayobj(numobj):
+class arrayobj(obj):
     """
     The class that represents an array.
     """

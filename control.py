@@ -24,7 +24,7 @@ delims = {'arraysep':(',', operobj(',', 15)),
           'applier':(':', operobj(':', 13)),
           }
 parens = {'l':'([{', 'r':')]}'}
-consts = {
+allconsts = {
     'true' : boolobj(True),
     'false': boolobj(False),
     'null' : nullobj(),
@@ -138,7 +138,7 @@ allopers.update(opers['unary']['l'])
 allopers.update(opers['unary']['r'])
 
 allfuncs = copy.copy(allopers); allfuncs.update(funcs)
-allkeywords = copy.copy(allfuncs); allkeywords.update(consts)
+allkeywords = copy.copy(allfuncs); allkeywords.update(allconsts)
 del copy
 
 sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length

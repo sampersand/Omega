@@ -99,7 +99,8 @@ def evaloper(base, eles, locls):
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
-            last = locls['$']
+            import copy
+            last = copy.deepcopy(locls['$'])
             ele.eval(locls)
             locls['$'].base.updatebase(name, last.base)
 
