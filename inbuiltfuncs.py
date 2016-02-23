@@ -40,6 +40,8 @@ def evalfunc(base, eles, locls):
                             raise SyntaxError('Not allowed to have more than 3 arguments for if statements!')
         cond.eval(locls)
         (iftrue if locls['$'].base else iffalse).eval(locls)
+    elif name == 'skip':
+        pass;
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
