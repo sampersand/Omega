@@ -12,7 +12,7 @@ def evalfunc(base, eles, locls):
                     def gen(eles, locls):
                         for ele in eles:
                             ele.eval(locls)
-                            yield locls['$']
+                            yield locls['$'].strobj.scrub()
                     args = gen(eles, locls)
             if len(eles) > 1:
                 if not isinstance(eles[1].base, nullobj):

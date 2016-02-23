@@ -30,6 +30,11 @@ class obj():
     def __str__(self):
         return str(self.base)
 
+    @property
+    def strobj(self):
+        return strobj(str(self))
+    
+
     def __repr__(self):
         return 'obj({})'.format(self.base)
 
