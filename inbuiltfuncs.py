@@ -160,20 +160,12 @@ def evalunary(base, eles, locls):
     if __debug__:
         assert base is eles.base #not necessary, just figured.
         assert eles[name in control.opers['unary']['r']].base.isnull() #unary l should have null on the left (~X has no left term)
-    if name == '>+':
+    if name == '>+' or name == '>-':
         from group import group
         print(locls,'@')
         eles[1].eval(locls)
         from obj import numobj
-        g = group(base = control.allopers['-+>'],
-            args = [
-                group(base = numobj(1)),
-                locls[str(eles[1])]
-            ])
-        # g = group(base = control.allopers['-+>'], args = [group(base = numobj(1)), locls[str(eles[1])]])
-        print(locls,'locals')
-        quit(g)
-        g.eval(locls)
+        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]). eval(locls)
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
     
