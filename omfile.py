@@ -81,7 +81,7 @@ class omfile:
         ret = []
         currentquote = None
         for token in tokens:
-            if token in control.allquotes:
+            if token in control.allquotes and token:
                 if currentquote == None:
                     ret.append(token)
                     currentquote = token
@@ -92,6 +92,7 @@ class omfile:
             elif currentquote:
                 ret[-1] += token
             else:
+                print(token, currentquote)
                 ret.append(token)
         #@define stuff
         linep = 0

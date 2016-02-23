@@ -38,8 +38,7 @@ def evalfunc(base, eles, locls):
                         if len(eles) > 3:
                             raise SyntaxError('Not allowed to have more than 3 arguments for if statements!')
         cond.eval(locls)
-        print('@', cond, iftrue, iffalse, locls,sep='\t|\t')
-        (iftrue if cond else iffalse).eval(locls)
+        (iftrue if locls['$'] else iffalse).eval(locls)
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
