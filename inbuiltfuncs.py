@@ -13,7 +13,7 @@ def evalfunc(base, eles, locls):
                     def gen(eles, locls):
                         for ele in eles:
                             ele.eval(locls)
-                            yield locls['$'].strobj.scrub()
+                            yield locls['$'].base.strobj.scrub()
                     args = gen(eles, locls)
             if len(eles) > 1:
                 if not eles[1].base.isnull():
@@ -90,6 +90,8 @@ def evaloper(base, eles, locls):
         eles[1 - d].eval(locls)
         for ele in eles[slice(d or None, 1 - d or None, None)]:
             _ioperfunc(name, ele, locls)
+        # locls['$'] = 
+        print(locls)
     elif name in control.opers['binary']['compare']:
         eles[0].eval(locls)
         for ele in eles[1:]:
@@ -99,9 +101,10 @@ def evaloper(base, eles, locls):
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
-            import copy
-            last = copy.deepcopy(locls['$'])
+            last = locls['$']
             ele.eval(locls)
+            if locls['$'] == 9:
+                assert locls['$'] is not locls['a']
             locls['$'].base.updatebase(name, last.base)
 
 def _ioperfunc(sname, ele, locls): #sname == stripped name
