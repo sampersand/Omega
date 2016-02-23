@@ -157,23 +157,25 @@ def evalunary(base, eles, locls):
     import control
     if __debug__:
         assert base is eles.base #not necessary, just figured.
-    if name == '>+' or name == '>-':
-        if __debug__:
+        if name in control.opers['unary']['l']:
             assert eles[0].base.isnull() #unary l should have null on the left (~X has no left term)
+        else:
+            assert len(eles) == 1
+    if name == '>+' or name == '>-':
         from group import group
         from obj import numobj
-        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]). eval(locls)
+        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]).eval(locls)
     elif name == '+<' or name == '-<':
         from group import group
         from obj import numobj
-        if __debug__:
-            if __debug__:
-                assert len(eles) == 1 #unary r doesn't have null on the right side, as opposed to unary l
-            assert str(eles[0]) in locls, "can't increment nothing!"
         import copy;
         ret = copy.deepcopy(locls[str(eles[0])]);
-        group(base = control.allopers['-%s>'%name[0]], args = [ group(base = numobj(1)), eles[0]]). eval(locls)
+        group(base = control.allopers['-%s>'%name[0]], args = [ group(base = numobj(1)), eles[0]]).eval(locls)
         locls['$'] = ret
+    elif name == '!':
+        import math
+        eles[0].eval(locls)
+        locls['$'].base.base = math.factorial(locls['$'].base.base)
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
     
