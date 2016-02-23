@@ -149,7 +149,9 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
             from group import group
             # g = group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']])
             # g.eval(locls)
-            group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']]).eval(locls)
+
+            group(base = control.allopers[sname], args = [locls['$'], locls[str(ele)]]).eval(locls)
+            # group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']]).eval(locls)
             import copy
             locls[str(ele)] = copy.deepcopy(locls['$'])
 
