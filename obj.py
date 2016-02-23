@@ -217,9 +217,12 @@ class arrayobj(obj):
         if __debug__:
             assert isinstance(base, list), type(base) #atm, no tuples or sets or whatnot
         super().__init__(base)
+
     def __repr__(self):
         return 'arrayobj({})'.format(self.base)
 
+    def __str__(self):
+        return ', '.join(str(e) for e in self.base)
 
 
 

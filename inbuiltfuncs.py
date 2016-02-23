@@ -96,6 +96,8 @@ def evaloper(base, eles, locls):
             last = locls['$']
             ele.eval(locls)
             locls['$'] = locls['$'].base.comparebase(locls['$'], name, last)
+    elif name in control.opers['unary']['l'] or name in control.opers['unary']['r']:
+        evalunary(base, eles, locls)
     else:
         eles[0].eval(locls)
         for ele in eles[1:]:
@@ -140,19 +142,41 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
     else:
         if str(ele) not in locls:
             locls[str(ele)] = locls['$']
-            # locls['$'] = locls[str(ele)]
-            assert 0, 'what happens here??' + str(ele) #oh i know, its when the ele isnt defined
+            assert 0, 'what happens here?? ' + str(ele)+' ' +str(locls) #oh i know, its when the ele isnt defined
             return
         else:
             import control
             from group import group
-            g = group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']])
-            g.eval(locls)
+            # g = group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']])
+            # g.eval(locls)
+            group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']]).eval(locls)
             import copy
             locls[str(ele)] = copy.deepcopy(locls['$'])
 
 
-
+def evalunary(base, eles, locls):
+    name = str(base)
+    import control
+    if __debug__:
+        assert base is eles.base #not necessary, just figured.
+        assert eles[name in control.opers['unary']['r']].base.isnull() #unary l should have null on the left (~X has no left term)
+    if name == '>+':
+        from group import group
+        print(locls,'@')
+        eles[1].eval(locls)
+        from obj import numobj
+        g = group(base = control.allopers['-+>'],
+            args = [
+                group(base = numobj(1)),
+                locls[str(eles[1])]
+            ])
+        # g = group(base = control.allopers['-+>'], args = [group(base = numobj(1)), locls[str(eles[1])]])
+        print(locls,'locals')
+        quit(g)
+        g.eval(locls)
+    else:
+        raise SyntaxError("Unknown unary function '{}'!".format(name))
+    
 
 
 

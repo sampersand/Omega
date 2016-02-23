@@ -183,6 +183,7 @@ class omfile:
             if current:
                 ret.append(fixtkns(current))
             return ret
+        # assert 0, repr(fixtkns(compresstokens(group(args = linetokens))))
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):

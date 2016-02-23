@@ -106,6 +106,8 @@ opers = {
             '~'  :operobj('~',    1),
             'pos':operobj('pos',  1),
             'neg':operobj('neg',  1),
+            '>+' :operobj('>+',   1),
+            '>-' :operobj('>-',   1),
             },
         'r':{
             '!'  :operobj('!',    2),
