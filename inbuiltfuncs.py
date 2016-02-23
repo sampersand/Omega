@@ -147,11 +147,7 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
         else:
             import control
             from group import group
-            # g = group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']])
-            # g.eval(locls)
-
             group(base = control.allopers[sname], args = [locls['$'], locls[str(ele)]]).eval(locls)
-            # group(base = control.allopers[sname], args = [locls[str(ele)], locls['$']]).eval(locls)
             import copy
             locls[str(ele)] = copy.deepcopy(locls['$'])
 
@@ -164,9 +160,14 @@ def evalunary(base, eles, locls):
         assert eles[name in control.opers['unary']['r']].base.isnull() #unary l should have null on the left (~X has no left term)
     if name == '>+' or name == '>-':
         from group import group
-        print(locls,'@')
-        eles[1].eval(locls)
         from obj import numobj
+        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]). eval(locls)
+    elif name == '+<' or name == '-<':
+        from group import group
+        from obj import numobj
+        if __debug__:
+            assert str(eles[1]) in locls, "can't increment nothing!"
+        ret = locls[str(eles[1])];
         group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]). eval(locls)
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
