@@ -179,9 +179,9 @@ def evalunary(base, eles, locls):
     elif name == 'pos' or name == 'neg':
         eles[1].eval(locls)
         locls['$'].base.base = locls['$'].base.base
-    elif name == '~':
+    elif name == 'b~':
         eles[1].eval(locls)
-        locls['$'].base.base = -locls['$'].base.base
+        locls['$'].base.base = ~locls['$'].base.base
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
     

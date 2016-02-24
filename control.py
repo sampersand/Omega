@@ -51,6 +51,8 @@ opers = {
             '%'   : operobj('%',      4), # mod
             '+'   : operobj('+',      5), # plus
             '-'   : operobj('-',      5), # minus
+        },
+        'bitwise':{
             'b<<' : operobj('b<<',    6), # bitwise <<
             'b>>' : operobj('b<<',    6), # bitwise >>
             'b&'  : operobj('b&',     7), # bitwise &
@@ -134,7 +136,8 @@ alldelims = ''.join(v[0] for v in delims.values())
 allparens = ''.join(list(parens.values())) + allquotes #yes, quotes are parens lol :P
 import copy
 #crap i need a better way than this D:
-binopers = copy.copy(opers['binary']['misc'])
+binopers = copy.copy(opers['binary']['math'])
+binopers.update(opers['binary']['bitwise'])
 binopers.update(opers['binary']['assignment'])
 binopers.update(opers['binary']['logic'])
 allopers = copy.copy(binopers)

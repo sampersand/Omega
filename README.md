@@ -25,56 +25,89 @@
 ###Assignment
 - Use `<-` and `->` to assign values to variables. `A <- 9` and `9 -> A` are the _exact_ same.
 - Just like assignment operators, "i" operators can go either direction. `A -+> B` is the same as `A + B -> B`.
-- The complete list. Note that all of these have an inverse (`->`'s inverse is `<-`)
-    - `A -> B`  ::= `B = A`.
-    - `A -?> B` ::= `B = A ? A : B`.
-    - `A -+> B` ::= `B = B +  A`.
-    - `A --> B` ::= `B = B -  A`.
-    - `A -*> B` ::= `B = B *  A`.
-    - `A -/> B` ::= `B = B /  A`.
-    - `A -** B` ::= `B = B ** A`.
-    - `A -%> B` ::= `B = B %  A`.
-    - `A -&> B` ::= `B = B &  A`.
-    - `A -|> B` ::= `B = B |  A`.
-    - `A -^> B` ::= `B = B ^  A`.
-    - `A -<> B` ::= `B = B << A`.
-    - `A ->> B` ::= `B = B >> A`.
+- The complete list: Note that all of these have an inverse (`->`'s inverse is `<-`)
+  - `A -> B` ::= `B = A`.
+  - `A -?> B` ::= `B = if A, then A, else B`.
+  - `A -+> B` ::= `B = B <plus> A`.
+  - `A --> B` ::= `B = B <minus> A`.
+  - `A -*> B` ::= `B = B <times> A`.
+  - `A -/> B` ::= `B = B <divided by> A`.
+  - `A -%> B` ::= `B = B <modulo> A`.
+  - `A -**> B` ::= `B = B <to the power of> A`.
+  - `A -&> B` ::= `B = B <bitwise AND> A`.
+  - `A -|> B` ::= `B = B <bitwise OR> A`.
+  - `A -^> B` ::= `B = B <bitwise XOR> A`.
+  - `A -<> B` ::= `B = B <bitwise left shift> A`.
+  - `A ->> B` ::= `B = B <bitwise right shift> A`.
 
 ###Logic
-  - All of these but `&&` and `||` will return a boolean value.
-  - The complete list.
-    - `A <  B` ::= `A <  B`
-    - `A >  B` ::= `A >  B`
-    - `A <= B` ::= `A <= B`
-    - `A >= B` ::= `A >= B`
-    - `A == B` and `A = B` ::= `A == B`
-    - `A != B` and `A <> B` ::= `A != B`
-    - `A && B` ::= `If not A then A, else B`
-    - `A || B` ::= `If A then A, else B`
+- All of these but `&&` and `||` will return a boolean value.
+- The complete list:
+  - `A < B` ::= `A <less than>  B`.
+  - `A > B` ::= `A <greater than>  B`.
+  - `A <= B` ::= `A <less than or equal to> B`.
+  - `A >= B` ::= `A <greater than or equal to> B`.
+  - `A == B` and `A = B` ::= `A <is equal to> B`.
+  - `A != B` and `A <> B` ::= `A <is not equal to> B`.
+  - `A && B` ::= `if not A, then A, else B`.
+  - `A || B` ::= `if A, then A, else B`.
 
 ###Math
-  -  
+- Normal arithmetic operations.
+- The complete list:
+  - `A + B` ::= `A <plus> B`.
+  - `A - B` ::= `A <minus> B`.
+  - `A * B` ::= `A <times> B`.
+  - `A / B` ::= `A <divided by>  B`.
+  - `A % B` ::= `A <modulo> B`.
+  - `A ** B` ::= `A to the power of  B`.
 
-    - `A  +  B` ::= `A  +  B`
-    - `A  -  B` ::= `A  -  B`
-    - `A  *  B` ::= `A  *  B`
-    - `A  /  B` ::= `A  /  B`
-    - `A  %  B` ::= `A  %  B`
-    - `A **  B` ::= `A to the power of  B`
-    - `A b<< B` ::= `A <bitwise shift left> B`
-    - `A b>> B` ::= `A b>> B`
-    - `A b&  B` ::= `A b&  B`
-    - `A b^  B` ::= `A b^  B`
-    - `A b|  B` ::= `A b|  B`
+###Bitwise
+-Note that these all start with a 'b' to denote bitwise.
+- The complete list:  
+  - `A b<< B` ::= `A <bitwise shift left> B`
+  - `A b>> B` ::= `A <bitwise shift right> B`
+  - `A b& B` ::= `A <bitwise AND> B`
+  - `A b| B` ::= `A <bitwise OR>  B`
+  - `A b^ B` ::= `A <bitwise XOR>  B`
+
+###Misc
+- The complete list:
+  - `A, B, C, ...` ::= `Array of [A, B, C, ...]`.
+  - `A; B; ...` ::= `execute A, then execute B, then execute ...`.
+  - `A : B : C : ...` ::= `pass B, C, ... to A`.
+
+##Unary
+
+###Left
+- The complete list:
+  - `b~ A` ::= `<bitwise negate> A`.
+  - `pos A` ::= `+A`. Deprecated.
+  - `neg A` ::= `-A`. Deprecated.
+  - `>+ A` ::= `<increment> A <then set $ to> A`.
+  - `>- A` ::= `<decrement> A <then set $ to> A`.
+
+###Right
+- The complete list:
+  - `A !` ::= `<factorial of> A`
+  - `A +<` ::= `<set $ to> A <then increment A>
+  - `A -<` ::= `<set $ to> A <then decrement A>
+
 #In Built Functions
-- `<if_statement> ::= if ":" <expression> ":" <statement(s) if true> [":" <statement(s) if false>]`
-- `<for_statement> ::= for ":" <initilization> ":" <condition> ":" <increment condition> ":" <statement(s)>`
-- `<disp_statement> ::= disp ":" [<element(s) to display>] [":" [<seperator>] [":" [<endline>]]]]`
+- `if_statement ::= "if" ":" <expression> ":" <statement(s) if true> [":" <statement(s) if false>]`
+  - if `<expression>` evaluates to true, then `<statement(s) if true>` are executed. otherwise, if `<statement(s) if false>` is defined, then they are executed instead.
+- `for_statement ::= "for" ":" <initilization> ":" <condition> ":" <increment> ":" <statement(s)>`
+  - First, `<initilization>` is executed. Then, `<condition>` is checked. If it is true, then `<statement(s)>` are executed, and `<increment>` is executed. 
+- `disp_statement ::= "disp" [":" [<element(s) to display>] [":" [<seperator>] [":" [<endline>]]]]`
   - `<element to display>` defaults to ` `.
   - `<seperator>` defaults to `, `.
   - `<endline>` defaults to `\n'.
-- `skip`
-  - When a statement is needed, this just skips it. eg, `if:(true):skip:(disp:'a')`.
+- `skip_statement ::= "skip"`
+  - A null statement - when evaluated, nothing happens ('$' isn't even updated). eg, `if:(true):skip:(disp:'a')`.
+- `abort_statement ::= "abort" [":" <quit message>]`
+  - Stops the running of the program, and prints out `<quit message>` if it is supplied (or nothing if it isn't).
+- `del_statement ::= "del" [":" <variable(s)>]`
+  - If `<variable(s)>` is defined, then all variables are deleted. If `<variable(s)>` wasn't passed, then all variables are deleted.
 
 
 
