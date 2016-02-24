@@ -26,7 +26,7 @@ def evalfunc(base, eles, locls):
                             assert isinstance(eles[2].base, strobj)
                         end = eles[2].base.scrub()
         print(*args, sep = sep, end = end)
-    elif name == 'if':
+    elif name == 'since':
         from group import group
         cond, iftrue, iffalse = group(), group(), group()
         if len(eles) > 0:
@@ -79,7 +79,7 @@ def evalfunc(base, eles, locls):
         quit('Aborting!' + (str(locls['$']) and " Message: " + str(locls['$'])))
     elif name == 'whilst':
         if __debug__:
-            assert len(eles) == 2, 'while:(cond):(statement(s))'
+            assert len(eles) == 2, 'whilst:(cond):(statement(s))'
         while True:
             eles[0].eval(locls) #evaluate the condition
             if not locls['$'].base:

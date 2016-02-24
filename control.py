@@ -120,13 +120,13 @@ opers = {
 }
 funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
-    'since': funcobj('since'),
     'for': funcobj('for'),
     'rm': funcobj('rm'),
     'disp': funcobj('disp'),
     'skip': funcobj('skip'), #ignore that line
-    'whilst': funcobj('whilst'),
+    'since': funcobj('since'),
     'abort': funcobj('abort'),
+    'whilst': funcobj('whilst'),
 }
 
 for d in delims.values():
