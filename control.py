@@ -125,7 +125,7 @@ funcs = {
     'rm': funcobj('rm'),
     'disp': funcobj('disp'),
     'skip': funcobj('skip'), #ignore that line
-    'while': funcobj('while'),
+    'whilst': funcobj('whilst'),
     'abort': funcobj('abort'),
 }
 

@@ -96,8 +96,10 @@
 #In Built Functions
 - `if_statement ::= "if" ":" <expression> ":" <statement(s) if true> [":" <statement(s) if false>]`
   - if `<expression>` evaluates to true, then `<statement(s) if true>` are executed. otherwise, if `<statement(s) if false>` is defined, then they are executed instead.
-- `for_statement ::= "for" ":" <initilization> ":" <condition> ":" <increment> ":" <statement(s)>`
+- `for_statement ::= "for" ":"( <initilization> ";" <condition> ";" <increment> ) ":" <statement(s)>`
   - First, `<initilization>` is executed. Then, `<condition>` is checked. If it is true, then `<statement(s)>` are executed, and `<increment>` is executed. 
+- `whilst_statement ::= "whilst" ":" <condition> ":" <statement(s)>`
+  - First, `<condition>` is checked. If it is true, then `<statement(s)>` are executed, and the loop is repeated.
 - `disp_statement ::= "disp" [":" [<element(s) to display>] [":" [<seperator>] [":" [<endline>]]]]`
   - `<element to display>` defaults to ` `.
   - `<seperator>` defaults to `, `.

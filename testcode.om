@@ -1,7 +1,7 @@
 0->i
 disp:(1,2)
 disp:(3,4)
-while:(i<15):{
+whilst:(i<15):{
     i<+-1
     #disp:'i:'::' '
     disp:i#

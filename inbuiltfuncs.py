@@ -76,9 +76,8 @@ def evalfunc(base, eles, locls):
             from group import group
             from obj import nullobj
             locls['$'] = group(base = nullobj())
-
         quit('Aborting!' + (str(locls['$']) and " Message: " + str(locls['$'])))
-    elif name == 'while':
+    elif name == 'whilst':
         if __debug__:
             assert len(eles) == 2, 'while:(cond):(statement(s))'
         while True:
