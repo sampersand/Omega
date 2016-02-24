@@ -1,19 +1,12 @@
 2,5,9,89->arr
 arr:set:1,1000;
-abort:arr
-@eof
-abort:locls;
 #disp:(arr:len->i,i+<,>+i)#
 #disp:(arr:get:3,)#
 disp:i
 0->i
-disp:(1,2)
-disp:(3,4)
-if:[i=0]:[disp:'i = 0']:[disp:'i != 0']
+disp:1,2
+disp:3,4
 whilst:(i<15):{
-    i<+-1
-    #disp:'i:'::' '
-    disp:i#
-    disp:('i\t:',i):' '
+    disp:'i\t:',i+<:' '
 }
 @eof
