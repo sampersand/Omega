@@ -148,7 +148,7 @@ class omfile:
             for elep in range(len(linegrp)):
                 ele = linegrp[elep].basestr
                 if ele in control.allopers and (highest == None or
-                        control.allopers[ele] > control.allopers[linegrp[highest].basestr]):
+                        control.allopers[ele] >= control.allopers[linegrp[highest].basestr]):
                     highest = elep
             if __debug__:
                 if highest == None:

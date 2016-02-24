@@ -129,8 +129,8 @@ class operobj(funcobj):
     def __repr__(self):
         return 'operobj({},{})'.format(self.base, self.priority, self.func)
 
-    def __gt__(self, other):
-        return self.priority > other.priority
+    def __ge__(self, other):
+        return self.priority >= other.priority
 
     def eval(self, eles, locls):
         if __debug__:

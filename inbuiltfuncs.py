@@ -160,21 +160,28 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
 
         I think i'll go wtih the second option.
     """
-
+    import obj
+    last = locls['$']
+    # ele.eval(locls)]
+    # elestr = str(locls['$'])
+    elestr = str(ele)
     if sname == '':
-        locls[str(ele)] = locls['$']
-        # locls['$'] = locls[str(ele)]
+        locls[elestr] = last
+        import copy
+        locls['$'] = copy.deepcopy(locls[elestr])
+        print(locls)
+        # quit()
     else:
-        if str(ele) not in locls:
-            locls[str(ele)] = locls['$']
-            assert 0, 'what happens here?? ' + str(ele)+' ' +str(locls) #oh i know, its when the ele isnt defined
+        if elestr not in locls:
+            locls[elestr] = last
+            #assert 0, 'what happens here?? '+elestr+'\n\n' + str(ele) + '\n\n' + str(locls)+'\n\n'+repr(last)
             return
         else:
             import control
             from group import group
-            group(base = control.allopers[sname], args = [locls['$'], locls[str(ele)]]).eval(locls)
+            group(base = control.allopers[sname], args = [last, locls[elestr]]).eval(locls)
             import copy
-            locls[str(ele)] = copy.deepcopy(locls['$'])
+            locls[elestr] = copy.deepcopy(locls['$'])
 
 
 def evalunary(base, eles, locls):
