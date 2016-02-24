@@ -260,6 +260,14 @@ def evalarray(base, eles, locls):
             pos = locls['$'].base.base
             eles[1][1].eval(locls)
             base.base.insert(pos, locls['$'])
+    elif name == 'rem':
+        if __debug__:
+            assert len(eles) == 1 or len(eles) == 2, 'array:rem:[pos]'
+        if len(eles) == 1:
+            del base.base[-1]
+        else:
+            eles[1].eval(locls)
+            del base.base[locls['$'].base.base]
 
     else:
         raise SyntaxError("Unknown array function '{}'!".format(name))

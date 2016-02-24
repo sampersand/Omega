@@ -1,7 +1,8 @@
 2,5,9,89->arr
-arr:add:2,13;
+arr:rem:2;
 abort:arr
 @eof
+arr:add:2,13;
 4,1,57,17->arr2
 arr2:set:1,1000;
 disp:arr2,'@';
