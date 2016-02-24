@@ -42,7 +42,7 @@ def evalfunc(base, eles, locls):
         (iftrue if locls['$'].base else iffalse).eval(locls)
     elif name == 'skip':
         pass #keep this here.
-    elif name == 'del':
+    elif name == 'rm':
         if not eles:
             locls.reset()
         else:

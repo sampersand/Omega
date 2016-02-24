@@ -106,7 +106,7 @@
   - A null statement - when evaluated, nothing happens ('$' isn't even updated). eg, `if:(true):skip:(disp:'a')`.
 - `abort_statement ::= "abort" [":" <quit message>]`
   - Stops the running of the program, and prints out `<quit message>` if it is supplied (or nothing if it isn't).
-- `del_statement ::= "del" [":" <variable(s)>]`
+- `rm_statement ::= "rm" [":" <variable(s)>]`
   - If `<variable(s)>` is defined, then all variables are deleted. If `<variable(s)>` wasn't passed, then all variables are deleted.
 
 

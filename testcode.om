@@ -1,7 +1,7 @@
-9->b;
-1->ll;
-for:(0->ll;ll<10;ll+<):(disp:ll)
-1->i;
-disp:i;
+0->i;
+while:(i<15):{
+    i<+-1;
+    disp:('i:', i);
+}
 #while:(l<1)#
 @eof
