@@ -32,7 +32,7 @@ allconsts = {
     'e'    : numobj(math.e),
     'k'    : numobj(8.987551787368e9),
     'imag' : numobj(complex(0,1)),
-    'locls': funcobj('locls', None), #todo, make this return locals
+    'locls': funcobj('locls'), #todo, make this return locals
     'rand' : funcobj('rand', random.random),
     'nan'  : numobj(float('nan')), 'NaN': numobj(float('nan')),
     'inf'  : numobj(float('inf')), '∞': numobj(float('inf')),

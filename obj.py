@@ -110,7 +110,11 @@ class funcobj(obj):
             return inbuiltfuncs.evalfunc(self, eles, locls)
         if __debug__:
             x = locls['$']
-        self.func(eles, locls)
+        if self.func != None:
+            self.func(eles, locls)
+        else:
+            import inbuiltfuncs
+            return inbuiltfuncs.evalconsts(self, eles, locls)
         if __debug__:
             assert locls['$'] is not x, "function {} didn't do anything!".format(self)
 
@@ -235,6 +239,12 @@ class arrayobj(obj):
     @property
     def lenobj(self):
         return numobj(len(self.base))
-    
+class dictobj(obj):
+    def __init__(self, base = {}):
+        if __debug__:
+            assert isinstance(base, dict), type(base)
+        super().__init__(base)
+    def __repr__(self):
+        return 'dictobj({})'.format(self.base)
 
 

@@ -1,8 +1,9 @@
 (2,5,9,89)->arr
-disp:(arr:len->i,i+<,>+i)
-disp:(arr:get:3,)
+(arr:get:1) <- 100;
+abort:locls;
+#disp:(arr:len->i,i+<,>+i)#
+#disp:(arr:get:3,)#
 @eof
-(arr:get:1) -> i;
 disp:i
 0->i
 disp:(1,2)

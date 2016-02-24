@@ -209,7 +209,14 @@ def evalunary(base, eles, locls):
         locls['$'].base.base = ~locls['$'].base.base
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
-
+def evalconsts(base, eles, locls):
+    name = str(base)
+    if name == 'locls':
+        from group import group
+        from obj import dictobj
+        locls['$'] = group(base = dictobj(locls))
+    else:
+        raise SyntaxError("Unknown const function '{}'!".format(name))
 def evalarray(base, eles, locls):
     if __debug__:
         assert len(eles) > 0, 'cant pass no arguments to an array!'
