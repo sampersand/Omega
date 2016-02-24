@@ -1,12 +1,16 @@
-2,5,9,89->arr;
+2,5,9,89->arr
+arr:add:2,13;
+abort:arr
+@eof
 4,1,57,17->arr2
-disp:arr,arr2:' | ':
-:set:1,1000;
+arr2:set:1,1000;
+disp:arr2,'@';
+#disp:arr,arr2:' | ':#
 0->i
 disp:1,2
 disp:3,4
-@eof
 whilst:(i<15):{
     disp:'i\t:',i+<:' '
 }
+@eof
 @eof

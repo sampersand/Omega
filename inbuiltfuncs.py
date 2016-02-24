@@ -244,12 +244,23 @@ def evalarray(base, eles, locls):
         if __debug__:
             assert len(eles) == 2, 'array:set:pos,toset :: not '+str(len(eles))
             assert len(eles[1]) == 2, 'array:set:pos,toset :: not '+str(len(eles[1]))
-        eles[1][0].eval(locls)
-        pos = locls['$'].base.base
-        eles[1][1].eval(locls)
-        base.base[pos] = locls['$'].base.base
-        # locls['$'] = base.base[locls['$'].base.base]
-        # locls['$'] = base.base[locls['$'].base.base]
+        eles[1][0].eval(locls) #eval pos
+        pos = locls['$'].base.base #set pos to locls['$']
+        eles[1][1].eval(locls) #evaluate toset
+        base.base[pos] = locls['$'].base.base #set ele @ pos to locls['$']
+    elif name == 'add':
+        if __debug__:
+            assert len(eles) == 2, 'array:add:[pos,]element'
+            assert len(eles[1]) == 0 or len(eles[1]) == 2, 'array:add:[pos,]element'
+        if len(eles[1]) == 0:
+            eles[1].eval(locls)
+            base.base.append(locls['$'])
+        else:
+            eles[1][0].eval(locls)
+            pos = locls['$'].base.base
+            eles[1][1].eval(locls)
+            base.base.insert(pos, locls['$'])
+
     else:
         raise SyntaxError("Unknown array function '{}'!".format(name))
     
