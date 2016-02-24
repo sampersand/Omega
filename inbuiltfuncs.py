@@ -217,10 +217,14 @@ def evalarray(base, eles, locls):
     if name == 'len':
         from group import group
         locls['$'] = group(base = base.lenobj)
-        return
-    print(eles[0])
-    print(locls)
-    quit()
+    elif name == 'get':
+        if __debug__:
+            assert len(eles) == 2, 'array:get:pos'
+        eles[1].eval(locls)
+        locls['$'] = base.base[locls['$'].base.base]
+    else:
+        raise SyntaxError("Unknown array function '{}'!".format(name))
+    
 
 
 

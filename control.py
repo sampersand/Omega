@@ -14,7 +14,6 @@ import re
 numre = re.compile(r'^(0[oxbOXB])?[\d.]+([eE]?[-+]?[\d.]+)?[ij]?$')
 strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
 
-
 escapechars = {'\\n': '\n',
                '\\t': '\t',
                '\\r': '\r'}
@@ -23,6 +22,7 @@ delims = {'arraysep':(',', operobj(',', 15)),
           'endline':(';\n', operobj(';', 15)),
           'applier':(':', operobj(':', 13)),
           }
+
 parens = {'l':'([{', 'r':')]}'}
 allconsts = {
     'true' : boolobj(True),
