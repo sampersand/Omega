@@ -1,3 +1,8 @@
 0->i;
-while:(i<15):{i<+-1;disp:'i:'::', ';disp:i}
+while:(i<15):{
+    i<+-1;
+    #disp:'i:'::' ';
+    disp:i#
+    disp:('i:',i)
+}
 @eof

@@ -8,7 +8,7 @@ def evalfunc(base, eles, locls):
             if not eles[0].base.isnull():
                 if not eles[0]:
                     eles[0].eval(locls)
-                    args = (locls['$'], )
+                    args = (locls['$'].base.strobj.scrub(), )
                 else:
                     def gen(eles, locls):
                         for ele in eles:
