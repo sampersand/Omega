@@ -26,7 +26,7 @@ def evalfunc(base, eles, locls):
                             assert isinstance(eles[2].base, strobj)
                         end = eles[2].base.scrub()
         print(*args, sep = sep, end = end)
-    elif name == 'since':
+    elif name == 'if':
         from group import group
         cond, iftrue, iffalse = group(), group(), group()
         if len(eles) > 0:
@@ -209,7 +209,18 @@ def evalunary(base, eles, locls):
         locls['$'].base.base = ~locls['$'].base.base
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
-    
+
+def evalarray(base, eles, locls):
+    if __debug__:
+        assert len(eles) > 0, 'cant pass no arguments to an array!'
+    name = str(eles[0])
+    if name == 'len':
+        from group import group
+        locls['$'] = group(base = base.lenobj)
+        return
+    print(eles[0])
+    print(locls)
+    quit()
 
 
 

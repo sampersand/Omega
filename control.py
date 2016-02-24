@@ -120,11 +120,11 @@ opers = {
 }
 funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
-    'for': funcobj('for'),
+    'if': funcobj('if'),
     'rm': funcobj('rm'),
+    'for': funcobj('for'),
     'disp': funcobj('disp'),
     'skip': funcobj('skip'), #ignore that line
-    'since': funcobj('since'),
     'abort': funcobj('abort'),
     'whilst': funcobj('whilst'),
 }

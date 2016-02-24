@@ -47,6 +47,10 @@ class obj():
         return bool(self.base)
 
     def eval(self, eles, locls):
+        if str(self) in locls:
+            #this is ignoring the parens...
+            locls[str(self)].base.eval(eles, locls)
+            return
         if __debug__:
             assert eles.base is self
         locls['$'] = eles
@@ -224,7 +228,13 @@ class arrayobj(obj):
     def __str__(self):
         return ', '.join(str(e) for e in self.base)
 
+    def eval(self, eles, locls):
+        import inbuiltfuncs
+        inbuiltfuncs.evalarray(self, eles, locls)
 
-
+    @property
+    def lenobj(self):
+        return numobj(len(self.base))
+    
 
 
