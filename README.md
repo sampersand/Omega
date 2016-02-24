@@ -90,8 +90,8 @@
 ###Right
 - The complete list:
   - `A ! ::= <factorial of> A`
-  - `A +< ::= <set $ to> A <then increment A>
-  - `A -< ::= <set $ to> A <then decrement A>
+  - `A +< ::= <set $ to> A <then increment A>`
+  - `A -< ::= <set $ to> A <then decrement A>`
 
 #In Built Functions
 - `if_statement ::= "if" ":" <expression> ":" <statement(s) if true> [":" <statement(s) if false>]`
