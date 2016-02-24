@@ -1,7 +1,10 @@
+(1,2)->arr
+disp:arr
+@eof
 0->i
 disp:(1,2)
 disp:(3,4)
-since:[i=0]:[disp:1]:[disp:0]
+since:[i=0]:[disp:'i = 0']:[disp:'i != 0']
 whilst:(i<15):{
     i<+-1
     #disp:'i:'::' '
@@ -9,4 +12,3 @@ whilst:(i<15):{
     disp:('i\t:',i):' '
 }
 @eof
-@eofscrub()
