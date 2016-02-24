@@ -92,6 +92,8 @@ class funcobj(obj):
     The class that represents a function.
     """
     def __init__(self, base, func = None):
+        if func == None:
+            func = None #yes, it looks stupid, but it's here so it cant get overrided later
         super().__init__(base)
         if __debug__:
             assert func == None or hasattr(func, '__call__'), type(func)
@@ -163,7 +165,9 @@ class numobj(obj):
     This will probably be subclassed in the future.
     """
     TYPES = (int, float, complex)
-    def __init__(self, base = 0):
+    def __init__(self, base = None):
+        if base == None:
+            base = 0
         if __debug__:
             assert isinstance(base, numobj.TYPES), repr(base)
         super().__init__(base)
@@ -183,7 +187,9 @@ class boolobj(numobj):
     """
     The class that represents a boolean.
     """
-    def __init__(self, base = False):
+    def __init__(self, base = None):
+        if base == None:
+            base = False
         if __debug__:
             assert isinstance(base, bool), type(base)
         super().__init__(base)
@@ -195,10 +201,12 @@ class strobj(obj):
     """
     The class that represents a boolean.
     """
-    def __init__(self, base = ''):
+    def __init__(self, base = None):
+        if base == None:
+            base = ''
         if __debug__:
             assert isinstance(base, str), type(base)
-        import control
+        # import control
         # if base and base[0] in control.allquotes:
         #     base = base[1:]
         # if base and base[-1] in control.allquotes:
@@ -232,7 +240,7 @@ class arrayobj(obj):
         return 'arrayobj({})'.format(self.base)
 
     def __str__(self):
-        return ', '.join(str(e) for e in self.base)
+        return '[' + ', '.join(str(e) for e in self.base) + ']'
 
     def eval(self, eles, locls):
         import inbuiltfuncs
@@ -242,7 +250,9 @@ class arrayobj(obj):
     def lenobj(self):
         return numobj(len(self.base))
 class dictobj(obj):
-    def __init__(self, base = {}):
+    def __init__(self, base = None):
+        if base == None:
+            base = {}
         if __debug__:
             assert isinstance(base, dict), type(base)
         super().__init__(base)

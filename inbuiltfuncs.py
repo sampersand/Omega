@@ -165,7 +165,6 @@ def _ioperfunc(sname, ele, locls): #sname == stripped name
     # ele.eval(locls)]
     # elestr = str(locls['$'])
     elestr = str(ele)
-    print(last,elestr)
     if sname == '':
         locls[elestr] = last
         import copy

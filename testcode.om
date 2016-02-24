@@ -1,6 +1,6 @@
 2,5,9,89->arr;
 4,1,57,17->arr2
-disp:arr,arr2:'\n\n'
+disp:arr,arr2:' | ':
 :set:1,1000;
 0->i
 disp:1,2
