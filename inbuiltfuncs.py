@@ -176,6 +176,12 @@ def evalunary(base, eles, locls):
         import math
         eles[0].eval(locls)
         locls['$'].base.base = math.factorial(locls['$'].base.base)
+    elif name == 'pos' or name == 'neg':
+        eles[1].eval(locls)
+        locls['$'].base.base = locls['$'].base.base
+    elif name == '~':
+        eles[1].eval(locls)
+        locls['$'].base.base = -locls['$'].base.base
     else:
         raise SyntaxError("Unknown unary function '{}'!".format(name))
     

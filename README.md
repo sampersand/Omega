@@ -18,3 +18,12 @@
 #####Notes:
 <ul>The statements and expressions can be surrounded by parenthesis if needed.</ul>
 <ul>Watch out! stuff like ```>1``` are interpreted as ```null>1```!.</ul>
+
+#Operators
+##Binary
+###Assignment
+<ul>```->```, ```<-```</ul>
+<ul>```-+>```, ```<+-```</ul>
+<ul>```-->```, ```<--```</ul>
+<ul>```-*>```, ```<*-```</ul>
+<ul>```-/>```, ```</-```</ul>

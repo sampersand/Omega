@@ -1,6 +1,9 @@
 9->b;
-disp:(b,b!,b-<,>-b);
-for
+2*-b->a;
+1->c;
+disp:9*-c;
+disp:(b,b!,b-<,>-b,a);
+#pos b->b->a;#
 #b-<;#
 # >-b;#
 @eof
