@@ -56,8 +56,18 @@ def evalfunc(base, eles, locls):
         if '$' not in locls:
             from group import group
             locls['$'] = group()
-    # elif name == 'for':
-    #     pass
+    elif name == 'for':
+        if __debug__:
+            assert len(eles) == 2, 'for:(init;cond;inc):(statements)'
+            assert len(eles[0]) == 3, 'for:(init;cond;inc):(statements)'
+        eles[0][0].eval(locls) #initialization
+        while True:
+            eles[0][1].eval(locls) #evaluate the condition
+            if not locls['$']:
+                print('not:',locls['$'])
+                break
+            eles[1].eval(locls) #execute the statements
+            eles[0][2].eval(locls) #increment
     # elif name == 'abort':
     #     pass
     else:
