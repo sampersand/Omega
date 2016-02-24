@@ -215,6 +215,11 @@ def evalconsts(base, eles, locls):
         from group import group
         from obj import dictobj
         locls['$'] = group(base = dictobj(locls))
+    elif name == 'rand':
+        import random
+        from group import group
+        from obj import numobj
+        locls['$'] = group(base = numobj(random.random()))
     else:
         raise SyntaxError("Unknown const function '{}'!".format(name))
 def evalarray(base, eles, locls):

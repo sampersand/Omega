@@ -1,6 +1,6 @@
 (2,5,9,89)->arr
 (arr:get:1) <- 100;
-abort:locls;
+abort:rand;
 #disp:(arr:len->i,i+<,>+i)#
 #disp:(arr:get:3,)#
 @eof

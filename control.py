@@ -1,6 +1,5 @@
 from obj import *#operobj, obj, funcobj,'',  numobj
 import math
-import random
 linebreak = '\n\r' #linebreak is used for comments
 comment = '#'
 allkeywords = {}
@@ -33,7 +32,7 @@ allconsts = {
     'k'    : numobj(8.987551787368e9),
     'imag' : numobj(complex(0,1)),
     'locls': funcobj('locls'), #todo, make this return locals
-    'rand' : funcobj('rand', random.random),
+    'rand' : funcobj('rand'),
     'nan'  : numobj(float('nan')), 'NaN': numobj(float('nan')),
     'inf'  : numobj(float('inf')), '∞': numobj(float('inf')),
 
