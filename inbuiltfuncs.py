@@ -63,8 +63,7 @@ def evalfunc(base, eles, locls):
         eles[0][0].eval(locls) #initialization
         while True:
             eles[0][1].eval(locls) #evaluate the condition
-            if not locls['$']:
-                print('not:',locls['$'])
+            if not locls['$'].base:
                 break
             eles[1].eval(locls) #execute the statements
             eles[0][2].eval(locls) #increment
@@ -105,7 +104,7 @@ def evaloper(base, eles, locls):
         for ele in eles[1:]:
             last = locls['$']
             ele.eval(locls)
-            locls['$'] = locls['$'].base.comparebase(locls['$'], name, last)
+            locls['$'] = last.base.comparebase(last, name, locls['$'])
     elif name in control.opers['unary']['l'] or name in control.opers['unary']['r']:
         evalunary(base, eles, locls)
     else:

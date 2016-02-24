@@ -1,5 +1,4 @@
 9->b;
 1->ll;
-disp:ll>10;
-for:(1->ll;ll<10;ll+<):(disp:ll)
+for:(0->ll;ll<10;ll+<):(disp:ll)
 @eof
