@@ -4,17 +4,17 @@ def evalfunc(base, eles, locls):
         from obj import strobj
         args, sep, end = ('', ), ', ', '\n'
         if len(eles) > 0:
-            from obj import nullobj
+            if __debug__:
+                assert not eles[0].base.isnull(), 'when would it be?'
             if not eles[0].base.isnull():
                 if not eles[0]:
                     eles[0].eval(locls)
                     args = (locls['$'].base.strobj.scrub(), )
                 else:
-                    def gen(eles, locls):
-                        for ele in eles:
-                            ele.eval(locls)
-                            yield locls['$'].base.strobj.scrub()
-                    args = gen(eles, locls)
+                    def scrub(ele, locls):
+                        ele.eval(locls)
+                        return locls['$'].base.strobj.scrub()
+                    args = [scrub(ele, locls) for ele in eles[0]]
             if len(eles) > 1:
                 if not eles[1].base.isnull():
                     if __debug__:

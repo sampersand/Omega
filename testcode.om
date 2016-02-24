@@ -1,8 +1,11 @@
-0->i;
+0->i
+disp:(1,2)
+disp:(3,4)
 while:(i<15):{
-    i<+-1;
-    #disp:'i:'::' ';
+    i<+-1
+    #disp:'i:'::' '
     disp:i#
-    disp:('i:',i)
+    disp:('i\t:',i):' '
 }
 @eof
+@eofscrub()
