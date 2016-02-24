@@ -11,7 +11,7 @@ whitespace = nbwhitespace + linebreak
 allquotes = '\'\"`'
 
 import re
-numre = re.compile(r'^(?:0[oxbeOXBE])?[\d.]+$')
+numre = re.compile(r'^(0[oxbOXB])?[\d.]+([eE]?[-+]?[\d.]+)?[ij]?$')
 strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
 
 
@@ -44,7 +44,7 @@ allconsts = {
 opers = {
     'binary':{
     #TODO: make assignment operators in here
-        'misc':{
+        'math':{
             '**'  : operobj('**',     3), # power of
             '*'   : operobj('*',      4), # mult
             '/'   : operobj('/',      4), # div
@@ -57,7 +57,7 @@ opers = {
             'b^'  : operobj('b^',     8), # bitwise ^
             'b|'  : operobj('b|',     9), # bitwise |
         },
-        'compare':{
+        'logic':{
             '<'   : operobj('<',     10), # less than
             '>'   : operobj('>',     10), # greater than
             '<='  : operobj('<=',    10), # less than or equal
@@ -136,7 +136,7 @@ import copy
 #crap i need a better way than this D:
 binopers = copy.copy(opers['binary']['misc'])
 binopers.update(opers['binary']['assignment'])
-binopers.update(opers['binary']['compare'])
+binopers.update(opers['binary']['logic'])
 allopers = copy.copy(binopers)
 allopers.update(opers['unary']['l'])
 allopers.update(opers['unary']['r'])

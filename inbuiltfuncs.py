@@ -90,7 +90,7 @@ def evaloper(base, eles, locls):
         eles[1 - d].eval(locls)
         for ele in eles[slice(d or None, 1 - d or None, None)]:
             _ioperfunc(name, ele, locls)
-    elif name in control.opers['binary']['compare']:
+    elif name in control.opers['binary']['logic']:
         eles[0].eval(locls)
         for ele in eles[1:]:
             last = locls['$']
