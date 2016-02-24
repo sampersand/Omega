@@ -37,7 +37,7 @@ def evalfunc(base, eles, locls):
                     iffalse = eles[2]
                     if __debug__:
                         if len(eles) > 3:
-                            raise SyntaxError('Not allowed to have more than 3 arguments for if statements!')
+                            raise SyntaxError('Not allowed to have more than 3 arguments for if statement(s)!')
         cond.eval(locls)
         (iftrue if locls['$'].base else iffalse).eval(locls)
     elif name == 'skip':
@@ -58,14 +58,14 @@ def evalfunc(base, eles, locls):
             locls['$'] = group()
     elif name == 'for':
         if __debug__:
-            assert len(eles) == 2, 'for:(init;cond;inc):(statements)'
-            assert len(eles[0]) == 3, 'for:(init;cond;inc):(statements)'
+            assert len(eles) == 2, 'for:(init;cond;inc):(statement(s))'
+            assert len(eles[0]) == 3, 'for:(init;cond;inc):(statement(s))'
         eles[0][0].eval(locls) #initialization
         while True:
             eles[0][1].eval(locls) #evaluate the condition
             if not locls['$'].base:
                 break
-            eles[1].eval(locls) #execute the statements
+            eles[1].eval(locls) #execute the statement(s)
             eles[0][2].eval(locls) #increment
     elif name == 'abort':
         if __debug__:
@@ -78,10 +78,14 @@ def evalfunc(base, eles, locls):
             locls['$'] = group(base = nullobj())
 
         quit('Aborting!' + (str(locls['$']) and " Message: " + str(locls['$'])))
-        # if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
-        #     locls['$'] = group(base = eles)
-        # elif str(eles.base) == str(control.funcs['abort']): 
-        #     locls['$'] = group(base = null())
+    elif name == 'while':
+        if __debug__:
+            assert len(eles) == 2, 'while:(cond):(statement(s))'
+        while True:
+            eles[0].eval(locls) #evaluate the condition
+            if not locls['$'].base:
+                break
+            eles[1].eval(locls) #execute the statement(s)
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
