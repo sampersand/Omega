@@ -1,11 +1,11 @@
-2,5,9,89->arr
-arr:set:1,1000;
-#disp:(arr:len->i,i+<,>+i)#
-#disp:(arr:get:3,)#
-disp:i
+2,5,9,89->arr;
+4,1,57,17->arr2
+disp:arr,arr2:'\n\n'
+:set:1,1000;
 0->i
 disp:1,2
 disp:3,4
+@eof
 whilst:(i<15):{
     disp:'i\t:',i+<:' '
 }

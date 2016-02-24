@@ -221,7 +221,9 @@ class arrayobj(obj):
     """
     The class that represents an array.
     """
-    def __init__(self, base = []):
+    def __init__(self, base = None):
+        if base == None:
+            base = []
         if __debug__:
             assert isinstance(base, list), type(base) #atm, no tuples or sets or whatnot
         super().__init__(base)
