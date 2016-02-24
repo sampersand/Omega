@@ -192,5 +192,5 @@ class omfile:
         locls = locls.locls()
         self.lines.eval(locls)
         if '$' in locls and not __debug__:
-            del locls['$']
+            del locls.lv
         return locls

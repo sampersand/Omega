@@ -15,18 +15,12 @@ class group(list):
 
     @property
     def basestr(self):
-        return '' if self.base.isnull() else str(self.base)
+        return str(self.base)
+        # return '' if self.base.isnull() else str(self.base)
     
     def _hasparens(self):
         return bool(self.parens[0] or self.parens[1])
 
-    # @property
-    # def basestr(self):
-    #     return str(self.base)
-
-    # def isfinal(self):
-    #     return len(self) == 0
-        
     def __repr__(self):
         ret = 'group('
         if not self.base.isnull():
@@ -57,13 +51,13 @@ class group(list):
     def eval(self, locls):
         if self.basestr in locls: #short cut
             import copy
-            locls['$'] = copy.deepcopy(locls[self.basestr]) #oh boy this is slooow
-            return locls['$']
+            locls.lv = copy.deepcopy(locls[self.basestr]) #oh boy this is slooow
+            return locls.lv
         if not self.base.isnull():
             self.base.eval(self, locls)
             if __debug__:
-                assert isinstance(locls['$'], group), locls
-        return locls['$']
+                assert isinstance(locls.lv, group), locls
+        return locls.lv
 
 
 

@@ -10,7 +10,7 @@
   - Quotes can be escaped in strings to prevent them from ending.
 - Define numbers by writing normal values, or prefixing them with special values.
   - `###` is an integer.
-  - `###.###` or `###.###[e/E][-/+]###.###` is a float.
+  - `###.###` or `###.###[e/E][n/p]###.###` is a float.
   - `###.###[j/i]` is a complex number (TODO).
   - The prefixes in `-#` and `+#` are handled seperately.
   - `0[x/X]###` is for hexadecimal

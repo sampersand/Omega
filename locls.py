@@ -1,9 +1,14 @@
 class locls(dict):
-    def __new__(self):
+    def __init__(self):
         from group import group
-        return super().__new__(self, ('$',group()))
+        super().__init__({'$':group()})
     @property
     def lv(self):
+        "I am the 'lv' property."
         return self['$']
-    
-        
+    @lv.setter
+    def lv(self, value):
+        self['$'] = value
+    @lv.deleter
+    def lv(self):
+        del self['$']

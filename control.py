@@ -1,4 +1,3 @@
-from obj import *#operobj, obj, funcobj,'',  numobj
 import math
 linebreak = '\n\r' #linebreak is used for comments
 comment = '#'
@@ -9,13 +8,19 @@ nbwhitespace = ' \t\x0b\x0c'
 whitespace = nbwhitespace + linebreak
 allquotes = '\'\"`'
 
-import re
-numre = re.compile(r'^(0[oxbOXB])?[\d.]+([eE]?[-+]?[\d.]+)?[ij]?$')
-strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
+# import re
+# numre = re.compile(r'^(0[oxbOXB])?[\d.]+([eE]?[-+]?[\d.]+)?[ij]?$')
+# strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
+from obj import *#operobj, obj, funcobj,'',  numobj
 
 escapechars = {'\\n': '\n',
                '\\t': '\t',
-               '\\r': '\r'}
+               '\\r': '\r',
+               "\\'": '\'',
+               '\\`': '`',
+               '\\"': '\"',
+               '\\\\':'\\',
+               }
 delims = {'arraysep':(',', operobj(',', 13)),
           'etc':('|', operobj('|', 13)),
           'endline':(';\n', operobj(';', 16)),
@@ -127,7 +132,6 @@ funcs = {
     'abort': funcobj('abort'),
     'whilst': funcobj('whilst'),
 }
-
 for d in delims.values():
     for val in d[0]:
         opers['unary']['l'][val] = d[1]

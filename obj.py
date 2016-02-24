@@ -2,6 +2,9 @@ class obj():
     """
     The base class for all of the objects.
     """
+    import re
+    numre = re.compile(r'^(0[oxbOXB])?[\d.]+([eE]?[-+]?[\d.]+)?[ij]?$')
+
     def __init__(self, base):
         if __debug__:
             assert not isinstance(base, obj), type(obj) #only allowed to pass non-objs
@@ -19,15 +22,17 @@ class obj():
         if __debug__:
             assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
         import control
-        if ele in control.allfuncs:
-            return control.allfuncs[ele]
-        if control.numre.fullmatch(ele):
-            return numobj.fromstr(ele)
-        if control.strre.fullmatch(ele): #starts & ends with quotes
-            return strobj(ele)
-        if ele in control.allconsts:
-            return control.allconsts[ele]
-        return obj(ele)
+        if ele in control.allkeywords:
+            return control.allkeywords[ele]
+        ret = numobj.fromstr(ele)
+        if ret == None:
+            ret = strobj.fromstr(ele)
+            if ret == None:
+                ret = obj(ele)
+                # raise ValueError("Don't know how to deal with base '{}'!".format(ele))            
+        if __debug__:
+            assert ret != None
+        return ret
 
     def __str__(self):
         return str(self.base)
@@ -35,7 +40,6 @@ class obj():
     @property
     def strobj(self):
         return strobj(str(self))
-    
 
     def __repr__(self):
         return 'obj({})'.format(self.base)
@@ -53,7 +57,7 @@ class obj():
             return
         if __debug__:
             assert eles.base is self
-        locls['$'] = eles
+        locls.lv = eles
 
     def updatebase(self, name, other):
         if   name == '+' : self.base += other.base
@@ -87,6 +91,7 @@ class obj():
 
     def isnull(self):
         return isinstance(self, nullobj)
+
 class funcobj(obj):
     """
     The class that represents a function.
@@ -106,19 +111,19 @@ class funcobj(obj):
         import control
         if self.base in control.funcs:
             if __debug__:
-                assert self.func == None, str(self) + " can't be in control.functions & have a function defined! \
-(supposed to be defined in inbuiltfuncs)"
+                assert self.func == None, str(self) + " can't be in control.functions & have a function defined!"+\
+                                                       "(supposed to be defined in inbuiltfuncs)"
             import inbuiltfuncs
             return inbuiltfuncs.evalfunc(self, eles, locls)
         if __debug__:
-            x = locls['$']
+            x = locls.lv
         if self.func != None:
             self.func(eles, locls)
         else:
             import inbuiltfuncs
             return inbuiltfuncs.evalconsts(self, eles, locls)
         if __debug__:
-            assert locls['$'] is not x, "function {} didn't do anything!".format(self)
+            assert locls.lv is not x, "function {} didn't do anything!".format(self)
 
 class operobj(funcobj):
     """
@@ -139,11 +144,10 @@ class operobj(funcobj):
             assert eles.base is self
             import control
             assert self.base in control.allopers, str(self) + " needs to be in control.allopers!"
-            assert self.func == None, str(self) +" can't be in control.functions & have a fun\
-(supposed to be defined in inbuiltfuncs)"
+            assert self.func == None, str(self) + " can't be in control.functions & have a function defined!"+\
+                                                   "(supposed to be defined in inbuiltfuncs)"
         import inbuiltfuncs
         inbuiltfuncs.evaloper(self, eles, locls)
-
 
 class nullobj(obj):
     """
@@ -155,66 +159,36 @@ class nullobj(obj):
 
     def __repr__(self):
         return 'nullobj()'
+        
+    def __str__(self):
+        return 'null'
 
     def eval(self, eles, locls):
         pass #do not change this
 
-class numobj(obj):
-    """
-    The class that represents a number.
-    This will probably be subclassed in the future.
-    """
-    TYPES = (int, float, complex)
-    def __init__(self, base = None):
-        if base == None:
-            base = 0
-        if __debug__:
-            assert isinstance(base, numobj.TYPES), repr(base)
-        super().__init__(base)
-    def __repr__(self):
-        return 'numobj({})'.format(self.base)
-
-    @staticmethod
-    def fromstr(base):
-        for typ in numobj.TYPES:
-            try:
-                return numobj(typ(base))
-            except:
-                pass
-        raise SyntaxError("Cannot convert string '{}' to numobj".format(base))
-
-class boolobj(numobj):
-    """
-    The class that represents a boolean.
-    """
-    def __init__(self, base = None):
-        if base == None:
-            base = False
-        if __debug__:
-            assert isinstance(base, bool), type(base)
-        super().__init__(base)
-
-    def __repr__(self):
-        return 'boolobj({})'.format(self.base)
-
 class strobj(obj):
     """
-    The class that represents a boolean.
+    The class that represents a string.
     """
+    import re
+    import control
+    strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(control.allquotes))
+
     def __init__(self, base = None):
         if base == None:
             base = ''
         if __debug__:
             assert isinstance(base, str), type(base)
-        # import control
-        # if base and base[0] in control.allquotes:
-        #     base = base[1:]
-        # if base and base[-1] in control.allquotes:
-        #     base = base[:-1]
         super().__init__(base)
 
     def __repr__(self):
         return 'strobj({})'.format(self.base)
+
+    @staticmethod
+    def fromstr(base):
+        if not strobj.strre.fullmatch(base):
+            return None
+        return strobj(base)
 
     def scrub(self):
         import control
@@ -249,6 +223,7 @@ class arrayobj(obj):
     @property
     def lenobj(self):
         return numobj(len(self.base))
+
 class dictobj(obj):
     def __init__(self, base = None):
         if base == None:
@@ -259,4 +234,80 @@ class dictobj(obj):
     def __repr__(self):
         return 'dictobj({})'.format(self.base)
 
+class numobj(obj):
+    """
+    The super class for all numbers.
+    """
+
+    TYPES = (int, float, complex)
+    def __init__(self, base = None):
+        if base == None:
+            base = 0
+        if __debug__:
+            assert isinstance(base, numobj.TYPES), repr(base)
+        super().__init__(base)
+
+    def __repr__(self):
+        return 'numobj({})'.format(self.base)
+
+    @staticmethod
+    def fromstr(base):
+        ret = intobj.fromstr(base)
+        if ret == None:
+            ret = floatobj.fromstr(base)
+            if ret == None:
+                ret = complexobj.fromstr(base)
+        return ret
+
+class intobj(numobj):
+    import re
+    intre = re.compile(r'[\d]+')
+    @staticmethod
+    def fromstr(base):
+        if not intobj.intre.fullmatch(base):
+            return None
+        return intobj(int(base))
+
+    def __repr__(self):
+        return 'intobj(%s)' % self.base
+
+class floatobj(numobj):
+    import re
+    floatre = re.compile(r'^$') #todo: these
+
+    @staticmethod
+    def fromstr(base):
+        if not floatobj.floatre.fullmatch(base):
+            return None
+        return floatobj(float(base))
+
+    def __repr__(self):
+        return 'floatobj(%s)' % self.base
+
+class complexobj(numobj):
+    import re
+    complexre = re.compile(r'^$') #todo: these
+
+    @staticmethod
+    def fromstr(base):
+        if not complexobj.complexre.fullmatch(base):
+            return None
+        return complexobj(complex(base))
+
+    def __repr__(self):
+        return 'complexobj(%s)' % self.base
+
+class boolobj(numobj):
+    """
+    The class that represents a boolean.
+    """
+    def __init__(self, base = None):
+        if base == None:
+            base = False
+        if __debug__:
+            assert isinstance(base, bool), type(base)
+        super().__init__(base)
+
+    def __repr__(self):
+        return 'boolobj({})'.format(self.base)
 

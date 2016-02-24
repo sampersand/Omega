@@ -1,11 +1,55 @@
+110->a;
+#0b101101->a;#
+if:(if:(9->b):{b-<;disp:$,b,a-b,[a<--b];a<--b-<}:{a<--(b+<)}
+    ):{
+        disp:$, " ($) is true.":''
+    }:{
+        disp:$, " ($) is false.":''
+    }
+
+disp:a, " (a) is ",(if:a:'true':'false'), '.':''
+disp:b, " (b) is ",(if:b:'true':'false'), '.':''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@eof
+;
 2,5,9,89->arr
 arr:rem:2;
-abort:arr
-@eof
-arr:add:2,13;
-4,1,57,17->arr2
-arr2:set:1,1000;
-disp:arr2,'@';
+disp:arr;
+4,62,57,17->arr2
+arr2:set:1,1011;
+arr2:add:19;
+arr2:add:3,12;
+disp:arr2,'@',(arr2:len);
+abort
 #disp:arr,arr2:' | ':#
 0->i
 disp:1,2
@@ -13,5 +57,3 @@ disp:3,4
 whilst:(i<15):{
     disp:'i\t:',i+<:' '
 }
-@eof
-@eof
