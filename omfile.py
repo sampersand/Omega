@@ -187,7 +187,9 @@ class omfile:
         return fixtkns(compresstokens(group(args = linetokens)))
     
     def eval(self):
-        locls = {'$': group(base = control.allconsts['null'])}
+        import locls
+
+        locls = locls.locls()
         self.lines.eval(locls)
         if '$' in locls and not __debug__:
             del locls['$']
