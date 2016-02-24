@@ -67,8 +67,21 @@ def evalfunc(base, eles, locls):
                 break
             eles[1].eval(locls) #execute the statements
             eles[0][2].eval(locls) #increment
-    # elif name == 'abort':
-    #     pass
+    elif name == 'abort':
+        if __debug__:
+            assert len(eles) <= 1, 'abort[:message]'
+        if len(eles) == 1: #abort w/ message
+            eles[0].eval(locls)
+        else:
+            from group import group
+            from obj import nullobj
+            locls['$'] = group(base = nullobj())
+
+        quit('Aborting!' + (str(locls['$']) and " Message: " + str(locls['$'])))
+        # if eles.isfinal() and str(eles.base) != str(control.funcs['abort']):
+        #     locls['$'] = group(base = eles)
+        # elif str(eles.base) == str(control.funcs['abort']): 
+        #     locls['$'] = group(base = null())
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
