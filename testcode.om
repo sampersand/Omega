@@ -1,5 +1,5 @@
-(2,5,9,89)->arr
-arr:set:1,100;
+2,5,9,89->arr
+#arr:set:1,100;#
 @eof
 abort:locls;
 #disp:(arr:len->i,i+<,>+i)#

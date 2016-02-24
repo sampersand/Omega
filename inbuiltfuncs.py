@@ -241,6 +241,16 @@ def evalarray(base, eles, locls):
             assert len(eles) == 2, 'array:get:pos'
         eles[1].eval(locls)
         locls['$'] = base.base[locls['$'].base.base]
+    elif name == 'set':
+        if __debug__:
+            assert len(eles) == 2, 'array:set:pos,toset :: not '+str(len(eles))
+            assert len(eles[1]) == 2, 'array:set:pos,toset :: not '+str(len(eles[1]))
+        eles[1][0].eval(locls)
+        pos = locls['$'].base.base
+        eles[1][1].eval(locls)
+        base.base[pos] = locls['$'].base.base
+        # locls['$'] = base.base[locls['$'].base.base]
+        # locls['$'] = base.base[locls['$'].base.base]
     else:
         raise SyntaxError("Unknown array function '{}'!".format(name))
     
