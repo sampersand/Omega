@@ -86,8 +86,14 @@ def evalfunc(base, eles, locls):
                 break
             eles[1].eval(locls) #execute the statement(s)
     elif name == 'func':
-        
-        quit(eles)
+        eles[0].eval(locls)
+        name = str(locls.lv)
+        args = eles[1]
+        func = eles[2]
+        from group import group
+        from obj import userfuncobj
+        locls[name] = group(base = userfuncobj(name, args, func))
+        locls.lv = locls[name]
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):

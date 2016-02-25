@@ -100,8 +100,8 @@ class funcobj(obj):
         if func == None:
             func = None #yes, it looks stupid, but it's here so it cant get overrided later
         super().__init__(base)
-        if __debug__:
-            assert func == None or hasattr(func, '__call__'), type(func)
+        # if __debug__:
+            # assert func == None or hasattr(func, '__call__'), type(func)
         self.func = func
 
     def __repr__(self):
@@ -124,7 +124,6 @@ class funcobj(obj):
             return inbuiltfuncs.evalconsts(self, eles, locls)
         if __debug__:
             assert locls.lv is not x, "function {} didn't do anything!".format(self)
-
 class operobj(funcobj):
     """
     The class that represents operators on objects.
@@ -134,7 +133,7 @@ class operobj(funcobj):
         self.priority = priority
 
     def __repr__(self):
-        return 'operobj({},{})'.format(self.base, self.priority, self.func)
+        return 'operobj({},{})'.format(self.base, self.priority)
 
     def __ge__(self, other):
         return self.priority >= other.priority
@@ -148,6 +147,31 @@ class operobj(funcobj):
                                                    "(supposed to be defined in inbuiltfuncs)"
         import inbuiltfuncs
         inbuiltfuncs.evaloper(self, eles, locls)
+class userfuncobj(funcobj):
+    def __init__(self, base, args, func):
+        super().__init__(base, func)
+        self.args = args
+
+    def __repr__(self):
+        return 'userfuncobj({},{},{})'.format(self.base, self.args, self.func)
+
+    def _genargs(self, eles, locls):
+        import locls as loclsm
+        ret = loclsm.locls()
+        if __debug__:
+            assert len(eles) == len(self.args), "{} args are required for '{}', got {} ({})!".\
+                    format(len(self.args), self.base, len(eles), str(eles))
+        for elep in range(len(self.args)):
+            eles[elep].eval(locls)
+            ret[str(self.args[elep])] = locls.lv
+        return ret
+    def eval(self, eles, locls):
+        if __debug__:
+            import control
+            assert eles.basestr in control.delims['applier'][0] #f :(args) <-- needs the ':'
+        nlocls = self._genargs(eles[0], locls)
+        self.func.eval(nlocls)
+
 
 class nullobj(obj):
     """
@@ -223,7 +247,6 @@ class arrayobj(obj):
     @property
     def lenobj(self):
         return numobj(len(self.base))
-
 class dictobj(obj):
     def __init__(self, base = None):
         if base == None:
@@ -258,7 +281,6 @@ class numobj(obj):
             if ret == None:
                 ret = complexobj.fromstr(base)
         return ret
-
 class intobj(numobj):
     import re
     decre = re.compile(r'^(?:0([dD]))?(\d+)I?$') #can have 'I' at the end
@@ -316,7 +338,6 @@ class floatobj(numobj):
 
     def __repr__(self):
         return 'floatobj(%s)' % self.base
-
 class complexobj(numobj):
     import re
     complexre = re.compile(floatobj.floatre.pattern[:-1] + r'[iIjJ]$') #the exact same as a float with an I/J at the end
@@ -338,7 +359,6 @@ class complexobj(numobj):
 
     def __repr__(self):
         return 'complexobj(%s)' % self.base
-
 class boolobj(numobj):
     """
     The class that represents a boolean.

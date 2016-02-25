@@ -1,5 +1,5 @@
-abort:9 b<< 1
-func:f:(a,b):{disp:a}
+func:f:(a,b):{disp:a,b}
+f:(1,2)
 f:(1,2)
 
 @eof
