@@ -1,3 +1,10 @@
+func:genrand:(size,):{
+    return:{,->ret;for:(0->q;q<size;q+<):{ret:add:rand};ret}
+}
+func:disparr:(arr,):{
+    for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)}
+    }
+disparr:(genrand:(10,),)
 func:suma:(arr,):{
     return:(arr <- arr:copy:();whilst:(arr:len):{ret<+-arr:pop:()};ret)
 }
@@ -12,46 +19,40 @@ func:sump:(a, b):{
 
 disp:{'sum of', (1,2,3 -> arr;), 'is', suma:(arr,)}:' '
 disp:{suma:(0x92,1,7.5,pi,1b&5 -> arr2;), 'is the sum of', arr2}:' '
-@eof
 0u12u101101->a;
 0.2en1 -> b;
 4.4j->c;
 
-
-@eof
-0->i
+0->n
 disp:1,2
 disp:3,4
-whilst:(i<15):{
-    disp:'i\t:',i+<:' '
+whilst:(n < 15):{
+    disp:('n\t:',n+<):' '
 }
 
 110->a;
 if:(
     if:(0->b):{a<--b-<}:{a<+->+b;}
     ):{
-        disp:$, " ($) is true.":''
+        disp:[$, " ($) is true."]:''
     }:{
-        disp:$, " ($) is false.":''
+        disp:[$, " ($) is false."]:''
     }
 
-disp:a, " (a) is ",(if:a:'true':'false'), '.':''
-disp:b, " (b) is ",(if:b:'true':'false'), '.':''
-
-@eof
+disp:(a, " (a) is ",(if:a:'true':'false'), '.'):''
+disp:(b, " (b) is ",(if:b:'true':'false'), '.'):''
 2,5,9,89->arr
 arr:rem:2;
 disp:arr;
 4,62,57,17->arr2
-arr2:set:1,1011;
+arr2:set:[1,1011];
 arr2:add:19;
 arr2:add:3,12;
 disp:arr2,'@',(arr2:len);
-abort
-#disp:arr,arr2:' | ':#
+disp:[arr,arr2]:' | ':
 0->i
 disp:1,2
 disp:3,4
 whilst:(i<15):{
-    disp:'i\t:',i+<:' '
+    disp:('i\t:',i+<):' '
 }

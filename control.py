@@ -32,18 +32,18 @@ allconsts = {
     'true' : boolobj(True),
     'false': boolobj(False),
     'null' : nullobj(),
-    'pi'   : numobj(math.pi), 'π': numobj(math.pi),
-    'e'    : numobj(math.e),
-    'k'    : numobj(8.987551787368e9),
-    'imag' : numobj(complex(0,1)),
+    'pi'   : floatobj(math.pi), 'π': floatobj(math.pi),
+    'e'    : floatobj(math.e),
+    'k'    : floatobj(8.987551787368e9),
+    'imag' : complexobj(complex(0,1)),
     'locls': funcobj('locls'), #todo, make this return locals
     'rand' : funcobj('rand'),
-    'nan'  : numobj(float('nan')), 'NaN': numobj(float('nan')),
-    'inf'  : numobj(float('inf')), '∞': numobj(float('inf')),
+    'nan'  : floatobj(float('nan')), 'NaN': floatobj(float('nan')),
+    'inf'  : floatobj(float('inf')), '∞': floatobj(float('inf')),
 
-    '½' : numobj(1 / 2), '⅓' : numobj(1 / 3), '⅔' : numobj(2 / 3), '¼' : numobj(1 / 4), '¾' : numobj(3 / 4),
-    '⅕' : numobj(1 / 5), '⅖' : numobj(2 / 5), '⅗' : numobj(3 / 5), '⅘' : numobj(4 / 5), '⅙' : numobj(1 / 6),
-    '⅚' : numobj(5 / 6), '⅛' : numobj(1 / 8), '⅜' : numobj(3 / 8), '⅝' : numobj(5 / 8), '⅞' : numobj(7 / 8),
+    '½' : floatobj(1 / 2), '⅓' : floatobj(1 / 3), '⅔' : floatobj(2 / 3), '¼' : floatobj(1 / 4), '¾' : floatobj(3 / 4),
+    '⅕' : floatobj(1 / 5), '⅖' : floatobj(2 / 5), '⅗' : floatobj(3 / 5), '⅘' : floatobj(4 / 5), '⅙' : floatobj(1 / 6),
+    '⅚' : floatobj(5 / 6), '⅛' : floatobj(1 / 8), '⅜' : floatobj(3 / 8), '⅝' : floatobj(5 / 8), '⅞' : floatobj(7 / 8),
 }
 opers = {
     'binary':{

@@ -206,14 +206,14 @@ def evalunary(base, eles, locls):
             assert len(eles) == 1
     if name == '>+' or name == '>-':
         from group import group
-        from obj import numobj
-        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = numobj(1)), eles[1]]).eval(locls)
+        from obj import intobj
+        group(base = control.allopers['-%s>'%name[1]], args = [ group(base = intobj(1)), eles[1]]).eval(locls)
     elif name == '+<' or name == '-<':
         from group import group
-        from obj import numobj
+        from obj import intobj
         import copy;
         ret = copy.deepcopy(locls[str(eles[0])]);
-        group(base = control.allopers['-%s>'%name[0]], args = [ group(base = numobj(1)), eles[0]]).eval(locls)
+        group(base = control.allopers['-%s>'%name[0]], args = [ group(base = intobj(1)), eles[0]]).eval(locls)
         locls.lv = ret
     elif name == '!':
         import math
@@ -236,8 +236,8 @@ def evalconsts(base, eles, locls):
     elif name == 'rand':
         import random
         from group import group
-        from obj import numobj
-        locls.lv = group(base = numobj(random.random()))
+        from obj import floatobj
+        locls.lv = group(base = floatobj(random.random()))
     else:
         raise SyntaxError("Unknown const function '{}'!".format(name))
 def evalarray(base, eles, locls):
@@ -264,7 +264,8 @@ def evalarray(base, eles, locls):
         if __debug__:
             assert len(eles) == 2, 'array:add:[pos,]element'
             assert len(eles[1]) == 0 or len(eles[1]) == 2, 'array:add:[pos,]element'
-        if len(eles[1]) == 0:
+        import control
+        if len(eles[1]) == 0 or eles[1].basestr not in control.delims['arraysep'][0]:
             eles[1].eval(locls)
             base.base.append(locls.lv)
         else:

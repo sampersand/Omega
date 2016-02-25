@@ -56,7 +56,7 @@ class obj():
             locls[str(self)].base.eval(eles, locls)
             return
         if __debug__:
-            assert eles.base is self, str(eles.base) + " != " + str(self)
+            assert eles.base is self, str(eles) + " != " + str(self)
         locls.lv = eles
 
     def updatebase(self, name, other):
@@ -79,12 +79,12 @@ class obj():
         if __debug__:
             assert isinstance(this, group), this
             assert isinstance(other, group), other
-        if   name == '<' :                 return group(boolobj(this.base.base <   other.base.base))
-        elif name == '>' :                 return group(boolobj(this.base.base >   other.base.base))
-        elif name == '<=':                 return group(boolobj(this.base.base <=  other.base.base))
-        elif name == '>=':                 return group(boolobj(this.base.base >=  other.base.base))
-        elif name == '==' or name == '=':  return group(boolobj(this.base.base ==  other.base.base))
-        elif name == '!=' or name == '<>': return group(boolobj(this.base.base !=  other.base.base))
+        if   name == '<' :                 return group(base = boolobj(this.base.base <   other.base.base))
+        elif name == '>' :                 return group(base = boolobj(this.base.base >   other.base.base))
+        elif name == '<=':                 return group(base = boolobj(this.base.base <=  other.base.base))
+        elif name == '>=':                 return group(base = boolobj(this.base.base >=  other.base.base))
+        elif name == '==' or name == '=':  return group(base = boolobj(this.base.base ==  other.base.base))
+        elif name == '!=' or name == '<>': return group(base = boolobj(this.base.base !=  other.base.base))
         elif name == 'or' or name == '||': return this or other #todo these
         elif name == 'and'or name == '&&': return this and other
         else: raise ValueError("Unnkown comparator '{}'".format(name))
@@ -173,7 +173,6 @@ class userfuncobj(funcobj):
         self.func.eval(nlocls)
         if not nlocls.ret.base.isnull():
             locls.lv = nlocls.ret
-
 
 class nullobj(obj):
     """
@@ -316,7 +315,7 @@ class intobj(numobj):
                 ret = (int(ret[0][0]), ret[0][1])
         if __debug__:
             assert not ret or len(ret) == 2 #only 1 or 0 matches
-        return ret and intobj(ret[1], ret[0]) or None 
+        return intobj(ret[1], ret[0]) if ret else None 
 
     def __repr__(self):
         return 'intobj(base={}{})'.format(self.base, '' if self.nbase == 10 else ',nbase='+str(self.nbase))
@@ -336,10 +335,22 @@ class floatobj(numobj):
             ret = ret[0]
             ret = (ret[2] and '{}e{}{}'.format(ret[0], ret[1] in 'pP' and '+' or '-', ret[2]) or ret[0])
             # for some reason, '' in 'pP' is true.
-        return ret and floatobj(float(ret)) or None
+        return floatobj(float(ret)) if ret else None
 
     def __repr__(self):
         return 'floatobj(%s)' % self.base
+    def eval(self, eles, locls):
+        import control
+        if eles.basestr not in control.delims['applier'][0]:
+            super().eval(eles, locls)
+            return
+        name = str(eles[0])
+        if name == 'round':
+            from group import group
+            locls.lv = group(base = intobj(round(self.base)))
+        else:
+            raise SyntaxError("Unknown int function '{}'!".format(name))
+
 class complexobj(numobj):
     import re
     complexre = re.compile(floatobj.floatre.pattern[:-1] + r'[iIjJ]$') #the exact same as a float with an I/J at the end
@@ -354,10 +365,7 @@ class complexobj(numobj):
             ret = ret[0]
             ret = (ret[2] and '{}e{}{}'.format(ret[0], ret[1] in 'pP' and '+' or '-', ret[2]) or ret[0])
             # for some reason, '' in 'pP' is true.
-        return ret and floatobj(complex(0, float(ret))) or None
-        if not complexobj.complexre.fullmatch(base):
-            return None
-        return complexobj(complex(base))
+        return floatobj(complex(0, float(ret))) if ret else None
 
     def __repr__(self):
         return 'complexobj(%s)' % self.base
