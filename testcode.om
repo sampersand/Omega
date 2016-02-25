@@ -1,12 +1,14 @@
-func:f:(a,b):{
-    disp:a,b
-}
 func:g::{
     disp:'im in g!'
 }
-f:(1,2)
-f:(4,5)
-g:
+func:sum:(a, b):{
+    disp:('sum of', a, b, 'is', a + b):' '
+    return:a+b
+}
+disp:['d:', {sum:(1,2)}]:' '
+# disp:['displaying:',sum:(1,2)]:' '#
+#sum:(4,5)#
+#g::#
 
 @eof
 0u12u101101->a;

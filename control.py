@@ -21,10 +21,10 @@ escapechars = {'\\n': '\n',
                '\\"': '\"',
                '\\\\':'\\',
                }
-delims = {'arraysep':(',', operobj(',', 13)),
-          'etc':('|', operobj('|', 13)),
+delims = {'arraysep':(',', operobj(',', 14)),
+          'etc':('|', operobj('|', 14)),
           'endline':(';\n', operobj(';', 16)),
-          'applier':(':', operobj(':', 14)),
+          'applier':(':', operobj(':', 13)),
           }
 
 parens = {'l':'([{', 'r':')]}'}
@@ -129,9 +129,10 @@ funcs = {
     'for': funcobj('for'),
     'disp': funcobj('disp'),
     'skip': funcobj('skip'), #ignore that line
+    'func': funcobj('func'),
     'abort': funcobj('abort'),
     'whilst': funcobj('whilst'),
-    'func': funcobj('func'),
+    'return': funcobj('return'),
 }
 for d in delims.values():
     for val in d[0]:

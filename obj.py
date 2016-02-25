@@ -171,6 +171,8 @@ class userfuncobj(funcobj):
             assert eles.basestr in control.delims['applier'][0] #f :(args) <-- needs the ':'
         nlocls = self._genargs(eles[0], locls)
         self.func.eval(nlocls)
+        if not nlocls.ret.base.isnull():
+            locls.lv = nlocls.ret
 
 
 class nullobj(obj):

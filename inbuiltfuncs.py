@@ -94,6 +94,9 @@ def evalfunc(base, eles, locls):
         from obj import userfuncobj
         locls[name] = group(base = userfuncobj(name, args, func))
         locls.lv = locls[name]
+    elif name == 'return':
+        eles[0].eval(locls)
+        locls.ret = locls.lv
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
