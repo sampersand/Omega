@@ -27,7 +27,8 @@ class omfile:
                         ret += e[1]
                         linep += e[0]
             return linep, ret
-        return "file '{}':\n==[start]==\n{}\n\n==[ end ]==".format(self.filepath, getl(0, self.lines)[1])
+        return "file '{}':\n==[start]==\n{}\n\n==[ end ]==".format(self.filepath, getl(0, self.lines[1:-1])[1])
+        #skip the first and last line b/c they're null
 
     @staticmethod
     def _striptext(rawt):
@@ -58,7 +59,7 @@ class omfile:
                     ret += char
         if '@eof' in ret:
             ret = ret[0:ret.find('@eof')]
-        return ret + (control.delims['endline'][0][0] if ret[-1] not in control.delims['endline'][0] else '') #';'
+        return control.delims['endline'][0][0] + ret + control.delims['endline'][0][0]
     
     @staticmethod
     def _tokenize(rawt):

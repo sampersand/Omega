@@ -85,6 +85,9 @@ def evalfunc(base, eles, locls):
             if not locls.lv.base:
                 break
             eles[1].eval(locls) #execute the statement(s)
+    elif name == 'func':
+        
+        quit(eles)
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):

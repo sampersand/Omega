@@ -131,6 +131,7 @@ funcs = {
     'skip': funcobj('skip'), #ignore that line
     'abort': funcobj('abort'),
     'whilst': funcobj('whilst'),
+    'func': funcobj('func'),
 }
 for d in delims.values():
     for val in d[0]:
