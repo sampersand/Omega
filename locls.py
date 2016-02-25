@@ -1,7 +1,9 @@
 class locls(dict):
+    from group import group
+    DEFAULT_GRP = {'$':group(), '$ret':group()}
     def __init__(self):
-        from group import group
-        super().__init__({'$':group(), '$ret':group()})
+        import copy
+        super().__init__(copy.deepcopy(locls.DEFAULT_GRP))
     @property
     def lv(self):
         "I am the 'lv' property."
@@ -22,3 +24,7 @@ class locls(dict):
     @ret.deleter
     def ret(self):
         del self['$']
+    def clear(self):
+        super().clear()
+        import copy
+        self.update(copy.deepcopy(locls.DEFAULT_GRP))

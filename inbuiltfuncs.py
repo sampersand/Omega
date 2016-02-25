@@ -44,7 +44,7 @@ def evalfunc(base, eles, locls):
         pass #keep this here.
     elif name == 'rm':
         if not eles:
-            locls.reset()
+            locls.clear()
         else:
             if __debug__:
                 assert len(eles) == 1, "only 1 thing after the semicolon..."
@@ -109,6 +109,8 @@ def evaloper(base, eles, locls):
         if name in control.delims['endline'][0]:
             for ele in eles:
                 ele.eval(locls) # _should_ set locls.lv by itself
+                if not locls.ret.base.isnull():
+                    return
         elif name in control.delims['applier'][0]:
             eles[0].base.eval(eles[1:], locls)
         elif name in control.delims['arraysep'][0]:
@@ -137,13 +139,11 @@ def evaloper(base, eles, locls):
         evalunary(base, eles, locls)
     else:
         eles[0].eval(locls)
+        import control
         for ele in eles[1:]:
             last = locls.lv
             ele.eval(locls)
-            if locls.lv == 9:
-                assert locls.lv is not locls['a']
             locls.lv.base.updatebase(name, last.base)
-
 def _ioperfunc(sname, ele, locls): #sname == stripped name
     """
 
