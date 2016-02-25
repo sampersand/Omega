@@ -70,7 +70,7 @@ class obj():
         elif name == 'b<<': self.base <<= other.base
         elif name == 'b^': self.base ^= other.base
         elif name == 'b|': self.base |= other.base
-        elif name == 'b&': self.base &= other.base2
+        elif name == 'b&': self.base &= other.base
         else: raise ValueError("Unnkown operator '{}'".format(name))
 
     @staticmethod

@@ -1,6 +1,5 @@
 func:suma:(arr,):{
-    arr <- arr:copy:()
-    return:(whilst:(arr:len):{ret<+-arr:pop:()};ret)
+    return:(arr <- arr:copy:();whilst:(arr:len):{ret<+-arr:pop:()};ret)
 }
 func:sump:(a, b):{
     func:sum:(a, b):{
@@ -11,7 +10,8 @@ func:sump:(a, b):{
 }
 #sump:(4,7);#
 
-disp:{'sum of',({1,2,3} -> arr), 'is', suma:[arr,]}:' '
+disp:{'sum of', (1,2,3 -> arr;), 'is', suma:(arr,)}:' '
+disp:{suma:(0x92,1,7.5,pi,1b&5 -> arr2;), 'is the sum of', arr2}:' '
 @eof
 0u12u101101->a;
 0.2en1 -> b;
