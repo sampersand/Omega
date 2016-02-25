@@ -44,7 +44,7 @@ class omfile:
                 data ^= 0b01
             elif char in control.linebreak:
                 if char in control.delims['endline'][0] and\
-                     not (data & 0b10) and\
+                     not (data & 0b10) and ret and \
                      ret[-1] not in control.delims['endline'][0]:
                     ret += control.delims['endline'][0][0]
                 # if not data & 0b10 and (not ret or ret[-1] not in control.linebreak): #so no duplicate \ns

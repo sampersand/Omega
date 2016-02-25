@@ -261,35 +261,77 @@ class numobj(obj):
 
 class intobj(numobj):
     import re
-    intre = re.compile(r'[\d]+')
+    decre = re.compile(r'^(?:0([dD]))?(\d+)I?$') #can have 'I' at the end
+    binre = re.compile(r'^0([bB])([01]+)I?$') #can have 'I' at the end
+    hexre = re.compile(r'^0([xX])([\dA-Fa-f]+)I?$') #can have 'I' at the end
+    octre = re.compile(r'^0([oO])([0-7]+)I?$') #can have 'I' at the end
+    unire = re.compile(r'^0[uU](\d+)[uU](\d+)I?$') #can have 'I' at the end
+
+    nbases = {'d':10, '':10, 'b':2, 'x':16, 'o':8}
+    def __init__(self, base = 0, nbase = 10):
+        if __debug__:
+            assert isinstance(nbase, int) #needs to be!
+        if isinstance(base, str):
+            base = int(base, nbase)
+        self.nbase = nbase
+        super().__init__(base)
     @staticmethod
     def fromstr(base):
-        if not intobj.intre.fullmatch(base):
-            return None
-        return intobj(int(base))
+        ret = intobj.decre.findall(base)
+        if not ret:
+            ret = intobj.binre.findall(base)
+            if not ret:
+                ret = intobj.hexre.findall(base)
+                if not ret:
+                    ret = intobj.octre.findall(base)
+        if ret:
+            ret = (intobj.nbases[ret[0][0].lower()], ret[0][1])
+        if not ret:
+            ret = intobj.unire.findall(base)
+            if ret:
+                ret = (int(ret[0][0]), ret[0][1])
+        if __debug__:
+            assert not ret or len(ret) == 2 #only 1 or 0 matches
+        return ret and intobj(ret[1], ret[0]) or None 
 
     def __repr__(self):
-        return 'intobj(%s)' % self.base
+        return 'intobj(base={}{})'.format(self.base, '' if self.nbase == 10 else ',nbase='+str(self.nbase))
 
+    #TODO: SSTRING FOR THIS
 class floatobj(numobj):
     import re
-    floatre = re.compile(r'^$') #todo: these
+    floatre = re.compile(r'^(\d*\.?\d+)(?:[eE]([nNpP]?)(\d+))?F?$') #float can have fF at the end
 
     @staticmethod
     def fromstr(base):
-        if not floatobj.floatre.fullmatch(base):
-            return None
-        return floatobj(float(base))
+        ret = floatobj.floatre.findall(base)
+        if ret:
+            if __debug__:
+                assert len(ret) == 1 #there should onyl be 1 match!
+                assert len(ret[0]) == 3 #should be (###)e(pos/neg)(###)
+            ret = ret[0]
+            ret = (ret[2] and '{}e{}{}'.format(ret[0], ret[1] in 'pP' and '+' or '-', ret[2]) or ret[0])
+            # for some reason, '' in 'pP' is true.
+        return ret and floatobj(float(ret)) or None
 
     def __repr__(self):
         return 'floatobj(%s)' % self.base
 
 class complexobj(numobj):
     import re
-    complexre = re.compile(r'^$') #todo: these
+    complexre = re.compile(floatobj.floatre.pattern[:-1] + r'[iIjJ]$') #the exact same as a float with an I/J at the end
 
     @staticmethod
     def fromstr(base):
+        ret = complexobj.complexre.findall(base)
+        if ret:
+            if __debug__:
+                assert len(ret) == 1 #there should onyl be 1 match!
+                assert len(ret[0]) == 3 #should be (###)e(pos/neg)(###)
+            ret = ret[0]
+            ret = (ret[2] and '{}e{}{}'.format(ret[0], ret[1] in 'pP' and '+' or '-', ret[2]) or ret[0])
+            # for some reason, '' in 'pP' is true.
+        return ret and floatobj(complex(0, float(ret))) or None
         if not complexobj.complexre.fullmatch(base):
             return None
         return complexobj(complex(base))
@@ -310,4 +352,17 @@ class boolobj(numobj):
 
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
+
+
+
+
+
+
+
+
+
+
+
+
+
 

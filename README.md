@@ -9,13 +9,15 @@
 - Define strings by surrounding them in a pair of quotes (`\`'"`), eg `'this is a string!'`.
   - Quotes can be escaped in strings to prevent them from ending.
 - Define numbers by writing normal values, or prefixing them with special values.
-  - `###` is an integer.
+  - `###` or `###I` is an integer.
+    - `0[d/D]###` or `###` is an integer.
+    - `0[x/X]###` is for hexadecimal.
+    - `0[o/O]###` is for octodecimal.
+    - `0[b/B]###` is for binary.
+    - `0[u/U]##[u/U]###` uses `##` as the base.
   - `###.###` or `###.###[e/E][n/p]###.###` is a float.
-  - `###.###[j/i]` is a complex number (TODO).
+  - A float with one of `[j/J/i/I]` afterwards is a complex.
   - The prefixes in `-#` and `+#` are handled seperately.
-  - `0[x/X]###` is for hexadecimal
-  - `0[o/O]###` is for octodecimal
-  - `0[b/B]###` is for binary
 - Define arrays by seperating values with commas, eg `[a, b, c, ...]`.
 - `$` is the last value evaluated. Can be helpful in certain circumstances, eg `if:function():$:null`.
 #Operators
