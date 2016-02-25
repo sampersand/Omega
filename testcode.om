@@ -1,3 +1,4 @@
+abort:9 b<< 1
 func:f:(a,b):{disp:a}
 f:(1,2)
 

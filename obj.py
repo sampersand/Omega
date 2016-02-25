@@ -66,12 +66,12 @@ class obj():
         elif name == '/' : self.base /= other.base
         elif name == '*' : self.base *= other.base
         elif name == '**': self.base **= other.base
-        elif name == 'b>': self.base >>= other.base
-        elif name == 'b<': self.base <<= other.base
+        elif name == 'b>>': self.base >>= other.base
+        elif name == 'b<<': self.base <<= other.base
         elif name == 'b^': self.base ^= other.base
         elif name == 'b|': self.base |= other.base
         elif name == 'b&': self.base &= other.base2
-        else: raise ValueError("Unkown operator '{}'".format(name))
+        else: raise ValueError("Unnkown operator '{}'".format(name))
 
     @staticmethod
     def comparebase(this, name, other):
@@ -87,7 +87,7 @@ class obj():
         elif name == '!=' or name == '<>': return group(boolobj(this.base.base !=  other.base.base))
         elif name == 'or' or name == '||': return this or other #todo these
         elif name == 'and'or name == '&&': return this and other
-        else: raise ValueError("Unkown comparator '{}'".format(name))
+        else: raise ValueError("Unnkown comparator '{}'".format(name))
 
     def isnull(self):
         return isinstance(self, nullobj)
