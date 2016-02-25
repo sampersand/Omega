@@ -1,15 +1,17 @@
-func:g::{
-    disp:'im in g!'
+func:suma:(arr,):{
+    arr <- arr:copy:()
+    return:(whilst:(arr:len):{ret<+-arr:pop:()};ret)
 }
-func:sum:(a, b):{
-    disp:('sum of', a, b, 'is', a + b):' '
-    return:a+b
+func:sump:(a, b):{
+    func:sum:(a, b):{
+        return:a + b
+    }
+    disp:('sum of', a, b, 'is', sum:(a,b)):' '
+    return:a + b
 }
-disp:['d:', {sum:(1,2)}]:' '
-# disp:['displaying:',sum:(1,2)]:' '#
-#sum:(4,5)#
-#g::#
+#sump:(4,7);#
 
+disp:{'sum of',({1,2,3} -> arr), 'is', suma:[arr,]}:' '
 @eof
 0u12u101101->a;
 0.2en1 -> b;

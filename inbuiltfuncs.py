@@ -275,12 +275,25 @@ def evalarray(base, eles, locls):
     elif name == 'rem':
         if __debug__:
             assert len(eles) == 1 or len(eles) == 2, 'array:rem:[pos]'
-        if len(eles) == 1:
+        if len(eles[1]) == 0:
             del base.base[-1]
         else:
             eles[1].eval(locls)
             del base.base[locls.lv.base.base]
-
+    elif name == 'pop':
+        if __debug__:
+            assert len(eles) == 2, 'array:pop:[pos]'
+        if len(eles[1]) == 0:
+            locls.lv = base.base.pop(-1)
+        else:
+            eles[1].eval(locls)
+            locls.lv = base.base.pop(locls.lv.base.base)
+    elif name == 'copy':
+        if __debug__:
+            assert len(eles) == 2, 'array:copy:()'
+        from group import group
+        import copy
+        locls.lv = group(base=copy.copy(base))
     else:
         raise SyntaxError("Unknown array function '{}'!".format(name))
     

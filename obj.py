@@ -56,7 +56,7 @@ class obj():
             locls[str(self)].base.eval(eles, locls)
             return
         if __debug__:
-            assert eles.base is self
+            assert eles.base is self, str(eles.base) + " != " + str(self)
         locls.lv = eles
 
     def updatebase(self, name, other):
@@ -158,9 +158,9 @@ class userfuncobj(funcobj):
     def _genargs(self, eles, locls):
         import locls as loclsm
         ret = loclsm.locls()
-        if __debug__:
-            assert len(eles) == len(self.args), "{} args are required for '{}', got {} {}!".\
-                    format(len(self.args), self.base, len(eles), str(eles)[1:])
+        # if __debug__:
+        #     assert len(eles) == len(self.args), "{} args are required for '{}', got {} {}!".\
+        #             format(len(self.args), self.base, len(eles), str(eles)[1:])
         for elep in range(len(self.args)):
             eles[elep].eval(locls)
             ret[str(self.args[elep])] = locls.lv
