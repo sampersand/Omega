@@ -159,8 +159,8 @@ class userfuncobj(funcobj):
         import locls as loclsm
         ret = loclsm.locls()
         if __debug__:
-            assert len(eles) == len(self.args), "{} args are required for '{}', got {} ({})!".\
-                    format(len(self.args), self.base, len(eles), str(eles))
+            assert len(eles) == len(self.args), "{} args are required for '{}', got {} {}!".\
+                    format(len(self.args), self.base, len(eles), str(eles)[1:])
         for elep in range(len(self.args)):
             eles[elep].eval(locls)
             ret[str(self.args[elep])] = locls.lv

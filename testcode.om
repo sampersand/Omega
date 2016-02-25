@@ -1,6 +1,12 @@
-func:f:(a,b):{disp:a,b}
+func:f:(a,b):{
+    disp:a,b
+}
+func:g::{
+    disp:'im in g!'
+}
 f:(1,2)
-f:(1,2)
+f:(4,5)
+g:
 
 @eof
 0u12u101101->a;
