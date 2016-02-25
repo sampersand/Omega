@@ -156,7 +156,7 @@ del copy
 
 sortedopers = tuple(x for x in reversed(sorted(allopers.keys(), key = lambda l: len(l)))) #sorted by length
 
-punctuation = '!#$%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._
+punctuation = '!#%&*+-/;<=>?@^|~' + allparens + alldelims + allquotes#stuff used to break apart things, ignoring ._$
 
 def _invertparen(paren):
     return {'(':')', ')':'(',
