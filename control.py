@@ -126,6 +126,7 @@ funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
     'if': funcobj('if'),
     'rm': funcobj('rm'),
+    'om': funcobj('om'),
     'for': funcobj('for'),
     'disp': funcobj('disp'),
     'skip': funcobj('skip'), #ignore that line

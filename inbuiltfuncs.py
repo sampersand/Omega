@@ -97,6 +97,8 @@ def evalfunc(base, eles, locls):
     elif name == 'return':
         eles[0].eval(locls)
         locls.ret = locls.lv
+    elif name == 'om':
+        evalconsts(base, eles, locls)
     else:
         raise SyntaxError("Unknown function '{}'!".format(name))
 def evaloper(base, eles, locls):
@@ -112,7 +114,10 @@ def evaloper(base, eles, locls):
                 if not locls.ret.base.isnull():
                     return
         elif name in control.delims['applier'][0]:
-            eles[0].base.eval(eles[1:], locls)
+            print(repr(eles),repr(locls))
+            eles[0].base.eval(eles[1:],locls)
+            # eles[0].eval(locls)
+            # locls.lv.base.eval(eles[1:], locls)
         elif name in control.delims['arraysep'][0]:
             from group import group
             from obj import arrayobj
@@ -229,15 +234,19 @@ def evalunary(base, eles, locls):
         raise SyntaxError("Unknown unary function '{}'!".format(name))
 def evalconsts(base, eles, locls):
     name = str(base)
-    if name == 'locls':
-        from group import group
-        from obj import dictobj
-        locls.lv = group(base = dictobj(locls))
-    elif name == 'rand':
-        import random
-        from group import group
-        from obj import floatobj
-        locls.lv = group(base = floatobj(random.random()))
+    if name == 'om':
+        fname = str(eles[0])
+        if fname == 'locls':
+            from group import group
+            from obj import dictobj
+            locls.lv = group(base = dictobj(locls))
+        elif fname == 'rand':
+            import random
+            from group import group
+            from obj import floatobj
+            locls.lv = group(base = floatobj(random.random()))
+        else:
+            raise SyntaxError("Unknown om function '{}'!".format(fname))
     else:
         raise SyntaxError("Unknown const function '{}'!".format(name))
 def evalarray(base, eles, locls):

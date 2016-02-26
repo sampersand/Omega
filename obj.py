@@ -56,7 +56,7 @@ class obj():
             locls[str(self)].base.eval(eles, locls)
             return
         if __debug__:
-            assert eles.base is self, str(eles) + " != " + str(self)
+            assert eles.base is self, repr(eles) + " != " + repr(self)
         locls.lv = eles
 
     def updatebase(self, name, other):
@@ -119,9 +119,6 @@ class funcobj(obj):
             x = locls.lv
         if self.func != None:
             self.func(eles, locls)
-        else:
-            import inbuiltfuncs
-            return inbuiltfuncs.evalconsts(self, eles, locls)
         if __debug__:
             assert locls.lv is not x, "function {} didn't do anything!".format(self)
 class operobj(funcobj):
