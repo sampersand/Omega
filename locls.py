@@ -28,3 +28,5 @@ class locls(dict):
         super().clear()
         import copy
         self.update(copy.deepcopy(locls.DEFAULT_GRP))
+    def __str__(self):
+        return '{' + ', '.join(str(k) + ':' + str(self[k]) for k in self) + '}'

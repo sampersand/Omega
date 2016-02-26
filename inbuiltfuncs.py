@@ -260,7 +260,7 @@ def evalarray(base, eles, locls):
         locls.lv = group(base = base.lenobj)
     elif name == 'get':
         if __debug__:
-            assert len(eles) == 2, 'array:get:pos'
+            assert len(eles) == 2, 'array:get:pos not %s' % repr(eles)
         eles[1].eval(locls)
         locls.lv = base.base[locls.lv.base.base]
     elif name == 'set':

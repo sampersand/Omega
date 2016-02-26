@@ -1,9 +1,8 @@
-(1,9,38,47)->a
+#(1,9,38,47)->a
 pos<-1
-if:(a:get:pos):::
-disp:(a:get:pos)
+disp:(a:get:pos;)
 ->$dnd
-@eof
+@eof#
 func:genrand:(size, max):{
     , -> ret
     for:(0 -> q; q < size; q+<):{
@@ -16,27 +15,18 @@ func:disparr:(arr,):{
     }
 func:sort:(oarr,):{
     arr<-oarr:copy:()
-    0->pos
-    whilst:(pos + 1 < arr:len):{
+    whilst:([>+pos] < arr:len):{
         if:(arr:get:pos > [arr:get:(pos + 1)]):{
             arr:get:pos->temp
             arr:set:(pos, arr:get:(pos + 1))
             arr:set:(pos + 1, temp)
             0->pos
-        }:pos +<
-        # if:(arr:get:pos > [arr:get:(pos + 1)]):{
-        ##     arr:get:pos->temp
-        ##     arr:set:(pos, arr:get:(pos + 1))
-        ##     arr:set:(pos + 1, temp)
-        ##     0->pos
-        ## }:pos +<
-         #
-        abort:
+        }
     }
     return:arr
 }
 genrand:(10, 10F) -> rnd
-disparr:(rnd,)
+#disparr:(rnd,)
 sortd <- sort:(rnd, )
-disparr:(sortd,)
+disparr:(sortd,)#
 $dnd<-1
