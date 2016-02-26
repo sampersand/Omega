@@ -24,7 +24,7 @@ escapechars = {'\\n': '\n',
 delims = {'arraysep':(',', operobj(',', 14)),
           'etc':('|', operobj('|', 14)),
           'endline':(';\n', operobj(';', 16)),
-          'applier':(':', operobj(':', 2)),
+          'applier':(':', operobj(':', 0)),
           }
 
 parens = {'l':'([{', 'r':')]}'}

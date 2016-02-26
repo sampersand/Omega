@@ -114,10 +114,12 @@ def evaloper(base, eles, locls):
                 if not locls.ret.base.isnull():
                     return
         elif name in control.delims['applier'][0]:
-            print(repr(eles),repr(locls))
-            eles[0].base.eval(eles[1:],locls)
-            # eles[0].eval(locls)
-            # locls.lv.base.eval(eles[1:], locls)
+            # print(repr(eles),repr(base),sep='\t\t@\t\t')
+            if str(eles[0]) not in locls:
+                eles[0].eval(locls)
+            else:
+                locls.lv = locls[str(eles[0])]
+            locls.lv.base.eval(eles[1:], locls)
         elif name in control.delims['arraysep'][0]:
             from group import group
             from obj import arrayobj

@@ -51,6 +51,7 @@ class obj():
         return bool(self.base)
 
     def eval(self, eles, locls):
+        print(self,eles,locls,'^')
         if str(self) in locls:
             #this is ignoring the parens...
             locls[str(self)].base.eval(eles, locls)
@@ -109,6 +110,10 @@ class funcobj(obj):
 
     def eval(self, eles, locls):
         import control
+
+        if eles.base is self:
+            locls.lv = eles
+            return
         if self.base in control.funcs:
             if __debug__:
                 assert self.func == None, str(self) + " can't be in control.functions & have a function defined!"+\
@@ -137,7 +142,7 @@ class operobj(funcobj):
 
     def eval(self, eles, locls):
         if __debug__:
-            assert eles.base is self
+            assert eles.base is self, repr(eles) + ' != ' + repr(self)
             import control
             assert self.base in control.allopers, str(self) + " needs to be in control.allopers!"
             assert self.func == None, str(self) + " can't be in control.functions & have a function defined!"+\
@@ -166,6 +171,9 @@ class userfuncobj(funcobj):
         if __debug__:
             import control
             assert eles.basestr in control.delims['applier'][0] #f :(args) <-- needs the ':'
+        if eles.base is self:
+            locls.lv = eles
+            return
         nlocls = self._genargs(eles[0], locls)
         self.func.eval(nlocls)
         if not nlocls.ret.base.isnull():
@@ -239,6 +247,9 @@ class arrayobj(obj):
         return '[' + ', '.join(str(e) for e in self.base) + ']'
 
     def eval(self, eles, locls):
+        if eles.base is self:
+            locls.lv = eles
+            return
         import inbuiltfuncs
         inbuiltfuncs.evalarray(self, eles, locls)
 
@@ -337,6 +348,9 @@ class floatobj(numobj):
     def __repr__(self):
         return 'floatobj(%s)' % self.base
     def eval(self, eles, locls):
+        if eles.base is self:
+            locls.lv = eles
+            return
         import control
         if eles.basestr not in control.delims['applier'][0]:
             super().eval(eles, locls)
