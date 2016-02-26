@@ -1,2 +1,8 @@
-2.3 * 3.9 <**- 1e3 -> abc
-1->b
+func:f:(a,b):{
+    disp:a
+    disp:b
+    disp:'done'
+    return:a+b
+}
+3*4/(5-9)**2->var
+var+(2->c)->b

@@ -19,25 +19,19 @@ class control():
         self.whitespace = self.nbwhitespace + self.linebreak
         self._allquotes = '\'\"`'
 
-        from Obj import operobj, nullobj, boolobj
-
-        self.delims = control._specdict({
-            'arraysep': (',',   operobj(',', 14)),
-            'etc'     : ('|',   operobj('|', 14)),
-            'endline' : (';\n', operobj(';', 16)),
-            'applier' : (':',   operobj(':',  0))
-            })
+        from Obj import operobj, nullobj, boolobj, funcobj
 
         self.parens = control._specdict({
             'l' : control._specdict({'(' : ')', '[' : ']', '{' : '}'}),
             'r' : control._specdict({')' : '(', ']' : '[', '}' : '{'}),
-            } )
+        })
 
         self.consts = control._specdict({
             'null' : nullobj(),
-            't' : boolobj(True),  'True'  : boolobj(True),  'T' : boolobj(True),  'true'  : boolobj(True),  
-            'f' : boolobj(False), 'False' : boolobj(False), 'F' : boolobj(False), 'false' : boolobj(False), 
+            'True'  : boolobj(True),  'true'  : boolobj(True),  
+            'False' : boolobj(False), 'false' : boolobj(False), 
         })
+
         self.opers = control._specdict({
             'binary':control._specdict({
                 'math':control._specdict({
@@ -47,26 +41,28 @@ class control():
                     '%'   : operobj('%',      4), # mod
                     '+'   : operobj('+',      5), # plus
                     '-'   : operobj('-',      5), # minus
-                }),
-                # 'bitwise':control._specdict({
-                #     'b<<' : operobj('b<<',    6), # bitwise <<
-                #     'b>>' : operobj('b<<',    6), # bitwise >>
-                #     'b&'  : operobj('b&',     7), # bitwise &
-                #     'b^'  : operobj('b^',     8), # bitwise ^
-                #     'b|'  : operobj('b|',     9), # bitwise |
-                # }),
-                # 'logic':control._specdict({
-                #     '<'   : operobj('<',     10), # less than
-                #     '>'   : operobj('>',     10), # greater than
-                #     '<='  : operobj('<=',    10), # less than or equal
-                #     '>='  : operobj('>=',    10), # greater than or equal
-                #     '=='  : operobj('==',    10), # equal to
-                #     '='   : operobj('=',     10), # equal to
-                #     '<>'  : operobj('<>',    10), # equal to
-                #     '!='  : operobj('!=',    10), # not equal to
-                #     '&&'  : operobj('&&',    11), # boolean and
-                #     '||'  : operobj('||',    12), # booleon or
-                #     }),
+                    }),
+
+                'bitwise':control._specdict({
+                    'b<<' : operobj('b<<',    6), # bitwise <<
+                    'b>>' : operobj('b<<',    6), # bitwise >>
+                    'b&'  : operobj('b&',     7), # bitwise &
+                    'b^'  : operobj('b^',     8), # bitwise ^
+                    'b|'  : operobj('b|',     9), # bitwise |
+                    }),
+
+                'logic':control._specdict({
+                    '<'   : operobj('<',     10), # less than
+                    '>'   : operobj('>',     10), # greater than
+                    '<='  : operobj('<=',    10), # less than or equal
+                    '>='  : operobj('>=',    10), # greater than or equal
+                    '=='  : operobj('==',    10), # equal to
+                    '='   : operobj('=',     10), # equal to
+                    '<>'  : operobj('<>',    10), # equal to
+                    '!='  : operobj('!=',    10), # not equal to
+                    '&&'  : operobj('&&',    11), # boolean and
+                    '||'  : operobj('||',    12), # booleon or
+                    }),
                 
                 'assignment':control._specdict({
                     # all notes are in form of "x OPERATOR y" like 'x <- y' for reversed operators
@@ -97,17 +93,37 @@ class control():
                     '-<>'  : operobj('-<>',  15), # y <<= x 
                     '->>'  : operobj('->>',  15)  # y >>= x 
                     }),
-                 }),
+                
+                'delims':control._specdict({
+
+                    }),
+                }),
             'unary':{
                 'l':{},
             }
         })
-        self.funcs = control._specdict({ })
+        self.funcs = control._specdict({
+            'if'     : funcobj('if'),
+            'rm'     : funcobj('rm'),
+            'om'     : funcobj('om'),
+            'for'    : funcobj('for'),
+            'disp'   : funcobj('disp'),
+            'skip'   : funcobj('skip'), #ignore that line
+            'func'   : funcobj('func'),
+            'abort'  : funcobj('abort'),
+            'whilst' : funcobj('whilst'),
+            'return' : funcobj('return'),
+        })
 
+        self.delims = control._specdict({
+            'arraysep': (',',   14),#operobj(',', 14)),
+            'etc'     : ('|',   14),#operobj('|', 14)),
+            'endline' : (';\n', 16),#operobj(';', 16)),
+            'applier' : (':',    0),#operobj(':',  0))
+        })
         for d in self.delims.values():
             for val in d[0]:
-                self.opers['unary']['l'][val] = d[1]
-
+                self.opers['binary']['delims'][val] = operobj(d[0][0], d[1])
         self._punctuation = '!#%&*+-/;<=>?@^|~'
 
     @property
@@ -158,7 +174,7 @@ class control():
     def punctuation(self):
         """ stuff used to break apart things, ignoring: ._$ """
         return '!#%&*+-/<=>?@^|~' + self.allparens + self.alldelims + self.allquotes + self.delims['endline'][0]
-    def _invertparen(paren):
+    def _invertparen(self, paren):
         """ invert parens - used in file parsing. eg, '(' -> ')'. """
         return self.parens[paren in self.parens['l'] and 'l' or 'r'][paren]
 
