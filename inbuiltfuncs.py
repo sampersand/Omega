@@ -114,7 +114,6 @@ def evaloper(base, eles, locls):
                 if not locls.ret.base.isnull():
                     return
         elif name in control.delims['applier'][0]:
-            # print(repr(eles),repr(base),sep='\t\t@\t\t')
             if str(eles[0]) not in locls:
                 eles[0].eval(locls)
             else:
@@ -256,8 +255,7 @@ def evalarray(base, eles, locls):
         assert len(eles) > 0, 'cant pass no arguments to an array!'
     name = str(eles[0])
     if name == 'len':
-        from group import group
-        locls.lv = group(base = base.lenobj)
+        locls.lv = base.lengrp
     elif name == 'get':
         if __debug__:
             assert len(eles) == 2, 'array:get:pos not %s' % repr(eles)

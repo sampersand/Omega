@@ -174,7 +174,8 @@ class userfuncobj(funcobj):
             locls.lv = eles
             return
         nlocls = self._genargs(eles[0], locls)
-        self.func.eval(nlocls)
+        import copy
+        copy.deepcopy(self.func).eval(nlocls)
         if not nlocls.ret.base.isnull():
             locls.lv = nlocls.ret
 
@@ -253,8 +254,9 @@ class arrayobj(obj):
         inbuiltfuncs.evalarray(self, eles, locls)
 
     @property
-    def lenobj(self):
-        return numobj(len(self.base))
+    def lengrp(self):
+        from group import group
+        return group(base = intobj(len(self.base)))
 class dictobj(obj):
     def __init__(self, base = None):
         if base == None:

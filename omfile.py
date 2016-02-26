@@ -149,7 +149,8 @@ class omfile:
             for elep in range(len(linegrp)):
                 ele = linegrp[elep].basestr
                 if ele in control.allopers and (highest == None or
-                        control.allopers[ele] >= control.allopers[linegrp[highest].basestr]):
+                        control.allopers[ele].priority >=\
+                        control.allopers[linegrp[highest].basestr].priority):
                     highest = elep
             if __debug__:
                 if highest == None:
@@ -183,6 +184,7 @@ class omfile:
                     current.append(e)
             if current:
                 ret.append(fixtkns(current))
+
             return ret
         return fixtkns(compresstokens(group(args = linetokens)))
     

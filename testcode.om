@@ -1,8 +1,23 @@
-#(1,9,38,47)->a
-pos<-1
-disp:(a:get:pos;)
 ->$dnd
-@eof#
+func:disparr:(arr,):{
+    for:(0->q;q<[arr:len];q+<):{
+        disp:(arr:get:q,)::', '
+    };
+    disp:
+}
+(1,9,47,38)->a
+disparr:(a,)
+disparr:(a,)
+disparr:(a,)
+disparr:(a,)
+@eof
+#-------------#
+1->p
+disp:(a:get:p,'@')
+disp:(if:(a:get:p > a:get:(p + 1)):'p>p+1':'p<p+1',)
+disp:a
+@eof
+#-------------#
 func:genrand:(size, max):{
     , -> ret
     for:(0 -> q; q < size; q+<):{
@@ -13,20 +28,20 @@ func:genrand:(size, max):{
 func:disparr:(arr,):{
     for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)::', '};disp:
     }
-func:sort:(oarr,):{
-    arr<-oarr:copy:()
-    whilst:(1-+>pos < arr:len):{
-        disp:(arr:get:pos,'@')
-        if:(arr:get:pos > [arr:get:(pos + 1)]):{
-            arr:get:pos->temp
-            arr:set:(pos, arr:get:(pos + 1))
-            arr:set:(pos + 1, temp)
-            0->pos
+func:sort:(oa,):{
+    return:oa
+    a<-oa
+    whilst:([a:len]>{>+p}):{
+        if:((a:get:p->temp;) < a:get:(p + 1)):{
+            a:set:(p, a:get:(p + 1))
+            a:set:(p + 1, temp)
+            0->p
+            for:(0->q;q<a:len;q+<):{disp:(a:get:q,)::', '};disp:'end'
         }
     }
-    return:arr
+    return:a
 }
-genrand:(10, 10F) -> rnd
+genrand:(5, 10F) -> rnd
 disparr:(rnd,)
 sortd <- sort:(rnd, )
 disparr:(sortd,)
