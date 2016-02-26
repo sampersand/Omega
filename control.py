@@ -24,7 +24,7 @@ escapechars = {'\\n': '\n',
 delims = {'arraysep':(',', operobj(',', 14)),
           'etc':('|', operobj('|', 14)),
           'endline':(';\n', operobj(';', 16)),
-          'applier':(':', operobj(':', 13)),
+          'applier':(':', operobj(':', 2)),
           }
 
 parens = {'l':'([{', 'r':')]}'}
@@ -36,8 +36,6 @@ allconsts = {
     'e'    : floatobj(math.e),
     'k'    : floatobj(8.987551787368e9),
     'imag' : complexobj(complex(0,1)),
-    'locls': funcobj('locls'), #todo, make this return locals
-    'rand' : funcobj('rand'),
     'nan'  : floatobj(float('nan')), 'NaN': floatobj(float('nan')),
     'inf'  : floatobj(float('inf')), '∞': floatobj(float('inf')),
 

@@ -272,7 +272,7 @@ def evalarray(base, eles, locls):
     elif name == 'add':
         if __debug__:
             assert len(eles) == 2, 'array:add:[pos,]element'
-            assert len(eles[1]) == 0 or len(eles[1]) == 2, 'array:add:[pos,]element'
+            assert len(eles[1]) == 0 or len(eles[1]) == 2, 'array:add:[pos,]element (not %s)'%len(eles[1])
         import control
         if len(eles[1]) == 0 or eles[1].basestr not in control.delims['arraysep'][0]:
             eles[1].eval(locls)
