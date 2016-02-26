@@ -208,7 +208,7 @@ def evalunary(base, eles, locls):
     if __debug__:
         assert base is eles.base #not necessary, just figured.
         if name in control.opers['unary']['l']:
-            assert eles[0].base.isnull() #unary l should have null on the left (~X has no left term)
+            assert eles[0].base.isnull(), eles #unary l should have null on the left (~X has no left term)
         else:
             assert len(eles) == 1
     if name == '>+' or name == '>-':

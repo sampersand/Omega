@@ -15,7 +15,8 @@ func:disparr:(arr,):{
     }
 func:sort:(oarr,):{
     arr<-oarr:copy:()
-    whilst:([>+pos] < arr:len):{
+    whilst:(1-+>pos < arr:len):{
+        disp:(arr:get:pos,'@')
         if:(arr:get:pos > [arr:get:(pos + 1)]):{
             arr:get:pos->temp
             arr:set:(pos, arr:get:(pos + 1))
@@ -26,7 +27,7 @@ func:sort:(oarr,):{
     return:arr
 }
 genrand:(10, 10F) -> rnd
-#disparr:(rnd,)
+disparr:(rnd,)
 sortd <- sort:(rnd, )
-disparr:(sortd,)#
+disparr:(sortd,)
 $dnd<-1
