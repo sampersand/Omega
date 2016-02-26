@@ -1,8 +1,18 @@
-func:f:(a,b):{
-    disp:a
+a:b:{
+    e:{
+        f;
+        g:hilol:{1;};
+    }
+    c:d
+}
+i:j
+@eof
+func:f:(a,b):{;
+disp:a
     disp:b
-    disp:'done'
+    disp:'done':{'1';'2';}
     return:a+b;
 }
+
 3*4/(5-9)**2->var
 var+(2->c)->b

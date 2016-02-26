@@ -51,24 +51,79 @@ class group(list):
             return group(base = self.base, args = super().__getitem__(item), parens = self.parens)
         return super().__getitem__(item)
 
-
-    def linestr(self, indent = 0, linep = 0):
-        if not self:
-            return str(self)
-        isendl = self.basestr and self.basestr in self.control.delims['endline'][0]
-        ret = []
-        for l in self:
-            if l.isempty():
-                continue
-            if isendl:
-                ret.append('\n{:^3}|  {}{}'.format(linep, '\t' * indent, l.linestr(indent + 1, linep + 1)))
-            else:
-                ret.append(l.linestr(indent + 1, linep + 1))
-            linep+=1
-        retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
-        retu += (isendl and '\n{:^3}|  {}'.format(linep, '\t' * (indent-0)) or '')
-        retu += self.parens[1]
-        return retu
+    def linestr(self):
+        def _linestr(self, ret, indent):
+            if not self:
+                # ret.append((str(self), indent))
+                return [str(self), indent]
+            isendl = self.basestr in self.control.delims['endline'][0]
+            q = []
+            for l in self:
+                if l.isempty():
+                    continue
+                x = _linestr(l, [], indent + isendl)
+                if isinstance(x[0], str) and q:
+                    q[-1][0] += self.basestr + x[0]
+                else:
+                    q.append(x)
+                print(x)
+            ret.__iadd__(q)
+            return ret
+        lines = _linestr(self, [], 0)
+        ret = '\n'
+        for line in range(len(lines)):
+            l = lines[line]
+            ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
+        return ret
+    # def linestr(self):
+    #     def _linestr(self, ret, indent):
+    #         if not self:
+    #             # ret.append((str(self), indent))
+    #             return (str(self), indent)
+    #         isendl = self.basestr in self.control.delims['endline'][0]
+    #         q = []
+    #         for l in self:
+    #             if l.isempty():
+    #                 continue
+    #             x = _linestr(l, [], indent + isendl)
+    #             q.append(x)
+    #             print(x)
+    #         ret.__iadd__(q)
+    #         return ret
+    #     lines = _linestr(self, [], 0)
+    #     ret = '\n'
+    #     for line in range(len(lines)):
+    #         l = lines[line]
+    #         ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
+    #     return ret
+    # def linestr(self):
+    #     return self._linestr(0, -1)[0]
+    # def _linestr(self, indent, linep):
+    #     if not self:
+    #         return str(self), linep
+    #     isendl = self.basestr in self.control.delims['endline'][0]
+    #     if __debug__:
+    #         assert self.basestr
+    #     ret = []
+    #     for l in self:
+    #         linep += isendl
+    #         if l.isempty():
+    #             linep -= isendl
+    #             continue
+    #         ls = l._linestr(indent + 1, linep)
+    #         print(self)
+    #         if isendl:
+    #             linep = ls[1]
+    #             ret.append('\n{:^3}|  {}{}'.format(linep, '\t' * (indent), ls[0]))
+    #             # linep += 1
+    #         else:
+    #             ret.append(ls[0])
+    #     retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
+    #     if isendl and self.parens[1]:
+    #         linep += 1
+    #         retu += '\n{:^3}|  {}'.format(linep, '\t' * (indent-2))
+    #     retu += self.parens[1]
+    #     return retu, linep
 
 
 

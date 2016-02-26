@@ -27,10 +27,10 @@ class file:
         #             ret += '\t'*indent+e[1]
         #             linep += e[0]
         #     return linep, ret
-        ret = "file '%s':\n==[start]==\n" % self.filepath
+        ret = "file '%s':\n==[start]==" % self.filepath
         lines = self.lines.linestr()
         ret += lines
-        return ret + '==[ end ]=='
+        return ret + '\n==[ end ]=='
     def _striptext(self, rawt):
         """ remove comments and blank lines"""
         ret = ''
