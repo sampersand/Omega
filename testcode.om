@@ -10,6 +10,6 @@ func:suma:(arr,):{
     return:(arr <- arr:copy:();whilst:(arr:len):{ret<+-arr:pop:()};ret)
 }
 #
-rand->a;
-1.5:round->a
-abort:a
+rand:round->a
+1.5:round->b
+abort:[a,b]
