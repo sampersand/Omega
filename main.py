@@ -14,7 +14,7 @@ if __name__ == '__main__':
     print('--')
     evald = f.eval()
     print('--\n\nDone.')
-    if __debug__:
+    if __debug__ and '$dnd' not in evald:
         print('locals:',evald)
 
 

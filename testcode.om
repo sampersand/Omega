@@ -1,20 +1,42 @@
-func:genrand:(size,):{
-    return:{
-        (,)->ret;
-        for:(0->q;q<size;q+<):{
-            om:rand-> r
-            disp:(q,'q',r,(100F*r->r),r:round)
-            ret:add:{r:round}
-            # ret:add:{(om:rand * 100F):round}#
-        };
-        ret
+(1,9,38,47)->a
+pos<-1
+if:(a:get:pos):::
+disp:(a:get:pos)
+->$dnd
+@eof
+func:genrand:(size, max):{
+    , -> ret
+    for:(0 -> q; q < size; q+<):{
+        ret:add:{(max * om:rand):round}
     }
+    return:ret
 }
 func:disparr:(arr,):{
-    for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)}
+    for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)::', '};disp:
     }
-disparr:(genrand:(10,),)
-# func:suma:(arr,):{
-##     return:(arr <- arr:copy:();whilst:(arr:len):{ret<+-arr:pop:()};ret)
-## }
- #
+func:sort:(oarr,):{
+    arr<-oarr:copy:()
+    0->pos
+    whilst:(pos + 1 < arr:len):{
+        if:(arr:get:pos > [arr:get:(pos + 1)]):{
+            arr:get:pos->temp
+            arr:set:(pos, arr:get:(pos + 1))
+            arr:set:(pos + 1, temp)
+            0->pos
+        }:pos +<
+        # if:(arr:get:pos > [arr:get:(pos + 1)]):{
+        ##     arr:get:pos->temp
+        ##     arr:set:(pos, arr:get:(pos + 1))
+        ##     arr:set:(pos + 1, temp)
+        ##     0->pos
+        ## }:pos +<
+         #
+        abort:
+    }
+    return:arr
+}
+genrand:(10, 10F) -> rnd
+disparr:(rnd,)
+sortd <- sort:(rnd, )
+disparr:(sortd,)
+$dnd<-1
