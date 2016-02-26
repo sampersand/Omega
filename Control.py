@@ -114,16 +114,14 @@ class control():
     def alldelims(self):
         """ string of all the delims available """
         return ''.join(v[0] for v in self.delims.values())
-
     @property
     def allparens(self):
         """ string of all the parens available """
         return ''.join(list(self.parens['l'].values()) + list(self.parens['r'].values()))# + self.allquotes #yes, quotes are parens lol :P <-- are they?
-
     @property
     def allquotes(self):
+        """ The Complete list of quotes. """
         return self._allquotes
-
     @staticmethod
     def _updateDict(mdict, d):
         for k in d.keys():
@@ -133,36 +131,35 @@ class control():
             else:
                 mdict[k] = e
         return mdict
-
     @property
     def allopers(self):
+        """ The Complete list of operators. """
         return control._updateDict(dict(), self.opers)
-
     @property
     def allconsts(self):
+        """ The Complete list of constants. """
         return control._updateDict(dict(), self.consts)
-
     @property
     def allfuncs(self):
+        """ The Complete list of functions. """
         return control._updateDict(dict(), {'funcs' : self.funcs, 'opers' : self.opers})
-    
     @property
     def allkws(self):
+        """ The Complete list of keywords. """
         return control._updateDict(dict(), {'funcs' : self.allfuncs, 'consts' : self.allconsts})
-
     @property
     def sortedopers(self):
+        """ A sorted list of operators - in descending order of length of the operator (<**- is larger than +)"""
         return tuple(x for x in reversed(\
             sorted(self.allopers.keys(),
                    key = lambda l:
                    len(l)))) #sorted by length
-
     @property
     def punctuation(self):
         """ stuff used to break apart things, ignoring: ._$ """
         return '!#%&*+-/<=>?@^|~' + self.allparens + self.alldelims + self.allquotes + self.delims['endline'][0]
-
     def _invertparen(paren):
+        """ invert parens - used in file parsing. eg, '(' -> ')'. """
         return self.parens[paren in self.parens['l'] and 'l' or 'r'][paren]
 
     
