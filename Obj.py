@@ -5,7 +5,7 @@ class obj():
 
     def __init__(self, base):
         if __debug__:
-            assert not isinstance(base, obj), type(obj) #only allowed to pass non-objs
+            assert not isinstance(base, obj), type(base) #only allowed to pass non-objs
         self.base = base
 
     def __repr__(self):
@@ -14,6 +14,30 @@ class obj():
     def __str__(self):
         return str(self.base)
 
+    @staticmethod
+    def frombase(ele, control):
+        """
+        Used when passing a string to determine which base to use.
+        """
+        if isinstance(ele, obj):
+            return ele
+        if ele == None:
+            return nullobj()
+        if __debug__:
+            assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
+        if ele in control.allkws:
+            return control.allkws[ele]
+        ret = numobj.fromstr(ele)
+        if ret == None:
+            ret = strobj.fromstr(ele)
+            if ret == None:
+                ret = obj(ele)
+        if __debug__:
+            assert ret != None
+        return ret
+
+    def isnull(self):
+        return isinstance(self, nullobj)
 class funcobj(obj):
     """
     The class that represents a function.
@@ -67,6 +91,10 @@ class numobj(obj):
 
     def __repr__(self):
         return 'numobj({})'.format(self.base)
+
+    @staticmethod
+    def fromstr(base):
+        return numobj(base)
 
 class boolobj(numobj):
     """

@@ -8,11 +8,9 @@ class file:
         import codecs
         with codecs.open(filepath, 'r', encoding) as f:
             self.striptext = self._striptext(f.read())
-        tokens = file._tokenize(self.striptext)
-
+        tokens = self._tokenize(self.striptext)
         import copy
-        self.lines = file._compresstokens(copy.deepcopy(tokens))
-    
+        self.lines = self._compresstokens(copy.deepcopy(tokens))
     def __str__(self):
         def getl(linep, l):
             if not l:
@@ -22,7 +20,7 @@ class file:
             ret = ''
             if len(l) > 0:
                 for ele in l:
-                    if ele.basestr not in control.delims['endline'][0]:
+                    if ele.basestr not in self.control.delims['endline'][0]:
                         ret += '\n{}:  \t{}'.format(linep, ele)
                         linep += 1
                     else:
@@ -62,21 +60,20 @@ class file:
         if '@eof' in ret:
             ret = ret[0:ret.find('@eof')]
         return self.control.delims['endline'][0][0] + ret + self.control.delims['endline'][0][0]
-    
-    @staticmethod
-    def _tokenize(rawt):
+
+    def _tokenize(self, rawt):
         """ goes thru, and splits them up first based upon control.sortedopers and then by control.punctuation. """
         def tokenize(rawt):
-            for oper in control.sortedopers:
+            for oper in self.control.sortedopers:
                 if oper in rawt:
                     par = rawt.partition(oper)
-                    if rawt[rawt.index(oper) - 1] in control.escape:
+                    if rawt[rawt.index(oper) - 1] in self.control.escape:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
-            for punc in control.punctuation + control.delims['endline'][0]:
+            for punc in self.control.punctuation:
                 if punc in rawt:
                     par = rawt.partition(punc)
-                    if rawt[rawt.index(punc) - 1] in control.escape:
+                    if rawt[rawt.index(punc) - 1] in self.control.escape:
                         return [par[0] + par[1]] + tokenize(par[2])
                     return tokenize(par[0]) + [par[1]] + tokenize(par[2])
             return [rawt]
@@ -84,7 +81,7 @@ class file:
         ret = []
         currentquote = None
         for token in tokens:
-            if token in control.allquotes and token:
+            if token in self.control.allquotes and token:
                 if currentquote == None:
                     ret.append(token)
                     currentquote = token
@@ -99,47 +96,47 @@ class file:
         #@define stuff
         linep = 0
         while linep < len(ret): 
-            if ret[linep] and ret[linep] in control.datadef:
-                control.applyrules(ret.pop(0))
+            if ret[linep] and ret[linep] in self.control.datadef:
+                self.control.applyrules(ret.pop(0))
             linep+=1
         ret2 = []
         for token in ret:
             if token:
-                if token[0] not in control.allquotes:
-                    if token.strip(control.nbwhitespace):
+                if token[0] not in self.control.allquotes:
+                    if token.strip(self.control.nbwhitespace):
                         if __debug__:
-                            assert token[-1] not in control.allquotes, token
-                        ret2.append(token.strip(control.nbwhitespace))
+                            assert token[-1] not in self.control.allquotes, token
+                        ret2.append(token.strip(self.control.nbwhitespace))
                 else:
                     ret2.append(token)
 
-        return [e for e in (e.strip(control.nbwhitespace) for e in ret2) if e]
+        return [e for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
 
-    @staticmethod
-    def _compresstokens(linetokens):
+    def _compresstokens(self, linetokens):
+        from Group import group
         def compresstokens(linegrp): #this is non-stable
-            ret = group(parens = linegrp.parens) #universe
+            ret = group(parens = linegrp.parens, control = self.control) #universe
             while linegrp:
                 ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
-                if str(ele) not in control.allparens:
-                    ret.append(group(base = ele))
+                if str(ele) not in self.control.allparens:
+                    ret.append(group(base = ele, control = self.control))
                 else:
-                    toappend = group()
+                    toappend = group(control = self.control)
                     parens = {str(ele):1}
                     while sum(parens.values()) > 0 and linegrp:
                         toappend.append(linegrp.pop(0))
-                        if str(toappend[-1]) in control.allparens:
+                        if str(toappend[-1]) in self.control.allparens:
                             last = str(toappend[-1])
-                            if last in control.parens['l']:
+                            if last in self.control.parens['l']:
                                 if last not in parens:
                                     parens[last] = 0
                                 parens[last] += 1
-                            if last in control.parens['r']:
+                            if last in self.control.parens['r']:
                                 if __debug__:
-                                    assert control._invertparen(last) in parens, "unmatched paren '{}'!".format(last)
-                                parens[control._invertparen(last)] -= 1
+                                    assert self.control._invertparen(last) in parens, "unmatched paren '{}'!".format(last)
+                                parens[self.control._invertparen(last)] -= 1
                     if __debug__:
-                        assert str(toappend[-1]) in control.allparens, toappend #the last element should be in allparens
+                        assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (str(ele), str(toappend.pop()))
                     toappend = compresstokens(toappend)
                     ret.append(toappend)
@@ -151,9 +148,9 @@ class file:
             highest = None
             for elep in range(len(linegrp)):
                 ele = linegrp[elep].basestr
-                if ele in control.allopers and (highest == None or
-                        control.allopers[ele].priority >=\
-                        control.allopers[linegrp[highest].basestr].priority):
+                if ele in self.control.allopers and (highest == None or
+                        self.control.allopers[ele].priority >=\
+                        self.control.allopers[linegrp[highest].basestr].priority):
                     highest = elep
             if __debug__:
                 if highest == None:
@@ -165,8 +162,8 @@ class file:
                 # if __debug__:
                     # assert 0, "when does this ever happen??"
                 return line
-            if len(line) == 1: #if the line is literally a single element
-                if len(line[0]) == 0: #if the line is literally a single constant
+            if len(line) == 1: #if the line is literally a single element, usually: ([blah, blah])
+                if len(line[0]) == 0: #if the line[0] is literally a single constant, aka: blah
                     return line[0]
                 else:
                     return fixtkns(line[0])
@@ -174,25 +171,19 @@ class file:
             if __debug__:
                 assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
                 assert not fhp and fhp.base, fhp
-            ret = group(base = fhp.base, parens = line.parens)
-            current = group()
+            ret = group(base = fhp.base, parens = line.parens, control = self.control)
+            current = group(control = self.control)
             while line:
                 e = line.pop(0) #was formerly .pop(0)
                 if e.base == ret.base:
                     # if current: #these used to strip out null values, but is ignored now
                     #     ret.append(fixtkns(current))
                     ret.append(fixtkns(current))
-                    current = group()
+                    current = group(control = self.control)
                 else:
                     current.append(e)
             if current:
                 ret.append(fixtkns(current))
 
             return ret
-        return fixtkns(compresstokens(group(args = linetokens)))
-    
-    def eval(self):
-        import locls
-        locls = locls.locls()
-        self.lines.eval(locls)
-        return locls
+        return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
