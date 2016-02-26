@@ -12,7 +12,7 @@ def evalfunc(base, eles, locls):
                     args = (locls.lv.base.strobj.scrub(), )
                 else:
                     def scrub(ele, locls):
-                        print(repr(ele))
+                        print(repr(ele),repr(locls))
                         ele.eval(locls)
                         return locls.lv.base.strobj.scrub()
                     args = [scrub(ele, locls) for ele in eles[0]]

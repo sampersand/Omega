@@ -25,8 +25,8 @@ func:genrand:(size, max):{
     }
     return:ret
 }
-func:disparr:(arr,):{
-    for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)::', '};disp:
+func:disparr:(a,):{
+    for:(0->p;p<[a:len];p+<):{disp:(a:get:p,)::', '};disp:
     }
 func:sort:(oa,):{
     -1->p
@@ -39,8 +39,6 @@ func:sort:(oa,):{
         #if:((a:get:p->temp;) < a:get:(p + 1)):{# 
             a:set:(p, ele) 
             a:set:(p + 1, temp) 
-            #{0-1}->p 
-            for:(0->q;q<a:len;q+<):{disp:(a:get:q,)::', '};disp:'end' #
         } 
     }
     return:a
