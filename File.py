@@ -12,25 +12,25 @@ class file:
         import copy
         self.lines = self._compresstokens(copy.deepcopy(tokens))
     def __str__(self):
-        def getl(linep, l, indent = 0):
-            if not l:
-                if __debug__:
-                    assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
-                return linep, ''
-            ret = ''
-            if len(l) > 0:
-                for ele in l:
-                    if ele.basestr not in self.control.delims['endline'][0]:
-                        ret += '\n{}:  \t{}{}'.format(linep, '\t'*indent,ele)
-                        linep += 1
-                    else:
-                        e = getl(linep, ele)
-                        ret += '\t@'+indent+e[1]
-                        linep += e[0]
-            return linep, ret
-        return "file '{}':\n==[start]==\n{}\n\n==[ end ]==".format(self.filepath, getl(0, self.lines[1:])[1])
-        #skip the first and last line b/c they're null
-
+        # def getl(linep, l, indent = 0):
+        #     if not l:
+        #         if __debug__:
+        #             assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
+        #         return linep, ''
+        #     ret = ''
+        #     for ele in l:
+        #         if ele.basestr not in self.control.delims['endline'][0]:
+        #             ret += '\n{}:  \t{}{}'.format(linep, '\t'*indent,ele)
+        #             linep += 1
+        #         else:
+        #             e = getl(linep, ele)
+        #             ret += '\t'*indent+e[1]
+        #             linep += e[0]
+        #     return linep, ret
+        ret = "file '%s':\n==[start]==\n" % self.filepath
+        lines = self.lines.linestr()
+        ret += lines
+        return ret + '==[ end ]=='
     def _striptext(self, rawt):
         """ remove comments and blank lines"""
         ret = ''

@@ -12,7 +12,7 @@ class group(list):
         self.parens = parens
 
     def isempty(self):
-        return bool(self or self.args or self.parens[0] or self.parens[1])
+        return not bool(self or not self.base.isnull() or self.parens[0] or self.parens[1])
 
     def isfinal(self):
         return len(self) == 0
@@ -52,6 +52,23 @@ class group(list):
         return super().__getitem__(item)
 
 
+    def linestr(self, indent = 0, linep = 0):
+        if not self:
+            return str(self)
+        isendl = self.basestr and self.basestr in self.control.delims['endline'][0]
+        ret = []
+        for l in self:
+            if l.isempty():
+                continue
+            if isendl:
+                ret.append('\n{:^3}|  {}{}'.format(linep, '\t' * indent, l.linestr(indent + 1, linep + 1)))
+            else:
+                ret.append(l.linestr(indent + 1, linep + 1))
+            linep+=1
+        retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
+        retu += (isendl and '\n{:^3}|  {}'.format(linep, '\t' * (indent-0)) or '')
+        retu += self.parens[1]
+        return retu
 
 
 
