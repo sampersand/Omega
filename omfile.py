@@ -136,6 +136,7 @@ class omfile:
                                     assert control._invertparen(last) in parens, "unmatched paren '{}'!".format(last)
                                 parens[control._invertparen(last)] -= 1
                     if __debug__:
+                        print(toappend,ele,'@')
                         assert str(toappend[-1]) in control.allparens, toappend #the last element should be in allparens
                     toappend.parens = (str(ele), str(toappend.pop()))
                     toappend = compresstokens(toappend)

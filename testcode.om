@@ -1,23 +1,16 @@
-,->ret
-ret:add:1
-abort:ret
-@eof
 func:genrand:(size,):{
     return:{
         (,)->ret;
         for:(0->q;q<size;q+<):{
-            ret:add:{(om:rand * 10F):round}
+            om:rand-> r
+            disp:(q,'q',r,(100F*r->r),r:round)
+            ret:add:{r:round}
+            # ret:add:{(om:rand * 100F):round}#
         };
-        disp:[ret,'@']
-        ret:add:1
-        disp:[ret,'@']
-
         ret
-    abort:(ret, om:locls)
     }
 }
 func:disparr:(arr,):{
-    abort:(arr,om:locls)
     for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)}
     }
 disparr:(genrand:(10,),)

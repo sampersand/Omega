@@ -51,7 +51,6 @@ class obj():
         return bool(self.base)
 
     def eval(self, eles, locls):
-        print(self,eles,locls,'^')
         if str(self) in locls:
             #this is ignoring the parens...
             locls[str(self)].base.eval(eles, locls)
