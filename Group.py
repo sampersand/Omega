@@ -97,7 +97,8 @@ class group(list):
             ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
         return ret
     def linestr(self):
-        def _linestr(self, indent, linep):
+        linep = []
+        def _linestr(self, indent):
             if not self:
                 return str(self)
             isendl = self.basestr in self.control.delims['endline'][0]
@@ -109,9 +110,10 @@ class group(list):
                     continue
                 if isendl:
                     linep.append([])
-                ls = _linestr(l, indent + 1, linep)
+                linel = len(linep) 
+                ls = _linestr(l, indent + 1)
                 if isendl:
-                    ret.append('\n{:^3}|  {}{}'.format(len(linep), '\t' * (indent), ls))
+                    ret.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
                     # linep += 1
                 else:
                     ret.append(ls)
@@ -121,7 +123,7 @@ class group(list):
                 retu += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
             retu += self.parens[1]
             return retu
-        return _linestr(self, 0, [])
+        return _linestr(self, 0)
 
 
 
