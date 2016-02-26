@@ -1,67 +1,52 @@
-@eof
-(43.2, 2.3) -> arr
-arr:1 -> a
-displ:locls
-99999 -> arr:1
-2->b
-9912->arr:[4]
-arr <- (null, null)
-displ:locls;
 
-1 -> arr:[0]
-99 -> (arr:[0]);
-(arr:[0]) <- 999999; 
-displ:b
-b -> arr:[2]
-dispc:(arr)
-displ:('1',arr:[1],'2');
-displ:1;
-(1 + 2) * 3 -> a;
-(2 && 0)-> a;
-abort;
- 
+->$dnd
+#func:disparr:(arr,):{
+    for:(0->q;q<[arr:len];q+<):{
+        disp:(arr:get:q,)::', '
+    };
+    disp:
+}
+(1,9,47,38)->a
+disparr:(a,)
+disparr:(a,)
+disparr:(a,)
+disparr:(a,)
 @eof
-a <- 1;
-for:(skip;((i<+-1)<10);skip):(displ:i);
-(if:((if:(a=1):2:0)->b):a:b)->c;
-for:(skip;((i<+-1)<10);skip):(displ:i);
-# for:((0->i);(i<10);(1-+>i)):(displ:i);#
-1->a;
-0->b;
-11->i;
-if:(a==1):(displ:'a'):(displ:'b');
-(11,2)->a;
-false -> a;
-a -?> b
-
+1->p
+disp:(a:get:p,'@')
+disp:(if:(a:get:p > a:get:(p + 1)):'p>p+1':'p<p+1',)
+disp:a
 @eof
-8->a;
-(a<+-1)+a;
-
-
-@eof
-@eof
-#b<-a+(a<+-1);#
-disp:b;
-1;
-null->$;
-3 -> a;
-disp:$;
-4->b;
-if:a=3:skip:{disp:'a != 3'};
-disp:$
-
-@eof
-#disp:(2;3):'abc + def';#
-@eof
-disp:(1,2,3)::1
-
-@eof
-9b&2->d;
-(2->a)-+>b;
-@eof
-1+2;
-1 + 2 -> b;
-1 * (2 + 3) -> b;
-1 -> a;
-c <- b + a;
+#
+func:genrand:(size, max):{
+    return:{98,57}
+    , -> ret
+    for:(0 -> q; q < size; q+<):{
+        ret:add:{(max * om:rand):round}
+    }
+    return:ret
+}
+func:disparr:(a,):{
+    for:(0->p;p<[a:len];p+<):{disp:(a:get:p,)::', '};disp:
+    }
+func:sort:(oa,):{
+    -1->p
+    a<-oa:copy:()
+    whilst:(a:len>{>+p + 1}):{
+        disp:(a:get:p,'<--')
+        a:get:p->temp
+        a:get:(p+1)->ele;
+        if:(temp > ele):{ 
+        #if:((a:get:p->temp;) < a:get:(p + 1)):{# 
+            a:set:(p, ele) 
+            a:set:(p + 1, temp) 
+        } 
+    }
+    return:a
+}
+genrand:(5, 10F) -> rnd
+disparr:(rnd,)
+sortd <- sort:(rnd, )
+disparr:(sortd,)
+abort:rnd
+$dnd<-1
