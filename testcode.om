@@ -1,5 +1,5 @@
 ->$dnd
-func:disparr:(arr,):{
+#func:disparr:(arr,):{
     for:(0->q;q<[arr:len];q+<):{
         disp:(arr:get:q,)::', '
     };
@@ -11,14 +11,14 @@ disparr:(a,)
 disparr:(a,)
 disparr:(a,)
 @eof
-#-------------#
 1->p
 disp:(a:get:p,'@')
 disp:(if:(a:get:p > a:get:(p + 1)):'p>p+1':'p<p+1',)
 disp:a
 @eof
-#-------------#
+#
 func:genrand:(size, max):{
+    return:{98,57}
     , -> ret
     for:(0 -> q; q < size; q+<):{
         ret:add:{(max * om:rand):round}
@@ -29,15 +29,19 @@ func:disparr:(arr,):{
     for:(0->q;q<[arr:len];q+<):{disp:(arr:get:q,)::', '};disp:
     }
 func:sort:(oa,):{
-    return:oa
-    a<-oa
-    whilst:([a:len]>{>+p}):{
-        if:((a:get:p->temp;) < a:get:(p + 1)):{
-            a:set:(p, a:get:(p + 1))
-            a:set:(p + 1, temp)
-            0->p
-            for:(0->q;q<a:len;q+<):{disp:(a:get:q,)::', '};disp:'end'
-        }
+    -1->p
+    a<-oa:copy:()
+    whilst:(a:len>{>+p + 1}):{
+        disp:(a:get:p,'<--')
+        a:get:p->temp
+        a:get:(p+1)->ele;
+        if:(temp > ele):{ 
+        #if:((a:get:p->temp;) < a:get:(p + 1)):{# 
+            a:set:(p, ele) 
+            a:set:(p + 1, temp) 
+            #{0-1}->p 
+            for:(0->q;q<a:len;q+<):{disp:(a:get:q,)::', '};disp:'end' #
+        } 
     }
     return:a
 }
@@ -45,4 +49,5 @@ genrand:(5, 10F) -> rnd
 disparr:(rnd,)
 sortd <- sort:(rnd, )
 disparr:(sortd,)
+abort:rnd
 $dnd<-1

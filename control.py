@@ -31,7 +31,7 @@ parens = {'l':'([{', 'r':')]}'}
 allconsts = {
     'true' : boolobj(True),
     'false': boolobj(False),
-    'null' : nullobj(),
+    'null' : nullobj(True),
     'pi'   : floatobj(math.pi), 'π': floatobj(math.pi),
     'e'    : floatobj(math.e),
     'k'    : floatobj(8.987551787368e9),

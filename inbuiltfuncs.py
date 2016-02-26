@@ -12,6 +12,7 @@ def evalfunc(base, eles, locls):
                     args = (locls.lv.base.strobj.scrub(), )
                 else:
                     def scrub(ele, locls):
+                        print(repr(ele))
                         ele.eval(locls)
                         return locls.lv.base.strobj.scrub()
                     args = [scrub(ele, locls) for ele in eles[0]]
@@ -218,7 +219,9 @@ def evalunary(base, eles, locls):
         from group import group
         from obj import intobj
         import copy;
-        ret = copy.deepcopy(locls[str(eles[0])]);
+        eles[0].eval(locls)
+        # ret = copy.deepcopy(locls[str(eles[0])]);
+        ret = copy.deepcopy(locls.lv);
         group(base = control.allopers['-%s>'%name[0]], args = [ group(base = intobj(1)), eles[0]]).eval(locls)
         locls.lv = ret
     elif name == '!':

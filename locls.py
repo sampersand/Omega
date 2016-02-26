@@ -7,12 +7,21 @@ class locls(dict):
     @property
     def lv(self):
         "I am the 'lv' property."
+        if __debug__:
+            from group import group
+            assert isinstance(self['$'],group), self['$']
         return self['$']
     @lv.setter
     def lv(self, value):
+        if __debug__:
+            from group import group
+            assert isinstance(self['$'],group), self['$']#
         self['$'] = value
     @lv.deleter
     def lv(self):
+        if __debug__:
+            from group import group
+            assert isinstance(self['$'],group), self['$']#
         del self['$']
     @property
     def ret(self):
