@@ -120,13 +120,13 @@ class group(list):
             retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
             if isendl and self.parens[1]:
                 linep.append([])
-                retu += '\n{:^3}|  {}'.format(len(  ), '\t' * (indent-2))
+                retu += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
             retu += self.parens[1]
             return retu
         return _linestr(self, 0)
 
-    def eval(self, vars):
-        pass
+    def eval(self, ldict):
+        print(ldict)
 
 
 
