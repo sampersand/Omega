@@ -12,21 +12,6 @@ class file:
         import copy
         self.lines = self._compresstokens(copy.deepcopy(tokens))
     def __str__(self):
-        # def getl(linep, l, indent = 0):
-        #     if not l:
-        #         if __debug__:
-        #             assert str(l) == ';' or str(l) == '', str(l) #no other known case atm
-        #         return linep, ''
-        #     ret = ''
-        #     for ele in l:
-        #         if ele.basestr not in self.control.delims['endline'][0]:
-        #             ret += '\n{}:  \t{}{}'.format(linep, '\t'*indent,ele)
-        #             linep += 1
-        #         else:
-        #             e = getl(linep, ele)
-        #             ret += '\t'*indent+e[1]
-        #             linep += e[0]
-        #     return linep, ret
         ret = "file '%s':\n==[start]==" % self.filepath
         lines = self.lines.linestr()
         ret += lines
@@ -187,3 +172,8 @@ class file:
 
             return ret
         return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
+    def eval(self):
+        import VarDict
+        vard = VarDict.vardict()
+        self.lines.eval(vard)
+        return vard
