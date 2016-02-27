@@ -173,7 +173,7 @@ class file:
             return ret
         return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
     def eval(self):
-        import VarDict
-        vard = VarDict.vardict()
-        self.lines.eval(vard)
-        return vard
+        import LocalsDict
+        ldict = LocalsDict.localsdict()
+        self.lines.eval(ldict)
+        return ldict
