@@ -6,7 +6,6 @@ a:b:{
     c:d
 }
 i:j
-@eof
 func:f:(a,b):{;
 disp:a
     disp:b
