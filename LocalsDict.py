@@ -18,7 +18,7 @@ class localsdict(dict):
                 yield i
 
     def __str__(self):
-        return '{' + ', '.join(str(v) + ' : ' + str(self[v]) for v in self) + '}'
+        return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self) + '}'
 
     def lastval():
         doc = "The last value that was evaluated"
@@ -54,3 +54,6 @@ class localsdict(dict):
         ret = super().clear()
         self.gendefaults()
         return ret
+    def onlyfuncs(self):
+        return localsdict()
+    

@@ -1,6 +1,7 @@
 import Objects.ArrayObj, Objects.BoolObj, Objects.DictObj,\
        Objects.FuncObj, Objects.MethodObj, Objects.NullObj,\
-       Objects.NumObj, Objects.Obj, Objects.OperObj
+       Objects.NumObj, Objects.Obj, Objects.OperObj,\
+       Objects.UserFuncObj
 arrayobj  = Objects. ArrayObj. arrayobj
 boolobj   = Objects.  BoolObj.  boolobj
 dictobj   = Objects.  DictObj.  dictobj
@@ -10,4 +11,5 @@ nullobj   = Objects.  NullObj.  nullobj
 numobj    = Objects.   NumObj.   numobj
 obj       = Objects.      Obj.      obj
 operobj   = Objects.  OperObj.  operobj
-__all__  = ['arrayobj', 'boolobj', 'dictobj', 'funcobj', 'methodobj', 'nullobj', 'numobj', 'obj', 'operobj',]
+userfuncobj=Objects.UserFuncObj.userfuncobj
+__all__  = ['arrayobj', 'boolobj', 'dictobj', 'funcobj', 'methodobj', 'nullobj', 'numobj', 'obj', 'operobj','userfuncobj']

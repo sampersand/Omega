@@ -105,7 +105,13 @@ class funcobj(methodobj):
             args[1].eval(ldict) #execute the statement(s)
             args[0][2].eval(ldict) #increment
     def _func(self, args, ldict):
-        pass
+        from Group import group
+        from Objects import userfuncobj
+        args[0].eval(ldict)
+        name = str(ldict.lastval)
+        ldict[name] = group(base = userfuncobj(name, args[1], args[2]))
+        ldict.lv = ldict[name]
+
     def _return(self, args, ldict):
         #Watch out! return:a+b is {return:a} + b
         args[0].eval(ldict)
