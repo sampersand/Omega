@@ -15,6 +15,9 @@ class obj():
     def __str__(self):
         return str(self.base)
 
+    def scrubstr(self, control):
+        return str(self)
+
     @staticmethod
     def frombase(ele, control):
         """

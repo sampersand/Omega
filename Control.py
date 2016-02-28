@@ -29,7 +29,17 @@ class control():
         self.datadef = '@'
         self.nbwhitespace = ' \t\x0b\x0c'
         self.whitespace = self.nbwhitespace + self.linebreak
-        self._allquotes = '\'\"`'
+        self._allquotes = '\'\"`' #just for continuity
+
+        self.escapechars = {'\\n': '\n',
+                       '\\t': '\t',
+                       '\\r': '\r',
+                       "\\'": '\'',
+                       '\\`': '`',
+                       '\\"': '\"',
+                       '\\\\':'\\',
+                       }
+
         self.parens = control._specdict({
             'l' : control._specdict({'(' : ')', '[' : ']', '{' : '}'}),
             'r' : control._specdict({')' : '(', ']' : '[', '}' : '{'}),

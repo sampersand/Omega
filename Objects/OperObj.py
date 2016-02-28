@@ -55,7 +55,7 @@ class operobj(methodobj):
             elif name in ctrl.delims['applier']:
                 args[0].eval(ldict)
                 ldict.lastval.base.eval(args[1:], ldict)
-
+                return
         elif name in ctrl.opers['binary']:
             if __debug__:
                 assert name not in ctrl.opers['binary']['math'], 'all math should have a func associated!'

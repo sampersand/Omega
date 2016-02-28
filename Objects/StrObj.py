@@ -16,3 +16,11 @@ class strobj(obj):
     @staticmethod
     def frombase(base, control):
         return strobj(base) if len(base) > 1 and base[0] in control.allquotes and base[0] in control.allquotes else None
+
+    def scrubstr(self, control):
+        base = self.base
+        for c in control.escapechars:
+            base = base.replace(c, control.escapechars[c])
+        if base and base[0] in control.allquotes:  base = base[1:]
+        if base and base[-1] in control.allquotes: base = base[:-1]
+        return base
