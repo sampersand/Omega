@@ -52,6 +52,9 @@ class operobj(methodobj):
                     l.base.base.append(ldict.lastval)
                 ldict.lastval = l
                 return
+            elif name in ctrl.delims['applier']:
+                args[0].eval(ldict)
+                ldict.lastval.base.eval(args[1:], ldict)
 
         elif name in ctrl.opers['binary']:
             if __debug__:

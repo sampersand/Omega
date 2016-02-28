@@ -17,3 +17,5 @@ var + (2 -> c) -> b
 9 * 3 -> a
 '1'->string#
 (94, 34, 128)->b
+disp:b
+#if:(1->var):var:#

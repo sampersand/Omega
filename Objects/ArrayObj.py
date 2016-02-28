@@ -16,12 +16,12 @@ class arrayobj(obj):
     def __str__(self):
         return '[' + ', '.join(str(e) for e in self.base) + ']'
 
-    def eval(self, eles, locls):
-        if eles.base is self:
-            locls.lv = eles
-            return
-        import inbuiltfuncs
-        inbuiltfuncs.evalarray(self, eles, locls)
+    # def eval(self, eles, locls):
+    #     if eles.base is self:
+    #         locls.lv = eles
+    #         return
+    #     import inbuiltfuncs
+    #     inbuiltfuncs.evalarray(self, eles, locls)
 
     @property
     def lengrp(self):

@@ -123,16 +123,16 @@ class control():
             }
         })
         self.funcs = control._specdict({
-            'if'     : methodobj('if'),
-            'rm'     : methodobj('rm'),
-            'om'     : methodobj('om'),
-            'for'    : methodobj('for'),
-            'disp'   : methodobj('disp'),
-            'skip'   : methodobj('skip'), #ignore that line
-            'func'   : methodobj('func'),
-            'abort'  : methodobj('abort'),
-            'whilst' : methodobj('whilst'),
-            'return' : methodobj('return'),
+            'if'     : funcobj('if'),
+            'rm'     : funcobj('rm'),
+            'om'     : funcobj('om'),
+            'for'    : funcobj('for'),
+            'disp'   : funcobj('disp'),
+            'skip'   : funcobj('skip'), #ignore that line
+            'func'   : funcobj('func'),
+            'abort'  : funcobj('abort'),
+            'whilst' : funcobj('whilst'),
+            'return' : funcobj('return'),
         })
         self.delims = control._specdelimsdict({
             'arraysep': control._spectuple((',',   14)),#operobj(',', 14)),

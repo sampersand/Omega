@@ -11,3 +11,6 @@ class funcobj(methodobj):
 
     def __repr__(self):
         return 'funcobj({},base={})'.format(self.func, self.base)
+    def eval(self, args, ldict):
+        if self is args.base: #aka, no params passed
+            super().eval(args, ldict)
