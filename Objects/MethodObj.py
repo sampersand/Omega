@@ -1,5 +1,5 @@
-from Objects.MethodObj import methodobj
-class funcobj(methodobj):
+from Objects.Obj import obj
+class methodobj(obj):
     """
     The class that represents a function.
     """
@@ -10,4 +10,4 @@ class funcobj(methodobj):
         self.func = func
 
     def __repr__(self):
-        return 'funcobj({},base={})'.format(self.func, self.base)
+        return 'methodobj({},base={})'.format(self.func, self.base)

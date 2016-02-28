@@ -1,5 +1,5 @@
-from Objects.FuncObj import funcobj
-class operobj(funcobj):
+from Objects.MethodObj import methodobj
+class operobj(methodobj):
     """
     The class that represents operators on objects.
     """

@@ -11,7 +11,7 @@ allquotes = '\'\"`'
 # import re
 # numre = re.compile(r'^(0[oxbOXB])?[\d.]+([eE]?[-+]?[\d.]+)?[ij]?$')
 # strre = re.compile(r'(?s)\A([{}]).*\1\Z'.format(allquotes))
-from obj import *#operobj, obj, funcobj,'',  numobj
+from obj import *#operobj, obj, methodobj,'',  numobj
 
 escapechars = {'\\n': '\n',
                '\\t': '\t',
@@ -122,16 +122,16 @@ opers = {
 }
 funcs = {
     #reason this is a dict not a tuple is because later on some of these might be 1-line lambdas
-    'if': funcobj('if'),
-    'rm': funcobj('rm'),
-    'om': funcobj('om'),
-    'for': funcobj('for'),
-    'disp': funcobj('disp'),
-    'skip': funcobj('skip'), #ignore that line
-    'func': funcobj('func'),
-    'abort': funcobj('abort'),
-    'whilst': funcobj('whilst'),
-    'return': funcobj('return'),
+    'if': methodobj('if'),
+    'rm': methodobj('rm'),
+    'om': methodobj('om'),
+    'for': methodobj('for'),
+    'disp': methodobj('disp'),
+    'skip': methodobj('skip'), #ignore that line
+    'func': methodobj('func'),
+    'abort': methodobj('abort'),
+    'whilst': methodobj('whilst'),
+    'return': methodobj('return'),
 }
 for d in delims.values():
     for val in d[0]:

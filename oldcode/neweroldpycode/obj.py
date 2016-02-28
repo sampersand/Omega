@@ -92,7 +92,7 @@ class obj():
     def isnull(self):
         return isinstance(self, nullobj)
 
-class funcobj(obj):
+class methodobj(obj):
     """
     The class that represents a function.
     """
@@ -105,7 +105,7 @@ class funcobj(obj):
         self.func = func
 
     def __repr__(self):
-        return 'funcobj({},base={})'.format(self.func, self.base)
+        return 'methodobj({},base={})'.format(self.func, self.base)
 
     def eval(self, eles, locls):
         import control
@@ -125,7 +125,7 @@ class funcobj(obj):
             self.func(eles, locls)
         if __debug__:
             assert locls.lv is not x, "function {} didn't do anything!".format(self)
-class operobj(funcobj):
+class operobj(methodobj):
     """
     The class that represents operators on objects.
     """
@@ -148,13 +148,13 @@ class operobj(funcobj):
                                                    "(supposed to be defined in inbuiltfuncs)"
         import inbuiltfuncs
         inbuiltfuncs.evaloper(self, eles, locls)
-class userfuncobj(funcobj):
+class usermethodobj(methodobj):
     def __init__(self, base, args, func):
         super().__init__(base, func)
         self.args = args
 
     def __repr__(self):
-        return 'userfuncobj({},{},{})'.format(self.base, self.args, self.func)
+        return 'usermethodobj({},{},{})'.format(self.base, self.args, self.func)
 
     def _genargs(self, eles, locls):
         import locls as loclsm

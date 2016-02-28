@@ -1,8 +1,10 @@
-import Objects.NullObj, Objects.Obj, Objects.BoolObj, Objects.FuncObj, Objects.OperObj, Objects.NumObj
-obj     = Objects.    Obj.    obj
-numobj  = Objects. NumObj. numobj
-boolobj = Objects.BoolObj.boolobj
-funcobj = Objects.FuncObj.funcobj
-operobj = Objects.OperObj.operobj
-nullobj = Objects.NullObj.nullobj
-__all__  = ['obj', 'nullobj', 'boolobj', 'funcobj', 'operobj', 'numobj']
+import Objects.BoolObj, Objects.FuncObj, Objects.MethodObj, Objects.NullObj,\
+       Objects.NumObj, Objects.Obj, Objects.OperObj
+boolobj   = Objects.  BoolObj.  boolobj
+funcobj   = Objects.  FuncObj.  funcobj
+methodobj = Objects.MethodObj.methodobj
+nullobj   = Objects.  NullObj.  nullobj
+numobj    = Objects.   NumObj.   numobj
+obj       = Objects.      Obj.      obj
+operobj   = Objects.  OperObj.  operobj
+__all__  = ['obj', 'nullobj', 'boolobj', 'methodobj', 'operobj', 'numobj']

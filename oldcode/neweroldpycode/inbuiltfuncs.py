@@ -92,8 +92,8 @@ def evalfunc(base, eles, locls):
         args = eles[1]
         func = eles[2]
         from group import group
-        from obj import userfuncobj
-        locls[name] = group(base = userfuncobj(name, args, func))
+        from obj import usermethodobj
+        locls[name] = group(base = usermethodobj(name, args, func))
         locls.lv = locls[name]
     elif name == 'return':
         eles[0].eval(locls)
