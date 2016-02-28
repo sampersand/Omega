@@ -57,10 +57,17 @@ class obj():
         import copy
         return copy.deepcopy(self.base)
 
-    def __mul__(self, other):
-        return self.base * other.base
-    def __add__(self, other):
-        return self.base * other.base
+    def __add__   (self, other): return self.base +  other.base
+    def __sub__   (self, other): return self.base -  other.base
+    def __mul__   (self, other): return self.base *  other.base
+    def __div__   (self, other): return self.base /  other.base
+    def __mod__   (self, other): return self.base %  other.base
+    def __pow__   (self, other): return self.base ** other.base
+    def __and__   (self, other): return self.base &  other.base
+    def __xor__   (self, other): return self.base ^  other.base
+    def __or__    (self, other): return self.base |  other.base
+    def __lshift__(self, other): return self.base << other.base
+    def __rshift__(self, other): return self.base >> other.base
 
 
 

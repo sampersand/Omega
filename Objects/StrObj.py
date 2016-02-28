@@ -4,7 +4,7 @@ class strobj(obj):
     The super class for all numbers.
     """
     def __init__(self, base = None):
-        raise NotImplementedError('todo: this!')
+        raise NotImplementedError('todo: this!' + str(base))
         if base == None:
             base = 0
         super().__init__(base)
@@ -14,7 +14,7 @@ class strobj(obj):
 
     @staticmethod
     def frombase(base, control):
-        return None if len(base) < 2 or base[0] in control.allquotes and base[0] in control.allquotes else strobj(base)
+        return strobj(base) if len(base) > 1 and base[0] in control.allquotes and base[0] in control.allquotes else None
 
     def eval(self, args, ldict):
         raise NotImplementedError()

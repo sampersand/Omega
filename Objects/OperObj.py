@@ -23,7 +23,8 @@ class operobj(funcobj):
                 last = ldict.lastval
                 arg.eval(ldict)
                 if __debug__:
-                    assert hasattr(arg, self.attrstr), "cannot perform '{}' on '{}'!".format(self.attrstr, arg)
+                    assert hasattr(ldict.lastval.base, self.attrstr),\
+                        "cannot perform '{}' on '{}'!".format(self.attrstr, repr(arg))
                 ldict.lastval = ldict.lastval.deepcopy()
                 ldict.lastval.base.base = getattr(last.base, self.attrstr).__call__(ldict.lastval.base)
             return
