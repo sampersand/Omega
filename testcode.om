@@ -1,42 +1,4 @@
-whilst:([1-+>a]<10):{
-    disp:(a,)
+func:add:(a,b):{;
+    disp:(a,b,'a + b = ',(return:a+b)):' '
 }
-4->a
-22->b
-2-+>a-->b
-b<--a<*-1
-disp:(a,b)
-@eof
-0->a
-disp:([if(a=1){'a == 1!'}{'a != 1!'}->b],)
-if()
-@eof
-disp:([if:(a==1):'a == 1!':'a != 1!'->b],)
-rm:b
-disp:['--the line break--',]
-inc <- 0
-for : (0 -> i; i < 129; (i <- i + 1; inc <- inc + i)) : skip;
-disp:inc
-@eof
-#a:b:{
-    e:{
-        f;
-        g:hilol:{1;};
-    }
-    c:d
-}
-i:j
-func:f:(a,b):{;
-disp:a
-    disp:b
-    disp:'done':{'1';'2';}
-    return:a+b;
-}#
-#3 * 4 / (5 - 9) ** 2 -> var
-var + (2 -> c) -> b
-9 * 3 -> a
-'1'->string#
-(94, 34, 128)->b
-1->a
-disp:(b,1)::'\nend\n.\n'
-#if:(1->var):var:#
+disp:('add:(4,5):',add:(4, 5)
