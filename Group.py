@@ -127,12 +127,12 @@ class group(list):
             return retu
         return _linestr(self, 0)
 
-    def eval(self, ldict):
+    def eval(self, ldict, ctrl):
         if self.basestr in ldict:
             import copy
-            ldict.lastval = copy.deepcopy(ldict[self.basestr]) #oh boy this is slooow
+            ldict.lastval = ldict[self.basestr].deepcopy() #oh boy this is slooow
         elif not self.base.isnull():
-            self.base.eval(self, ldict)
+            self.base.eval(self, ldict, ctrl)
         else:
             assert 0, 'when does this happen?' + str(self)
 

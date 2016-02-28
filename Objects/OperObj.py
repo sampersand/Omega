@@ -3,14 +3,15 @@ class operobj(funcobj):
     """
     The class that represents operators on objects.
     """
-    def __init__(self, base, priority):
+    def __init__(self, base, priority, funcstr):
         super().__init__(base, None)
         self.priority = priority
+        self.funcstr = functstr
 
     def __repr__(self):
         return 'operobj({},{})'.format(self.base, self.priority)
 
-    def eval(self, args, ldict):
+    def eval(self, args, ldict, ctrl):
         ctrl = args.control
         name = str(self)
         if __debug__:
@@ -20,15 +21,15 @@ class operobj(funcobj):
             if name in ctrl.delims['endline']:
                 for line in args: #each ';' is a line.
                     if not line.base.isnull():
-                        line.eval(ldict)
+                        line.eval(ldict, ctrl)
                     if ldict.hasret():
                         break
                 return
         elif name in ctrl.opers['binary']:
             if name in ctrl.opers['binary']['math']:
-                args[0].eval(ldict)
+                args[0].eval(ldict, ctrl)
                 for arg in args[1:]:
-                    ldict.lastval.base._evalmath(arg, self, ldict)
+                    ldict.lastval.base._evalmath(arg, str(self), ldict, ctrl)
                 return
             elif name in ctrl.opers['binary']['logic']:
                 pass
@@ -36,9 +37,9 @@ class operobj(funcobj):
                 pass
             elif name in ctrl.opers['binary']['assignment']:
                 d = name in args.control.opers['binary']['assignment']['r']
-                args[d - 1].eval(ldict)
+                args[d - 1].eval(ldict, ctrl)
                 for arg in args[slice(d or None, d - 1 or None, None)]:
-                    self._evalassign(arg, ldict)
+                    self._evalassign(arg, ldict, ctrl)
                 return
         raise SyntaxError("Unknown Operator '{}' in arguments '{}'! Known operators: {}".format(self, args, 
                                                                                                 ctrl.allopers.keys()))

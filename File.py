@@ -172,8 +172,10 @@ class file:
 
             return ret
         return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
-    def eval(self):
+    def eval(self, ctrl = None):
+        if ctrl == None:
+            ctrl = self.lines[0].control
         import LocalsDict
         ldict = LocalsDict.localsdict()
-        self.lines.eval(ldict)
+        self.lines.eval(ldict, ctrl)
         return ldict

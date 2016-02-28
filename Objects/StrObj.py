@@ -15,7 +15,5 @@ class strobj(obj):
     def frombase(base, control):
         return None if len(base) < 2 and base[0] in control.allquotes and base[0] in control.allquotes else strobj(base)
 
-    def eval(self, args, ldict):
-        if __debug__:
-            assert not args and args.base is self, 'just a thing i noticed'
-        ldict.lastval = args
+    def eval(self, args, ldict, ctrl):
+        pass

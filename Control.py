@@ -40,37 +40,42 @@ class control():
             'True'  : boolobj(True),  'true'  : boolobj(True),  
             'False' : boolobj(False), 'false' : boolobj(False), 
         })
+    # _funclist = {'+' : '__add__',
+    #              '-' : '__sub__',
+    #              '*' : '__mul__',
+    #              '/' : '__div__',
+    #              '%' : '__mod__',
+    #              '**': '__pow__'}
 
         self.opers = control._specdict({
             'binary':control._specdict({
                 'math':control._specdict({
-                    '**'  : operobj('**',     3), # power of
-                    '*'   : operobj('*',      4), # mult
-                    '/'   : operobj('/',      4), # div
-                    '%'   : operobj('%',      4), # mod
-                    '+'   : operobj('+',      5), # plus
-                    '-'   : operobj('-',      5), # minus
+                    '**'  : operobj('**',     3, '__pow__'), # power of
+                    '*'   : operobj('*',      4, '__mul__'), # mult
+                    '/'   : operobj('/',      4, '__div__'), # div
+                    '%'   : operobj('%',      4, '__mod__'), # mod
+                    '+'   : operobj('+',      5, '__add__'), # plus
+                    '-'   : operobj('-',      5, '__sub__'), # minus
                     }),
 
                 'bitwise':control._specdict({
-                    'b<<' : operobj('b<<',    6), # bitwise <<
-                    'b>>' : operobj('b<<',    6), # bitwise >>
-                    'b&'  : operobj('b&',     7), # bitwise &
-                    'b^'  : operobj('b^',     8), # bitwise ^
-                    'b|'  : operobj('b|',     9), # bitwise |
+                    'b<<' : operobj('b<<',    6, '__rshift__'), # bitwise <<
+                    'b>>' : operobj('b<<',    6, '__lshift__'), # bitwise >>
+                    'b&'  : operobj('b&',     7, '__and__'), # bitwise &
+                    'b^'  : operobj('b^',     8, '__xor__'), # bitwise ^
+                    'b|'  : operobj('b|',     9, '__or__'), # bitwise |
                     }),
-
                 'logic':control._specdict({
-                    '<'   : operobj('<',     10), # less than
-                    '>'   : operobj('>',     10), # greater than
-                    '<='  : operobj('<=',    10), # less than or equal
-                    '>='  : operobj('>=',    10), # greater than or equal
-                    '=='  : operobj('==',    10), # equal to
-                    '='   : operobj('=',     10), # equal to
-                    '<>'  : operobj('<>',    10), # equal to
-                    '!='  : operobj('!=',    10), # not equal to
-                    '&&'  : operobj('&&',    11), # boolean and
-                    '||'  : operobj('||',    12), # booleon or
+                    '<'   : operobj('<',     10, '__lt__'), # less than
+                    '>'   : operobj('>',     10, '__gt__'), # greater than
+                    '<='  : operobj('<=',    10, '__le__'), # less than or equal
+                    '>='  : operobj('>=',    10, '__ge__'), # greater than or equal
+                    '=='  : operobj('==',    10, '__eq__'), # equal to
+                    '='   : operobj('=',     10, '__eq__'), # equal to
+                    '<>'  : operobj('<>',    10, '__ne__'), # equal to
+                    '!='  : operobj('!=',    10, '__ne__'), # not equal to
+                    '&&'  : operobj('&&',    11, None), # boolean and
+                    '||'  : operobj('||',    12, ), # booleon or
                     }),
                 
                 'assignment':control._specdict({

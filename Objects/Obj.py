@@ -3,14 +3,8 @@ class obj():
     The base class for all of the objects.
     """
 
-    _funclist = {'+' : '__add__',
-                 '-' : '__sub__',
-                 '*' : '__mul__',
-                 '/' : '__div__',
-                 '%' : '__mod__',
-                 '**': '__pow__'}
     #used to translate from symbols to functions.
-    def __init__(self, base, control):
+    def __init__(self, base):
         if __debug__:
             assert not isinstance(base, obj), type(base) #only allowed to pass non-objs
         self.base = base
@@ -50,10 +44,10 @@ class obj():
         from Objects.NullObj import nullobj
         return isinstance(self, nullobj)
 
-    def eval(self, args, ldict):
+    def eval(self, args, ldict, ctrl):
         if str(self) in ldict:
             #this is ignoring the parens...
-            ldict[str(self)].base.eval(args, ldict)
+            ldict[str(self)].base.eval(args, ldict, ctrl)
         else:
             if __debug__:
                 assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
@@ -63,8 +57,8 @@ class obj():
         import copy
         return copy.deepcopy(self.base)
 
-    def _evalmath(self, last, oper, ldict):
-        last.eval(ldict)
+    def _evalmath(self, last, oper, ldict, ctrl):
+        last.eval(ldict, ctrl)
         if __debug__:
             assert isinstance(oper, str), 'oper has to be a string, not a ' + str(type(oper))
             assert oper in obj._funclist, "oper '{}' doesn't exist in _funclist ({})".format(oper, obj._funclist)

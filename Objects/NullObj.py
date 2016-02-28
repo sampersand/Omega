@@ -17,5 +17,5 @@ class nullobj(obj):
     def __str__(self):
         return 'null'
 
-    def eval(self, args, ldict):
+    def eval(self, args, ldict, ctrl):
         pass #don't change this
