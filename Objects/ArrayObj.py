@@ -16,14 +16,25 @@ class arrayobj(obj):
     def __str__(self):
         return '[' + ', '.join(str(e) for e in self.base) + ']'
 
-    # def eval(self, eles, locls):
+    def eval(self, args, ldict):
+        if not args:
+            ldict.lastval = self
+            return
+        name = str(args[0])
+        if name == 'get':
+            if __debug__:
+                assert len(args) == 2, 'array:get:pos'
+            args[1].eval(ldict)
+            ldict.lastval = self.base[ldict.lastval.base.base]
     #     if eles.base is self:
     #         locls.lv = eles
     #         return
     #     import inbuiltfuncs
     #     inbuiltfuncs.evalarray(self, eles, locls)
 
-    @property
-    def lengrp(self):
-        from group import group
-        return group(base = intobj(len(self.base)))
+
+
+
+
+
+

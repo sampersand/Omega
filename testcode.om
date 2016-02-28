@@ -1,8 +1,2 @@
-func : add : (a, b) : {
-    disp : (a, '+', b, '=', (return : {a + b})) : ' '
-}
-disp : ('add : (4, 5) : ', add : (4, 5)):''
-func : f :  : {
-    disp : ('im in f',)
-}
-f : (1, )
+(94,23,16)->a
+disp:(a:get:1, 9)

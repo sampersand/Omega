@@ -47,7 +47,7 @@ class funcobj(methodobj):
                 for disparg in pdispargs:
                     disparg.eval(ldict)
                     yield ldict.lastval.base.scrubstr(args.control)
-            dispargs = scrub(args[0], ldict)
+            dispargs = [x for x in scrub(args[0], ldict)]
             if len(args) > 1:
                 if not args[1].base.isnull():
                     sep = args[1].base.scrubstr(args.control)
