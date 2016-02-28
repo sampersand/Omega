@@ -126,16 +126,16 @@ class control():
             }
         })
         self.funcs = control._specdict({
-            'if'     : funcobj('if'), # check
-            'rm'     : funcobj('rm'), # check
+            'if'     : funcobj('if'),
+            'rm'     : funcobj('rm'),
             'om'     : funcobj('om'),
             'for'    : funcobj('for'),
-            'disp'   : funcobj('disp'), # check
-            'skip'   : funcobj('skip'), # check
+            'disp'   : funcobj('disp'),
+            'skip'   : funcobj('skip'),
             'func'   : funcobj('func'),
             'abort'  : funcobj('abort'),
             'whilst' : funcobj('whilst'),
-            'return' : funcobj('return'),
+            'return' : funcobj('return'),#Watch out! return:a+b is {return:a} + b
         })
         self.delims = control._specdelimsdict({
             'arraysep': control._spectuple((',',   operobj(',', 14, None))),

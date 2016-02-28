@@ -33,6 +33,10 @@ class funcobj(methodobj):
             self._abort(args, ldict)
         elif name == 'for':
             self._for(args, ldict)
+        elif name == 'func':
+            self._func(args, ldict)
+        elif name == 'return':
+            self._return(args, ldict)
         else:
             raise SyntaxError("Unknown Function '{}' in arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
@@ -100,6 +104,12 @@ class funcobj(methodobj):
                 break
             args[1].eval(ldict) #execute the statement(s)
             args[0][2].eval(ldict) #increment
+    def _func(self, args, ldict):
+        pass
+    def _return(self, args, ldict):
+        #Watch out! return:a+b is {return:a} + b
+        args[0].eval(ldict)
+        ldict.retval = ldict.lastval
 
 
 
