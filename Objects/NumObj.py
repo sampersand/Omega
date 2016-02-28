@@ -16,8 +16,3 @@ class numobj(obj):
     @staticmethod
     def frombase(base, control):
         return None if not base.isnumeric() else numobj(int(base))
-
-    def eval(self, args, ldict):
-        if __debug__:
-            assert not args and args.base is self, 'just a thing i noticed'
-        ldict.lastval = args

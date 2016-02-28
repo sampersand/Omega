@@ -16,6 +16,3 @@ class nullobj(obj):
 
     def __str__(self):
         return 'null'
-
-    def eval(self, args, ldict):
-        pass #don't change this

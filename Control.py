@@ -36,7 +36,7 @@ class control():
         })
 
         self.consts = control._specdict({
-            'null' : nullobj(),
+            'null' : nullobj(True),
             'True'  : boolobj(True),  'true'  : boolobj(True),  
             'False' : boolobj(False), 'false' : boolobj(False), 
         })

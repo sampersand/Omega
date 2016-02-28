@@ -17,3 +17,4 @@ var + (2 -> c) -> b
 9 * 3 -> a
 '1'->string#
 True->f
+null->q
