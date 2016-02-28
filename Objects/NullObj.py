@@ -1,4 +1,4 @@
-from Obj import obj
+from Objects.Obj import obj
 class nullobj(obj):
     """
     The class that represents a null object.

@@ -1,4 +1,4 @@
-from FuncObj import funcobj
+from Objects.FuncObj import funcobj
 class operobj(funcobj):
     """
     The class that represents operators on objects.
@@ -11,5 +11,4 @@ class operobj(funcobj):
         return 'operobj({},{})'.format(self.base, self.priority)
 
     def eval(self, args, ldict):
-        pass
-
+        print('trying to eval:',self,args,ldict)

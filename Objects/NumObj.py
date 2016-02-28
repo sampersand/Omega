@@ -1,4 +1,4 @@
-from Obj import obj
+from Objects.Obj import obj
 class numobj(obj):
     """
     The super class for all numbers.

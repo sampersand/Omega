@@ -1,3 +1,4 @@
+from Objects import *
 class group(list):
 
     def __new__(self, base = None, control = None, args = [], parens = ('', '')):
@@ -5,7 +6,6 @@ class group(list):
 
     def __init__(self, base = None, control = None, args = [], parens = ('', '')):
         super().__init__(args)
-        from Obj import obj
         if control == None:
             import Control
             control = Control.control()

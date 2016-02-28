@@ -1,4 +1,4 @@
-from NumObj import numobj
+from Objects.NumObj import numobj
 class boolobj(numobj):
     """
     The class that represents a boolean.

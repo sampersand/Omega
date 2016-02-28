@@ -1,4 +1,4 @@
-from Obj import obj
+from Objects.Obj import obj
 class funcobj(obj):
     """
     The class that represents a function.

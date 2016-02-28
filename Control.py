@@ -1,3 +1,4 @@
+from Objects import *
 class control():
     class _specdict(dict):
         """ when using 'in' it goes thru all the subdicts as well."""
@@ -18,9 +19,6 @@ class control():
         self.nbwhitespace = ' \t\x0b\x0c'
         self.whitespace = self.nbwhitespace + self.linebreak
         self._allquotes = '\'\"`'
-
-        from Objects import *
-
         self.parens = control._specdict({
             'l' : control._specdict({'(' : ')', '[' : ']', '{' : '}'}),
             'r' : control._specdict({')' : '(', ']' : '[', '}' : '{'}),

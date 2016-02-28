@@ -21,13 +21,16 @@ class obj():
         if isinstance(ele, obj):
             return ele
         if ele == None:
+            from Objects.NullObj import nullobj
             return nullobj()
         if __debug__:
             assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
         if ele in control.allkws:
             return control.allkws[ele]
+        from Objects.NumObj import numobj
         ret = numobj.fromstr(ele)
         if ret == None:
+            from Objects.StrObj import strobj
             ret = strobj.fromstr(ele)
             if ret == None:
                 ret = obj(ele)
@@ -36,6 +39,7 @@ class obj():
         return ret
 
     def isnull(self):
+        from Objects.NullObj import nullobj
         return isinstance(self, nullobj)
 
     def eval(self, args, ldict):
