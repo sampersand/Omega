@@ -11,6 +11,3 @@ class funcobj(obj):
 
     def __repr__(self):
         return 'funcobj({},base={})'.format(self.func, self.base)
-
-    def eval(self, args, ldict):
-        raise NotImplementedError()

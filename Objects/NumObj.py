@@ -6,6 +6,8 @@ class numobj(obj):
     def __init__(self, base = None):
         if base == None:
             base = 0
+        if __debug__:
+            assert isinstance(base, (int, float, complex)), type(base)
         super().__init__(base)
 
     def __repr__(self):

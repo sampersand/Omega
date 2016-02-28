@@ -7,7 +7,7 @@ class strobj(obj):
         if base == None:
             base = str()
         if __debug__:
-            assert isinstance(base, str)
+            assert isinstance(base, str), type(base)
         super().__init__(base)
 
     def __repr__(self):
