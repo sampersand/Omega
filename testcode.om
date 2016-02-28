@@ -1,3 +1,4 @@
+abort:'my children',
 0->a
 disp:([if:(a==1):'a == 1!':'a != 1!'->b],)
 rm:b

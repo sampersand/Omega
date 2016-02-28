@@ -48,6 +48,8 @@ class localsdict(dict):
 
     def hasret(self):
         return not self[localsdict.RET_VAL].base.isnull()
+    def haslast(self):
+        return not self[localsdict.LAST_VAL].base.isnull()
     def clear(self):
         ret = super().clear()
         self.gendefaults()

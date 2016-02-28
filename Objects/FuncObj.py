@@ -29,6 +29,10 @@ class funcobj(methodobj):
             self._rm(args, ldict)
         elif name == 'whilst':
             self._whilst(args, ldict)
+        elif name == 'abort':
+            self._abort(args, ldict)
+        elif name == 'for':
+            self._for(args, ldict)
         else:
             raise SyntaxError("Unknown Function '{}' in arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
@@ -79,6 +83,23 @@ class funcobj(methodobj):
             if not ldict.lastval.base:
                 break
             args[1].eval(ldict) #execute the statement(s)
+    def _abort(self, args, ldict):
+        if len(args) == 1: #abort w/ message
+            args[0].eval(ldict)
+        else:
+            del ldict.lastval # resets
+        quit('Aborting!' + (" Message: " + str(ldict.lastval) if ldict.haslast() else ''))
+    def _for(self, args, ldict):
+        if __debug__:
+            assert len(args) == 2, 'for:(init;cond;inc):(statement(s))'
+            assert len(args[0]) == 3, 'for:(init;cond;inc):(statement(s))'
+        args[0][0].eval(ldict) #initialization
+        while True:
+            args[0][1].eval(ldict) #evaluate the condition
+            if not ldict.lastval.base:
+                break
+            args[1].eval(ldict) #execute the statement(s)
+            args[0][2].eval(ldict) #increment
 
 
 
