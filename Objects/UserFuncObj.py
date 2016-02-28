@@ -23,7 +23,8 @@ class userfuncobj(funcobj):
         if args.base is self:
             ldict.lastval = args
             return
-        nldict = self._genargs(args[0], ldict)
+        from Group import group
+        nldict = ldict.onlyfuncs() if not args else self._genargs(args[0], ldict)
         import copy
         copy.deepcopy(self.func).eval(nldict)
         if not nldict.retval.base.isnull():

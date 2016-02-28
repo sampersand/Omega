@@ -4,6 +4,11 @@
 - `@eof` will end the file at that position.<br>
 - When a statement is needed, eg `if:statement: ...`, the statement can be either a single variable, or surrounded by parenthesis, eg `if:(statement): ...`.
 - Watch out! stuff like `>1` is interpreted as `null>1`!.
+###Parentheses
+- Valid Parentheses are as follows:
+  - `(` <-> `)`
+  - `[` <-> `]`
+  - `{` <-> `}`
 #Variables
 - See Assignment Operators for more information about how to assign variables.
 - Define strings by surrounding them in a pair of quotes (`\`'"`), eg `'this is a string!'`.
@@ -112,8 +117,21 @@
   - Stops the running of the program, and prints out `<quit message>` if it is supplied (or nothing if it isn't).
 - `rm_statement ::= "rm" [":" <variable(s)>]`
   - If `<variable(s)>` is defined, then all variables are deleted. If `<variable(s)>` wasn't passed, then all variables are deleted.
-
-
+- `func_statement ::= "func" ":" <function name> ":" [<argument(s) array>] ":" <body>`
+  - `<argument(s) array>` should always be either empty or an array. See "Arrays" for more information
+  - To call a function, do `<funcname> ":" [<argument(s) array>]
+- `return_statement ::= "return" ":" [<variable(s) array>]`
+  - `<varible(s) array>`, if included, should be a array. See "Arrays" for more information
+  - *WARNING!* `return : a + b` is interpreted as `(return:a) + b`. Do `return:(a+b)` for the original purpose.
+#Arrays
+##Defining
+- `[<Paren>] <element 1>, [<element 2>, ... <element N>] [<Paren>]`
+  - `<Paren>` isn't required, but the order of operations might get a little confusing if they aren't included.
+  - Both `<Paren>`s have to be the same, if included. See "Parentheses" for more information
+  - Notes:
+    - `(,)` is one example of an empty Array.
+    - `(foo,)` is one example of an Array with 1 element.
+    - `(foo, bar)` is one example of an Array with 2 element.
 
 
 
