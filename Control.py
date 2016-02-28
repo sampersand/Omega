@@ -142,7 +142,7 @@ class control():
         })
         for d in self.delims.values():
             for val in d[0]:
-                self.opers['binary']['delims'][val] = operobj(d[0][0], d[1])
+                self.opers['binary']['delims'][val] = operobj(d[0][0], d[1], None)
         self._punctuation = '!#%&*+-/;<=>?@^|~'
 
     @property

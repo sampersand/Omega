@@ -57,16 +57,10 @@ class obj():
         import copy
         return copy.deepcopy(self.base)
 
-    def _evalmath(self, last, oper, ldict, ctrl):
-        last.eval(ldict, ctrl)
-        if __debug__:
-            assert isinstance(oper, str), 'oper has to be a string, not a ' + str(type(oper))
-            assert oper in obj._funclist, "oper '{}' doesn't exist in _funclist ({})".format(oper, obj._funclist)
-            assert hasattr(self, obj._funclist[str(oper)])
-            getattr(self.base, obj._funclist[str(oper)]).__call__(ldict.lastval.base.base)
-        #very rickety
-        print(newbase)
-
+    def __mul__(self, other):
+        return self.base * other.base
+    def __add__(self, other):
+        return self.base * other.base
 
 
 

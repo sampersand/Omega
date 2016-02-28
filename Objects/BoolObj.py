@@ -12,3 +12,5 @@ class boolobj(numobj):
 
     def __repr__(self):
         return 'boolobj({})'.format(self.base)
+    def eval(self, args, ldict):
+        raise NotImplementedError()

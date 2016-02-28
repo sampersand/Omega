@@ -9,39 +9,48 @@ class operobj(funcobj):
         self.attrstr = attrstr
 
     def __repr__(self):
-        return 'operobj({},{})'.format(self.base, self.priority)
+        return 'operobj({},{},{})'.format(self.base, self.priority, self.attrstr)
 
-    def eval(self, args, ldict, ctrl):
+    def eval(self, args, ldict):
+        if __debug__:
+            assert str(self) in args.control.opers, "'{}' should be in opers!".format(self)
+            assert self is args.base, 'just noticed this, not a hard and fast rule...'
+        if self.attrstr == None:
+            self._speceval(args, ldict)
+        else:
+            args[0].eval(ldict)
+            for arg in args[1:]:
+                last = ldict.lastval
+                arg.eval(ldict)
+                if __debug__:
+                    assert hasattr(arg, self.attrstr), "cannot perform '{}' on '{}'!".format(self.attrstr, arg)
+                ldict.lastval = ldict.lastval.deepcopy()
+                ldict.lastval.base.base = getattr(last.base, self.attrstr).__call__(ldict.lastval.base)
+            return
+    def _speceval(self, args, ldict):
         ctrl = args.control
         name = str(self)
-        if __debug__:
-            assert name in ctrl.opers, "'{}' should be in opers!".format(self)
-            assert self is args.base, 'just noticed this, not a hard and fast rule...'
         if name in ctrl.delims:
             if name in ctrl.delims['endline']:
                 for line in args: #each ';' is a line.
                     if not line.base.isnull():
-                        line.eval(ldict, ctrl)
+                        line.eval(ldict)
                     if ldict.hasret():
                         break
                 return
         elif name in ctrl.opers['binary']:
-            if name in ctrl.opers['binary']['math']:
-                args[0].eval(ldict, ctrl)
-                for arg in args[1:]:
-                    ldict.lastval.base._evalmath(arg, str(self), ldict, ctrl)
-                return
-            elif name in ctrl.opers['binary']['logic']:
-                pass
-            elif name in ctrl.opers['binary']['bitwise']:
+            if __debug__:
+                assert name not in ctrl.opers['binary']['math'], 'all math should have a func associated!'
+                assert name not in ctrl.opers['binary']['bitwise'], 'all bitwise should have a func associated!'
+            if name in ctrl.opers['binary']['logic']:
                 pass
             elif name in ctrl.opers['binary']['assignment']:
                 d = name in args.control.opers['binary']['assignment']['r']
-                args[d - 1].eval(ldict, ctrl)
+                args[d - 1].eval(ldict)
                 for arg in args[slice(d or None, d - 1 or None, None)]:
-                    self._evalassign(arg, ldict, ctrl)
+                    self._evalassign(arg, ldict)
                 return
-        raise SyntaxError("Unknown Operator '{}' in arguments '{}'! Known operators: {}".format(self, args, 
+        raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".format(self, args, 
                                                                                                 ctrl.allopers.keys()))
     def _evalassign(self, args, ldict):
         if __debug__:
