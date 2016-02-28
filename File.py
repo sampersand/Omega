@@ -139,8 +139,10 @@ class file:
                     highest = elep
             if __debug__:
                 if highest == None:
-                    raise SyntaxError("no operator for string '{}'!".format(repr(linegrp)))
-            return highest
+                #     linegrp.base = self.control.delims['applier'][1]
+                #     return linegrp
+                    raise SyntaxError("no operator for string '{}'!".format(repr(linegrp))) # ':' was still required
+            return linegrp[highest]
         def fixtkns(line):
             #combine tokens using order of operations
             if not line:
@@ -152,7 +154,7 @@ class file:
                     return line[0]
                 else:
                     return fixtkns(line[0])
-            fhp = line[findhighest(line)]
+            fhp = findhighest(line)
             if __debug__:
                 assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
                 assert not fhp and fhp.base, fhp

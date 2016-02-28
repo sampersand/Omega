@@ -138,14 +138,14 @@ class control():
             'return' : funcobj('return'),
         })
         self.delims = control._specdelimsdict({
-            'arraysep': control._spectuple((',',   14)),#operobj(',', 14)),
-            'etc'     : control._spectuple(('|',   14)),#operobj('|', 14)),
-            'endline' : control._spectuple((';\n', 16)),#operobj(';', 16)),
-            'applier' : control._spectuple((':',    0)),#operobj(':',  0))
+            'arraysep': control._spectuple((',',   operobj(',', 14, None))),
+            'etc'     : control._spectuple(('|',   operobj('|', 14, None))),
+            'endline' : control._spectuple((';\n', operobj(';', 16, None))),
+            'applier' : control._spectuple((':',   operobj(':',  0, None))),
         })
         for d in self.delims.values():
             for val in d[0]:
-                self.opers['binary']['delims'][val] = operobj(d[0][0], d[1], None)
+                self.opers['binary']['delims'][val] = d[1]
         self._punctuation = '!#%&*+-/;<=>?@^|~'
 
     @property
