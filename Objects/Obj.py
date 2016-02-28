@@ -60,17 +60,23 @@ class obj():
         import copy
         return copy.deepcopy(self.base)
 
-    def __add__   (self, other): return self.base +  other.base
-    def __sub__   (self, other): return self.base -  other.base
-    def __mul__   (self, other): return self.base *  other.base
-    def __div__   (self, other): return self.base /  other.base
-    def __mod__   (self, other): return self.base %  other.base
-    def __pow__   (self, other): return self.base ** other.base
-    def __and__   (self, other): return self.base &  other.base
-    def __xor__   (self, other): return self.base ^  other.base
-    def __or__    (self, other): return self.base |  other.base
-    def __lshift__(self, other): return self.base << other.base
-    def __rshift__(self, other): return self.base >> other.base
+    def _func_add    (self, other): return self.base +  other.base
+    def _func_sub    (self, other): return self.base -  other.base
+    def _func_mul    (self, other): return self.base *  other.base
+    def _func_div    (self, other): return self.base /  other.base
+    def _func_mod    (self, other): return self.base %  other.base
+    def _func_pow    (self, other): return self.base ** other.base
+    def _func_and    (self, other): return self.base &  other.base
+    def _func_xor    (self, other): return self.base ^  other.base
+    def _func_or     (self, other): return self.base |  other.base
+    def _func_lshift (self, other): return self.base << other.base
+    def _func_rshift (self, other): return self.base >> other.base
+    def _func_eq     (self, other): return self.base == other.base
+    def _func_ne     (self, other): return self.base != other.base
+    def _func_gt     (self, other): return self.base >  other.base
+    def _func_ge     (self, other): return self.base >= other.base
+    def _func_lt     (self, other): return self.base <  other.base
+    def _func_le     (self, other): return self.base <= other.base
 
 
 

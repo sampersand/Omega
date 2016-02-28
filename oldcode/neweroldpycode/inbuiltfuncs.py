@@ -39,6 +39,7 @@ def evalfunc(base, eles, locls):
                     if __debug__:
                         if len(eles) > 3:
                             raise SyntaxError('Not allowed to have more than 3 arguments for if statement(s)!')
+        print(cond)
         cond.eval(locls)
         (iftrue if locls.lv.base else iffalse).eval(locls)
     elif name == 'skip':

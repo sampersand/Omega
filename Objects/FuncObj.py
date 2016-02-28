@@ -10,9 +10,9 @@ class funcobj(methodobj):
         self.func = func
 
     def __repr__(self):
-        return 'funcobj({},base={})'.format(self.func, self.base)
+        return 'funcobj({},func={})'.format(self.base, self.func)
     def eval(self, args, ldict):
-        if self is args.base: #aka, no params passed, then just do whatever is done normally.
+        if self is args.base and not args: #aka, no params passed, then just do whatever is done normally.
             return super().eval(args, ldict)
         name = str(self)
         if __debug__:
@@ -35,6 +35,24 @@ class funcobj(methodobj):
                         if not args[2].base.isnull():
                             end = args[2].base.scrubstr(args.control)
             print(*dispargs, sep = sep, end = end)
+        elif name == 'if':
+            from Group import group
+            cond, iftrue, iffalse = args[0], group(), group()
+            if len(args) > 1:
+                iftrue = args[1]
+                if len(args) > 2:
+                    iffalse = args[2]
+                    if __debug__:
+                        if len(args) > 3:
+                            raise SyntaxError('Not allowed to have more than 3 arguments for if statement(s)!')
+            cond.eval(ldict)
+            print(ldict.lastval, repr(ldict.lastval.base))
+            (iftrue if ldict.lastval.base else iffalse).eval(ldict)
+
+        elif name == 'skip':
+            pass #keep this here.
+
         else:
             raise SyntaxError("Unknown Function '{}' in arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
+

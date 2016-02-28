@@ -45,7 +45,7 @@ class omobj:
         return bool(self.base)
         # return bool(str(self))
 
-    def __eq__(self, other):
+    def _func_eq(self, other):
         if __debug__:
             assert isinstance(other, omobj), repr(other)
             assert hasattr(other, 'base'), "{} :: {}".format(repr(other), type(other))
@@ -296,7 +296,7 @@ class null(omobj):
         return 'null()'
     def __str__(self):
         return 'null'
-    def __eq__(self, other):
+    def _func_eq(self, other):
         return isinstance(other, null)
     def __bool__(self):
         return False
