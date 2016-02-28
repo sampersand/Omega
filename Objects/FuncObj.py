@@ -46,7 +46,6 @@ class funcobj(methodobj):
                         if len(args) > 3:
                             raise SyntaxError('Not allowed to have more than 3 arguments for if statement(s)!')
             cond.eval(ldict)
-            print(ldict.lastval, repr(ldict.lastval.base))
             (iftrue if ldict.lastval.base else iffalse).eval(ldict)
 
         elif name == 'skip':
