@@ -1,3 +1,6 @@
+whilst:([1-+>a]<10):{
+    disp:(a,)
+}
 4->a
 22->b
 2-+>a-->b
@@ -10,9 +13,6 @@ if()
 @eof
 disp:([if:(a==1):'a == 1!':'a != 1!'->b],)
 rm:b
-whilst:(a<10):{
-    disp:([a<-a+1],)
-}
 disp:['--the line break--',]
 inc <- 0
 for : (0 -> i; i < 129; (i <- i + 1; inc <- inc + i)) : skip;
