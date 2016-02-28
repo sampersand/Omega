@@ -1,10 +1,11 @@
-abort:'my children',
 0->a
 disp:([if:(a==1):'a == 1!':'a != 1!'->b],)
 rm:b
 whilst:(a<10):{
     disp:([a<-a+1],)
 }
+disp:['--the line break--',]
+for:(0->inc;inc<5;inc<-inc+1):{disp:(inc,)}
 @eof
 #a:b:{
     e:{
