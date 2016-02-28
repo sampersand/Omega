@@ -60,6 +60,7 @@ class obj():
         import copy
         return copy.deepcopy(self.base)
 
+    def __bool__     (self): return bool(self.base)
     def _func_add    (self, other): return self.base +  other.base
     def _func_sub    (self, other): return self.base -  other.base
     def _func_mul    (self, other): return self.base *  other.base

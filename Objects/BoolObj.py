@@ -9,6 +9,6 @@ class boolobj(numobj):
         if __debug__:
             assert isinstance(base, bool), type(base)
         super().__init__(base)
-
+        
     def __repr__(self):
         return 'boolobj({})'.format(self.base)

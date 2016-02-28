@@ -15,4 +15,6 @@ class numobj(obj):
 
     @staticmethod
     def frombase(base, control):
-        return None if not base.isnumeric() else numobj(int(base))
+        if not base.isnumeric():
+            return None
+        return numobj(int(base))
