@@ -26,6 +26,12 @@ class arrayobj(obj):
                 assert len(args) == 2, 'array:get:pos'
             args[1].eval(ldict)
             ldict.lastval = self.base[ldict.lastval.base.base]
+        elif name == 'len':
+            if __debug__:
+                assert len(args) == 1, 'array:len'
+            from Group import group
+            from Objects.IntObj import intobj
+            ldict.lastval = group(base = intobj(len(self.base)))
     #     if eles.base is self:
     #         locls.lv = eles
     #         return

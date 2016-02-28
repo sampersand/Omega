@@ -75,7 +75,8 @@ class operobj(methodobj):
             assert str(self) in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = ldict.lastval
-        argstr = str(args)
+        args.eval(ldict)
+        argstr = str(ldict.lastval)
         sname = str(self)[1:-1]
         if sname == '':
             ldict[argstr] = last
