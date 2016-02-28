@@ -1,6 +1,9 @@
-1->a
+0->a
 disp:([if:(a==1):'a == 1!':'a != 1!'->b],)
 rm:b
+whilst:(a<10):{
+    disp:([a<-a+1],)
+}
 @eof
 #a:b:{
     e:{

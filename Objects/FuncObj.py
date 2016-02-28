@@ -27,6 +27,8 @@ class funcobj(methodobj):
             self._skip(args, ldict)
         elif name == 'rm':
             self._rm(args, ldict)
+        elif name == 'whilst':
+            self._whilst(args, ldict)
         else:
             raise SyntaxError("Unknown Function '{}' in arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
@@ -69,6 +71,14 @@ class funcobj(methodobj):
                 del ldict[str(ele)]
     def _skip(self, args, ldict):
         pass #keep this here.
+    def _whilst(self, args, ldict):
+        if __debug__:
+            assert len(args) == 2, 'whilst:(cond):(statement(s))'
+        while True:
+            args[0].eval(ldict) #evaluate the condition
+            if not ldict.lastval.base:
+                break
+            args[1].eval(ldict) #execute the statement(s)
 
 
 
