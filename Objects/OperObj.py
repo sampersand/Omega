@@ -3,10 +3,10 @@ class operobj(funcobj):
     """
     The class that represents operators on objects.
     """
-    def __init__(self, base, priority, funcstr):
+    def __init__(self, base, priority, attrstr):
         super().__init__(base, None)
         self.priority = priority
-        self.funcstr = functstr
+        self.attrstr = attrstr
 
     def __repr__(self):
         return 'operobj({},{})'.format(self.base, self.priority)

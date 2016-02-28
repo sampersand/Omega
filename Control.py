@@ -74,43 +74,43 @@ class control():
                     '='   : operobj('=',     10, '__eq__'), # equal to
                     '<>'  : operobj('<>',    10, '__ne__'), # equal to
                     '!='  : operobj('!=',    10, '__ne__'), # not equal to
-                    '&&'  : operobj('&&',    11, None), # boolean and
-                    '||'  : operobj('||',    12, ), # booleon or
+                    '&&'  : operobj('&&',    11, None    ), # boolean and
+                    '||'  : operobj('||',    12, None    ), # booleon or
                     }),
                 
                 'assignment':control._specdict({
                     # all notes are in form of "x OPERATOR y" like 'x <- y' for reversed operators
                     'l':control._specdict({
                         # a -> b is 'r'
-                        '<-'   : operobj('<-',   15), # x = y
-                        '<?-'  : operobj('<?-',  15), # x = bool(y) ? y : None
-                        '<+-'  : operobj('<+-',  15), # x += y
-                        '<--'  : operobj('<--',  15), # x -= y
-                        '<*-'  : operobj('<*-',  15), # x *= y
-                        '</-'  : operobj('</-',  15), # x /= y
-                        '<**-' : operobj('<**-', 15), # x **= y
-                        '<%-'  : operobj('<%-',  15), # x %= y
-                        '<&-'  : operobj('<&-',  15), # x &= y
-                        '<|-'  : operobj('<|-',  15), # x |= y
-                        '<^-'  : operobj('<^-',  15), # x ^= y
-                        '<<-'  : operobj('<<-',  15), # x <<= y
-                        '<>-'  : operobj('<>-',  15), # x >>= y
+                        '<-'   : operobj('<-',   15, None), # x = y
+                        '<?-'  : operobj('<?-',  15, None), # x = bool(y) ? y : None
+                        '<+-'  : operobj('<+-',  15, None), # x += y
+                        '<--'  : operobj('<--',  15, None), # x -= y
+                        '<*-'  : operobj('<*-',  15, None), # x *= y
+                        '</-'  : operobj('</-',  15, None), # x /= y
+                        '<**-' : operobj('<**-', 15, None), # x **= y
+                        '<%-'  : operobj('<%-',  15, None), # x %= y
+                        '<&-'  : operobj('<&-',  15, None), # x &= y
+                        '<|-'  : operobj('<|-',  15, None), # x |= y
+                        '<^-'  : operobj('<^-',  15, None), # x ^= y
+                        '<<-'  : operobj('<<-',  15, None), # x <<= y
+                        '<>-'  : operobj('<>-',  15, None), # x >>= y
                         }),
                     'r':control._specdict({
                         # b <- a is 'l'
-                        '->'   : operobj('->',   15), # y = x
-                        '-?>'  : operobj('-?>',  15), # y = bool(x) ? x : None
-                        '-+>'  : operobj('-+>',  15), # y += x
-                        '-->'  : operobj('-->',  15), # y -= x 
-                        '-*>'  : operobj('-*>',  15), # y *= x 
-                        '-/>'  : operobj('-/>',  15), # y /= x 
-                        '-**>' : operobj('-**>', 15), # y **= x 
-                        '-%>'  : operobj('-%>',  15), # y %= x 
-                        '-&>'  : operobj('-&>',  15), # y &= x 
-                        '-|>'  : operobj('-|>',  15), # y |= x 
-                        '-^>'  : operobj('-^>',  15), # y ^= x 
-                        '-<>'  : operobj('-<>',  15), # y <<= x 
-                        '->>'  : operobj('->>',  15)  # y >>= x 
+                        '->'   : operobj('->',   15, None), # y = x
+                        '-?>'  : operobj('-?>',  15, None), # y = bool(x) ? x : None
+                        '-+>'  : operobj('-+>',  15, None), # y += x
+                        '-->'  : operobj('-->',  15, None), # y -= x 
+                        '-*>'  : operobj('-*>',  15, None), # y *= x 
+                        '-/>'  : operobj('-/>',  15, None), # y /= x 
+                        '-**>' : operobj('-**>', 15, None), # y **= x 
+                        '-%>'  : operobj('-%>',  15, None), # y %= x 
+                        '-&>'  : operobj('-&>',  15, None), # y &= x 
+                        '-|>'  : operobj('-|>',  15, None), # y |= x 
+                        '-^>'  : operobj('-^>',  15, None), # y ^= x 
+                        '-<>'  : operobj('-<>',  15, None), # y <<= x 
+                        '->>'  : operobj('->>',  15, None), # y >>= x 
                         }),
                     }),
                 
