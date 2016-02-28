@@ -5,7 +5,7 @@ whilst:(a<10):{
     disp:([a<-a+1],)
 }
 disp:['--the line break--',]
-for:(0->inc;inc<5;inc<-inc+1):{disp:(inc,)}
+for:(0->inc;inc<5;inc<-inc+1):{disp:(inc,'<--inc.'):'>sep<':'<end>'}
 @eof
 #a:b:{
     e:{
