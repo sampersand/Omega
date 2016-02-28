@@ -18,8 +18,8 @@ class funcobj(methodobj):
         if __debug__:
             assert name in args.control.funcs,\
                 "In-built Function '{}' isn't a known function: {}".format(self, args.control.funcs)
-        if __debug__:
-            assert args, 'cannot pass lone arguments atm! ('+str(args)+")"
+        # if __debug__:
+            # assert args, 'cannot pass lone arguments atm! ('+str(args)+")"
         if name == 'disp':
             dispargs, sep, end = [''], ', ', '\n'
             if len(args) > 0:
@@ -50,8 +50,37 @@ class funcobj(methodobj):
 
         elif name == 'skip':
             pass #keep this here.
-
+        elif name == 'rm':
+            if not args:
+                ldict.clear()
+            else:
+                if __debug__:
+                    assert len(args) == 1, "only 1 thing after the semicolon... " + str(args)
+                    assert args, 'same reason as above'
+                for ele in args[0]:
+                    ldict.lastval = ldict[str(ele)]
+                    del ldict[str(ele)]
         else:
             raise SyntaxError("Unknown Function '{}' in arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

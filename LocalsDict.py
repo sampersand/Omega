@@ -4,8 +4,13 @@ class localsdict(dict):
     RET_VAL = '$ret'
 
     def __init__(self):
+        super().__init__({})
+        self.gendefaults()
+
+    def gendefaults(self):
         import Group
-        super().__init__({localsdict.LAST_VAL: Group.group(), localsdict.RET_VAL: Group.group()})
+        self[localsdict.LAST_VAL] = Group.group()
+        self[localsdict.RET_VAL]  = Group.group()
 
     def __iter__(self):
         for i in super().__iter__():
@@ -43,3 +48,7 @@ class localsdict(dict):
 
     def hasret(self):
         return not self[localsdict.RET_VAL].base.isnull()
+    def clear(self):
+        ret = super().clear()
+        self.gendefaults()
+        return ret
