@@ -75,13 +75,23 @@ class operobj(methodobj):
             assert str(self) in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = ldict.lastval
-        elestr = str(args)
+        argstr = str(args)
         sname = str(self)[1:-1]
         if sname == '':
-            ldict[elestr] = last
-            ldict.lastval = ldict[elestr].deepcopy()
+            ldict[argstr] = last
+            ldict.lastval = ldict[argstr].deepcopy()
         else:
-            assert 0, "iopers aren't supported yet!"
+            if argstr not in ldict:
+                ldict[argstr] = ldict.lastval
+                ldict.lastval = ldict.lastval.deepcopy()
+            else:
+                from Group import group
+                group(base = args.control.allopers[sname],\
+                      args = [ldict[argstr], last]).eval(ldict)
+                ldict[argstr] = ldict.lastval.deepcopy()
+                ldict[argstr] = ldict.lastval
+
+            # assert 0, "iopers aren't supported yet!"
 
 
 
