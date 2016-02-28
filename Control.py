@@ -19,7 +19,7 @@ class control():
         self.whitespace = self.nbwhitespace + self.linebreak
         self._allquotes = '\'\"`'
 
-        from Obj import operobj, nullobj, boolobj, funcobj
+        from Objects import *
 
         self.parens = control._specdict({
             'l' : control._specdict({'(' : ')', '[' : ']', '{' : '}'}),

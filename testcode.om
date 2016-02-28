@@ -1,4 +1,4 @@
-a:b:{
+#a:b:{
     e:{
         f;
         g:hilol:{1;};
@@ -11,6 +11,6 @@ disp:a
     disp:b
     disp:'done':{'1';'2';}
     return:a+b;
-}
+}#
 3*4/(5-9)**2->var
 var+(2->c)->b

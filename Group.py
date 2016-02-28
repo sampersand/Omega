@@ -1,6 +1,8 @@
 class group(list):
+
     def __new__(self, base = None, control = None, args = [], parens = ('', '')):
         return super().__new__(self, args)
+
     def __init__(self, base = None, control = None, args = [], parens = ('', '')):
         super().__init__(args)
         from Obj import obj
@@ -19,6 +21,7 @@ class group(list):
 
     @property
     def basestr(self):
+        """ the string of this base """
         return str(self.base)
         # return '' if self.base.isnull() else str(self.base)
     
@@ -114,7 +117,6 @@ class group(list):
                 ls = _linestr(l, indent + 1)
                 if isendl:
                     ret.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
-                    # linep += 1
                 else:
                     ret.append(ls)
             retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
@@ -126,7 +128,18 @@ class group(list):
         return _linestr(self, 0)
 
     def eval(self, ldict):
-        print(ldict)
+        if self.basestr in ldict:
+            import copy
+            ldict.lastval = copy.deepcopy(ldict[self.basestr]) #oh boy this is slooow
+        elif not self.base.isnull():
+            self.base.eval(self, ldict)
+        else:
+            assert 0, 'when does this happen?'
+
+    def resetbase(self):
+        from obj import nullobj
+        self.base = nullobj()
+
 
 
 

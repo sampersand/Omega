@@ -1,7 +1,34 @@
 class localsdict(dict):
-    lastval = '$'
+    LAST_VAL = '$'
+    RET_VAL = '$ret'
     def __init__(self):
         import Group
-        super().__init__({localsdict.lastval: Group.group()})
+        super().__init__({localsdict.LAST_VAL: Group.group()})
     def __str__(self):
         return '{' + ', '.join(str(v) + ' : ' + str(self[v]) for v in self) + '}'
+
+    def lastval():
+        doc = "The last value that was evaluated"
+        def fget(self):
+            return self[localsdict.LAST_VAL]
+        def fset(self, value):
+            if __debug__:
+                assert isinstance(value, group)
+            self[localsdict.LAST_VAL] = value
+        def fdel(self):
+            self[localsdict.LAST_VAL].reset()
+        return locals()
+    lastval = property(**lastval())
+
+    def retval():
+        doc = "The value to return"
+        def fget(self):
+            return self[localsdict.RET_VAL]
+        def fset(self, value):
+            if __debug__:
+                assert isinstance(value, group)
+            self[localsdict.RET_VAL] = value
+        def fdel(self):
+            self[localsdict.RET_VAL].reset()
+        return locals()
+    retval = property(**retval())
