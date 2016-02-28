@@ -44,10 +44,10 @@ class obj():
         from Objects.NullObj import nullobj
         return isinstance(self, nullobj)
 
-    def eval(self, args, ldict, ctrl):
+    def eval(self, args, ldict):
         if str(self) in ldict:
             #this is ignoring the parens...
-            ldict[str(self)].base.eval(args, ldict, ctrl)
+            ldict[str(self)].base.eval(args, ldict)
         else:
             if __debug__:
                 assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
