@@ -39,6 +39,20 @@ class operobj(methodobj):
                     if ldict.hasret():
                         break
                 return
+            elif name in ctrl.delims['arraysep']:
+                from Group import group
+                l = group(parens = args.parens)
+                from Objects import arrayobj
+                l.base = arrayobj()
+                for ele in args:
+                    if not ele.base.isnull():
+                        ele.eval(ldict)
+                    if ldict.hasret():
+                        break
+                    l.base.base.append(ldict.lastval)
+                ldict.lastval = l
+                return
+
         elif name in ctrl.opers['binary']:
             if __debug__:
                 assert name not in ctrl.opers['binary']['math'], 'all math should have a func associated!'

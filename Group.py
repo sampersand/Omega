@@ -137,8 +137,9 @@ class group(list):
             assert 0, 'when does this happen?' + str(self)
 
     def resetbase(self):
-        from obj import nullobj
+        from Objects import nullobj
         self.base = nullobj()
+        return self
 
     def deepcopy(self):
         import copy

@@ -16,5 +16,4 @@ disp:a
 var + (2 -> c) -> b
 9 * 3 -> a
 '1'->string#
-True->f
-null->q
+(94, 34, 128)->b
