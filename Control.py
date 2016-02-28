@@ -1,5 +1,6 @@
 from Objects import *
 class control():
+
     class _specdict(dict):
         """ when using 'in' it goes thru all the subdicts as well."""
         def __contains__(self, i):
@@ -9,9 +10,19 @@ class control():
                 if i == item:
                     return True
             return False
+
+    class _specdelimsdict(_specdict):
+        def __contains__(self, i):
+            return any(i in e for e in self.values())
+
+    class _spectuple(tuple):
+        """ when using 'in' it uses the first element. """
+        def __contains__(self, item):
+            if __debug__:
+                assert len(self) == 2, 'can only be used in this case!'
+            return item in self[0]
             
     def __init__(self):
-
         self.linebreak = '\n\r' #linebreak is used for comments
         self.comment = '#'
         self.escape = '\\'
@@ -64,32 +75,38 @@ class control():
                 
                 'assignment':control._specdict({
                     # all notes are in form of "x OPERATOR y" like 'x <- y' for reversed operators
-                    '<-'   : operobj('<-',   15), # x = y
-                    '<?-'  : operobj('<?-',  15), # x = bool(y) ? y : None
-                    '<+-'  : operobj('<+-',  15), # x += y
-                    '<--'  : operobj('<--',  15), # x -= y
-                    '<*-'  : operobj('<*-',  15), # x *= y
-                    '</-'  : operobj('</-',  15), # x /= y
-                    '<**-' : operobj('<**-', 15), # x **= y
-                    '<%-'  : operobj('<%-',  15), # x %= y
-                    '<&-'  : operobj('<&-',  15), # x &= y
-                    '<|-'  : operobj('<|-',  15), # x |= y
-                    '<^-'  : operobj('<^-',  15), # x ^= y
-                    '<<-'  : operobj('<<-',  15), # x <<= y
-                    '<>-'  : operobj('<>-',  15), # x >>= y
-                    '->'   : operobj('->',   15), # y = x
-                    '-?>'  : operobj('-?>',  15), # y = bool(x) ? x : None
-                    '-+>'  : operobj('-+>',  15), # y += x
-                    '-->'  : operobj('-->',  15), # y -= x 
-                    '-*>'  : operobj('-*>',  15), # y *= x 
-                    '-/>'  : operobj('-/>',  15), # y /= x 
-                    '-**>' : operobj('-**>', 15), # y **= x 
-                    '-%>'  : operobj('-%>',  15), # y %= x 
-                    '-&>'  : operobj('-&>',  15), # y &= x 
-                    '-|>'  : operobj('-|>',  15), # y |= x 
-                    '-^>'  : operobj('-^>',  15), # y ^= x 
-                    '-<>'  : operobj('-<>',  15), # y <<= x 
-                    '->>'  : operobj('->>',  15)  # y >>= x 
+                    'l':control._specdict({
+                        # a -> b is 'r'
+                        '<-'   : operobj('<-',   15), # x = y
+                        '<?-'  : operobj('<?-',  15), # x = bool(y) ? y : None
+                        '<+-'  : operobj('<+-',  15), # x += y
+                        '<--'  : operobj('<--',  15), # x -= y
+                        '<*-'  : operobj('<*-',  15), # x *= y
+                        '</-'  : operobj('</-',  15), # x /= y
+                        '<**-' : operobj('<**-', 15), # x **= y
+                        '<%-'  : operobj('<%-',  15), # x %= y
+                        '<&-'  : operobj('<&-',  15), # x &= y
+                        '<|-'  : operobj('<|-',  15), # x |= y
+                        '<^-'  : operobj('<^-',  15), # x ^= y
+                        '<<-'  : operobj('<<-',  15), # x <<= y
+                        '<>-'  : operobj('<>-',  15), # x >>= y
+                        }),
+                    'r':control._specdict({
+                        # b <- a is 'l'
+                        '->'   : operobj('->',   15), # y = x
+                        '-?>'  : operobj('-?>',  15), # y = bool(x) ? x : None
+                        '-+>'  : operobj('-+>',  15), # y += x
+                        '-->'  : operobj('-->',  15), # y -= x 
+                        '-*>'  : operobj('-*>',  15), # y *= x 
+                        '-/>'  : operobj('-/>',  15), # y /= x 
+                        '-**>' : operobj('-**>', 15), # y **= x 
+                        '-%>'  : operobj('-%>',  15), # y %= x 
+                        '-&>'  : operobj('-&>',  15), # y &= x 
+                        '-|>'  : operobj('-|>',  15), # y |= x 
+                        '-^>'  : operobj('-^>',  15), # y ^= x 
+                        '-<>'  : operobj('-<>',  15), # y <<= x 
+                        '->>'  : operobj('->>',  15)  # y >>= x 
+                        }),
                     }),
                 
                 'delims':control._specdict({
@@ -112,12 +129,11 @@ class control():
             'whilst' : funcobj('whilst'),
             'return' : funcobj('return'),
         })
-
-        self.delims = control._specdict({
-            'arraysep': (',',   14),#operobj(',', 14)),
-            'etc'     : ('|',   14),#operobj('|', 14)),
-            'endline' : (';\n', 16),#operobj(';', 16)),
-            'applier' : (':',    0),#operobj(':',  0))
+        self.delims = control._specdelimsdict({
+            'arraysep': control._spectuple((',',   14)),#operobj(',', 14)),
+            'etc'     : control._spectuple(('|',   14)),#operobj('|', 14)),
+            'endline' : control._spectuple((';\n', 16)),#operobj(';', 16)),
+            'applier' : control._spectuple((':',    0)),#operobj(':',  0))
         })
         for d in self.delims.values():
             for val in d[0]:

@@ -13,7 +13,7 @@ class group(list):
         self.base = obj.frombase(base, self.control)
         self.parens = parens
 
-    def isempty(self):
+    def isnull(self):
         return not bool(self or not self.base.isnull() or self.parens[0] or self.parens[1])
 
     def isfinal(self):
@@ -62,7 +62,7 @@ class group(list):
     #         isendl = self.basestr in self.control.delims['endline'][0]
     #         q = []
     #         for l in self:
-    #             if l.isempty():
+    #             if l.isnull():
     #                 continue
     #             x = _linestr(l, [], indent + isendl)
     #             if isinstance(x[0], str) and q:
@@ -86,7 +86,7 @@ class group(list):
             isendl = self.basestr in self.control.delims['endline'][0]
             q = []
             for l in self:
-                if l.isempty():
+                if l.isnull():
                     continue
                 x = _linestr(l, [], indent + isendl)
                 q.append(x)
@@ -109,7 +109,7 @@ class group(list):
                 assert self.basestr
             ret = []
             for l in self:
-                if l.isempty():
+                if l.isnull():
                     continue
                 if isendl:
                     linep.append([])
@@ -134,13 +134,15 @@ class group(list):
         elif not self.base.isnull():
             self.base.eval(self, ldict)
         else:
-            assert 0, 'when does this happen?'
+            assert 0, 'when does this happen?' + str(self)
 
     def resetbase(self):
         from obj import nullobj
         self.base = nullobj()
 
-
+    def deepcopy(self):
+        import copy
+        return copy.deepcopy(self)
 
 
 
