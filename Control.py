@@ -126,12 +126,12 @@ class control():
             }
         })
         self.funcs = control._specdict({
-            'if'     : funcobj('if'),
-            'rm'     : funcobj('rm'),
+            'if'     : funcobj('if'), # check
+            'rm'     : funcobj('rm'), # check
             'om'     : funcobj('om'),
             'for'    : funcobj('for'),
-            'disp'   : funcobj('disp'),
-            'skip'   : funcobj('skip'), #ignore that line
+            'disp'   : funcobj('disp'), # check
+            'skip'   : funcobj('skip'), # check
             'func'   : funcobj('func'),
             'abort'  : funcobj('abort'),
             'whilst' : funcobj('whilst'),
