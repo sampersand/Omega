@@ -25,4 +25,7 @@ func:main::{
     disp:('uns : ', uns, '\n', 'srt : ', srt):''
 }
 main:
-1->$dnd
+# 1->$dnd#
+rm:
+(1,2,3,4)->arr
+rm:(arr:get:1,1)

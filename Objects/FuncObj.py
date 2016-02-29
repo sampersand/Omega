@@ -1,5 +1,5 @@
 import random
-from Objects import methodobj, floatobj, dictobj
+from Objects import methodobj, floatobj, dictobj, obj
 class funcobj(methodobj):
     """
     The class that represents an inbuilt function.
@@ -46,7 +46,7 @@ class funcobj(methodobj):
             raise SyntaxError("Unknown Function '{}' with arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
     def _disp(self, args, ldict):
-        dispargs, sep, end = [''], ', ', '\n'
+        dispargs, sep, end = [''], ' ', '\n'
         if len(args) > 0:
             def scrub(pdispargs, ldict):
                 for disparg in pdispargs:
@@ -79,8 +79,16 @@ class funcobj(methodobj):
                 assert len(args) == 1, "only 1 thing after the semicolon... " + str(args)
                 assert args, 'same reason as above'
             for ele in args[0]:
-                ldict.last = ldict[str(ele)]
-                del ldict[str(ele)]
+                ele.eval(ldict)
+                if type(ldict.last.base) == obj: #aka, if it isn't a special object.
+                    del ldict[str(ldict.last)] 
+                else:
+                    print("rm isn't working 100%", repr(ldict.last))
+                    del ldict.last
+                    # del ldict.last.base
+
+                # ldict.last = ldict[str(ele)]
+                # del ldict[str(ele)]
     def _skip(self, args, ldict):
         pass #keep this here.
     def _whilst(self, args, ldict):

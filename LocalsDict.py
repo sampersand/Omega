@@ -31,7 +31,7 @@ class localsdict(dict):
 
     def clear(self):
         ret = super().clear()
-        ret.resetivals()
+        self.resetivals()
         return ret
 
     def onlyfuncs(self):

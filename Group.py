@@ -141,3 +141,22 @@ class group(list):
     def deepcopy(self):
         return copy.deepcopy(self)
 
+    def __deepcopy__(self, memo):
+        return group(base = copy.deepcopy(self.base, memo),
+                     control = self.control,
+                     args = [copy.deepcopy(e, memo) for e in self],
+                     parens = copy.deepcopy(self.parens, memo))
+
+
+
+
+
+
+
+
+
+
+
+
+
+

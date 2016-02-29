@@ -28,4 +28,3 @@ from Objects import UserFuncObj
 userfuncobj = UserFuncObj.userfuncobj
 
 __all__  = [x for x in locals().keys() if x[-3:] == 'obj']
-print(__all__)
