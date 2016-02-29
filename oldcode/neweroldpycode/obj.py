@@ -351,6 +351,7 @@ class floatobj(numobj):
 
     def __repr__(self):
         return 'floatobj(%s)' % self.base
+
     def eval(self, eles, locls):
         if eles.base is self:
             locls.lv = eles

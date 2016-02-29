@@ -1,4 +1,4 @@
-from Objects import numobj
+from Objects import numobj, floatre
 class floatobj(numobj):
     def __init__(self, base):
         if __debug__:
@@ -18,5 +18,13 @@ class floatobj(numobj):
                 ldict.last = args.newgroup(intobj(round(self.base)))
 
     @staticmethod
-    def frombase(base, control):
-        return
+    def fromstr(base, control):
+        ret = floatre.findall(base)
+        if ret:
+            if __debug__:
+                assert len(ret) == 1 #there should onyl be 1 match!
+                assert len(ret[0]) == 3 #should be (###)e(pos/neg)(###)
+            ret = ret[0]
+            ret = (ret[2] and '{}e{}{}'.format(ret[0], ret[1] in 'pP' and '+' or '-', ret[2]) or ret[0])
+            # for some reason, '' in 'pP' is true.
+        return floatobj(float(ret)) if ret else None

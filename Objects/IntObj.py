@@ -6,10 +6,10 @@ class intobj(numobj):
         super().__init__(base)
         self.nbase = nbase 
     def __repr__(self):
-        return 'intobj({}{})'.format(self.base, '' if self.nbase == 10 else 'nbase='+str(self.nbase))
+        return 'intobj({}{})'.format(self.base, '' if self.nbase == 10 else ',nbase='+str(self.nbase))
 
     @staticmethod
-    def frombase(base, control):
+    def fromstr(base, control):
         ret = decre.findall(base)
         if not ret:
             ret = binre.findall(base)

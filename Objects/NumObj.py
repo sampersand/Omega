@@ -1,4 +1,4 @@
-from Objects import obj
+from Objects import obj, intre, floatre, complre
 class numobj(obj):
     """
     The super class for all numbers.
@@ -14,11 +14,15 @@ class numobj(obj):
         return 'numobj({})'.format(self.base)
 
     @staticmethod
-    def frombase(base, control):
-        from Objects import floatobj, intobj #very bad placing
-        ret = intobj.frombase(base, control)
-        if ret == None:
-            ret = floatobj.frombase(base, control)
-            if ret == None:
-                pass #this would be for imag numbers
+    def fromstr(base, control):
+        ret = None
+        if intre.fullmatch(base) != None:
+            from Objects import intobj #very bad placing
+            ret = intobj.fromstr(base, control)
+        elif floatre.fullmatch(base) != None:
+            from Objects import floatobj #very bad placing
+            ret = floatobj.fromstr(base, control)
+        elif complre.fullmatch(base) != None:
+            from Objects import complobj #very bad placing
+            ret = complobj.fromstr(base, control)
         return ret

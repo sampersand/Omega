@@ -20,25 +20,30 @@ class obj():
         return str(self)
 
     @staticmethod
-    def frombase(ele, control):
+    def frombase(base, control):
         """
         Used when passing a string to determine which base to use.
         """
-        from Objects import numobj, nullobj, strobj #todo: put at the top of the file
         
-        if isinstance(ele, obj):
-            return ele
-        if ele == None:
+        if isinstance(base, obj):
+            return base
+        if base == None:
+            from Objects import nullobj
             return nullobj()
         if __debug__:
-            assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
-        if ele in control.allkws:
-            return control.allkws[ele]
-        ret = numobj.frombase(ele, control)
+            assert isinstance(base, str), type(base) #can only read strs. otherwise, use appropriate subclass.
+        return obj.fromstr(base, control)
+
+    @staticmethod
+    def fromstr(base, control):
+        if base in control.allkws:
+            return control.allkws[base]
+        from Objects import numobj, strobj #todo: put at the top of the file
+        ret = numobj.fromstr(base, control)
         if ret == None:
-            ret = strobj.frombase(ele, control)
+            ret = strobj.fromstr(base, control)
             if ret == None:
-                ret = obj(ele)
+                ret = obj(base)
         if __debug__:
             assert ret != None
         return ret
