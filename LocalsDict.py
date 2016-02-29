@@ -2,6 +2,7 @@ from Group import group
 class localsdict(dict):
     LAST_VAL = '$'
     RET_VAL = '$ret'
+    BREAK_VAL = '$break'
 
     def __init__(self):
         super().__init__({})

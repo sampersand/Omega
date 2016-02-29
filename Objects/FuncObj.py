@@ -39,6 +39,8 @@ class funcobj(methodobj):
             self._return(args, ldict)
         elif name == 'om':
             self._om(args, ldict)
+        elif name == 'escape':
+            self._escape(args, ldict)
         else:
             raise SyntaxError("Unknown Function '{}' with arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
@@ -118,6 +120,11 @@ class funcobj(methodobj):
         #Watch out! return:a+b is {return:a} + b
         args[0].eval(ldict)
         ldict.retval = ldict.lastval
+
+    def _escape(self, args, ldict):
+        #Watch out! return:a+b is {return:a} + b
+        from Group import group
+        ldict.escapeval = group
     def _om(self, args, ldict):
         if __debug__:
             assert len(args) > 0, "currently '{}' doesn't support empty function calls!".format(self)

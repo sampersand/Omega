@@ -136,6 +136,7 @@ class control():
             'abort'  : funcobj('abort'),
             'whilst' : funcobj('whilst'),
             'return' : funcobj('return'),#Watch out! return:a+b is {return:a} + b
+            'escape'  : funcobj('escape'),
         })
         self.delims = control._specdelimsdict({
             'arraysep': control._spectuple((',',   operobj(',', 14, None))),

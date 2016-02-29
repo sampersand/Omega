@@ -1,7 +1,9 @@
 0->i
-whilst:(i<100):{
+whilst:(i < 10):{
+    escape:
     i <- i + 1
 }
+disp:(i,)
 
 #func:genarr:(size,):{
     , -> arr

@@ -53,12 +53,12 @@ class obj():
         else:
             if str(args.base) in args.control.delims['applier']:
                 if __debug__:
-                    assert len(args) > 0, "No known Obj function '{}'!".format(args)
+                    assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
                 name = str(args[0])
                 if name == 'copy':
                     ldict.lastval = ldict.lastval.deepcopy()
                 else:
-                    raise SyntaxError("No known Obj function '{}'!".format(args))
+                    raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             else:
                 if __debug__:
                     assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
