@@ -50,7 +50,7 @@ class funcobj(methodobj):
             def scrub(pdispargs, ldict):
                 for disparg in pdispargs:
                     disparg.eval(ldict)
-                    yield ldict.lastval.base.scrubstr(args.control)
+                    yield ldict.last.base.scrubstr(args.control)
             dispargs = [x for x in scrub(args[0], ldict)]
             if len(args) > 1:
                 if not args[1].base.isnull():
@@ -70,7 +70,7 @@ class funcobj(methodobj):
                     if len(args) > 3:
                         raise SyntaxError('Not allowed to have more than 3 arguments for if statement(s)!')
         cond.eval(ldict)
-        (iftrue if ldict.lastval.base else iffalse).eval(ldict)
+        (iftrue if ldict.last.base else iffalse).eval(ldict)
     def _rm(self, args, ldict):
         if not args:
             ldict.clear()
@@ -79,7 +79,7 @@ class funcobj(methodobj):
                 assert len(args) == 1, "only 1 thing after the semicolon... " + str(args)
                 assert args, 'same reason as above'
             for ele in args[0]:
-                ldict.lastval = ldict[str(ele)]
+                ldict.last = ldict[str(ele)]
                 del ldict[str(ele)]
     def _skip(self, args, ldict):
         pass #keep this here.
@@ -88,15 +88,15 @@ class funcobj(methodobj):
             assert len(args) == 2, 'whilst:(cond):(statement(s))'
         while True:
             args[0].eval(ldict) #evaluate the condition
-            if not ldict.lastval.base:
+            if not ldict.last.base:
                 break
             args[1].eval(ldict) #execute the statement(s)
     def _abort(self, args, ldict):
         if len(args) == 1: #abort w/ message
             args[0].eval(ldict)
         else:
-            del ldict.lastval # resets
-        quit('Aborting!' + (" Message: " + str(ldict.lastval) if ldict.haslast() else ''))
+            del ldict.last # resets
+        quit('Aborting!' + (" Message: " + str(ldict.last) if ldict.haslast() else ''))
     def _for(self, args, ldict):
         if __debug__:
             assert len(args) == 2, 'for:(init;cond;inc):(statement(s))'
@@ -104,7 +104,7 @@ class funcobj(methodobj):
         args[0][0].eval(ldict) #initialization
         while True:
             args[0][1].eval(ldict) #evaluate the condition
-            if not ldict.lastval.base:
+            if not ldict.last.base:
                 break
             args[1].eval(ldict) #execute the statement(s)
             args[0][2].eval(ldict) #increment
@@ -112,19 +112,17 @@ class funcobj(methodobj):
         from Group import group
         from Objects import userfuncobj
         args[0].eval(ldict)
-        name = str(ldict.lastval)
+        name = str(ldict.last)
         ldict[name] = group(base = userfuncobj(name, args[1], args[2]))
-        ldict.lv = ldict[name]
+        ldict.last = ldict[name]
 
     def _return(self, args, ldict):
         #Watch out! return:a+b is {return:a} + b
         args[0].eval(ldict)
-        ldict.retval = ldict.lastval
+        ldict.ret = ldict.last
 
     def _escape(self, args, ldict):
-        #Watch out! return:a+b is {return:a} + b
-        from Group import group
-        ldict.escapeval = group
+        ldict.escape = True
     def _om(self, args, ldict):
         if __debug__:
             assert len(args) > 0, "currently '{}' doesn't support empty function calls!".format(self)
@@ -133,13 +131,13 @@ class funcobj(methodobj):
             import random
             from Objects.FloatObj import floatobj
             from Group import group
-            ldict.lastval = group(base = floatobj(random.random()))
+            ldict.last = group(base = floatobj(random.random()))
         elif name == 'ldict' or name == 'locals':
             from Objects.DictObj import dictobj
             from Group import group
-            ldict.lastval = group(base = dictobj(ldict.deepcopy()))
-            del ldict.lastval.base.base.lastval
-            # del ldict.lastval.base.base.lastval
+            ldict.last = group(base = dictobj(ldict.deepcopy()))
+            del ldict.last.base.base.last
+            # del ldict.last.base.base.last
         else:
             raise SyntaxError("No known '{}' function '{}' with arguments '{}'!".format(self, name, 
                                                                                         '' if len(args) == 0 else \

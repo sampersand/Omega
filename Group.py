@@ -128,7 +128,7 @@ class group(list):
 
     def eval(self, ldict):
         if self.basestr in ldict:
-            ldict.lastval = ldict[self.basestr]
+            ldict.last = ldict[self.basestr]
         elif not self.base.isnull():
             self.base.eval(self, ldict)
         else:

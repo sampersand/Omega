@@ -5,7 +5,7 @@ whilst:(i < 10):{
 }
 disp:(i,)
 
-#func:genarr:(size,):{
+func:genarr:(size,):{
     , -> arr
     whilst:(arr:len < size):{
         arr:add:((om:rand * 10.0):round,)
@@ -27,4 +27,3 @@ func:main::{
 }
 main:
 1->$dnd
-#

@@ -16,4 +16,4 @@ class floatobj(numobj):
             if name == 'round':
                 from Objects.IntObj import intobj
                 from Group import group
-                ldict.lastval = group(base = intobj(round(self.base)))
+                ldict.last = group(base = intobj(round(self.base)))

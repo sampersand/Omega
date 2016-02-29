@@ -17,17 +17,17 @@ class userfuncobj(funcobj):
         #             format(len(self.args), self.base, len(args), str(args)[1:])
         for elep in range(len(self.args)):
             args[elep].eval(ldict)
-            ret[str(self.args[elep])] = ldict.lastval
+            ret[str(self.args[elep])] = ldict.last
         return ret
     def eval(self, args, ldict):
         if __debug__:
             assert args.basestr in args.control.delims['applier'][0] #f :(args) <-- needs the ':'
         if args.base is self:
-            ldict.lastval = args
+            ldict.last = args
             return
         from Group import group
         nldict = ldict.onlyfuncs() if not args else self._genargs(args[0], ldict)
         self.func.deepcopy().eval(nldict)
-        if not nldict.retval.base.isnull():
-            ldict.lastval = nldict.retval
+        if not nldict.ret.base.isnull():
+            ldict.last = nldict.ret
 

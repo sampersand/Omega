@@ -18,7 +18,7 @@ class arrayobj(obj):
 
     def eval(self, args, ldict):
         if not args:
-            ldict.lastval = self
+            ldict.last = self
             return
         try:
             super().eval(args, ldict)
@@ -28,24 +28,24 @@ class arrayobj(obj):
                 if __debug__:
                     assert len(args) == 2, 'array:get:pos'
                 args[1].eval(ldict)
-                ldict.lastval = self.base[ldict.lastval.base.base]
+                ldict.last = self.base[ldict.last.base.base]
             elif name == 'len':
                 if __debug__:
                     assert len(args) == 1, 'array:len'
                 from Group import group
                 from Objects.IntObj import intobj
-                ldict.lastval = group(base = intobj(len(self.base)))
+                ldict.last = group(base = intobj(len(self.base)))
             elif name == 'add':
                 if __debug__:
                     assert len(args) == 2, 'array:add:(pos, ele) or array:add:(ele,) not '+ str(args)
                 if len(args[1]) == 2:
                     args[1][0].eval(ldict)
-                    pos = ldict.lastval.base.base
+                    pos = ldict.last.base.base
                 else:
                     pos = -1
                 args[1][len(args[1]) == 2].eval(ldict)
-                self.base.insert(pos, ldict.lastval)
-                ldict.lastval = self.base[pos]
+                self.base.insert(pos, ldict.last)
+                ldict.last = self.base[pos]
             else:
                 raise SyntaxError("Unknown array function '{}' with parameters '{}'!".format(name,
                     len(args) >1 and args[1:] or ''))

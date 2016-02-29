@@ -56,13 +56,13 @@ class obj():
                     assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
                 name = str(args[0])
                 if name == 'copy':
-                    ldict.lastval = ldict.lastval.deepcopy()
+                    ldict.last = ldict.last.deepcopy()
                 else:
                     raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             else:
                 if __debug__:
                     assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
-                ldict.lastval = args.deepcopy()
+                ldict.last = args.deepcopy()
 
 
     def copybase(self):

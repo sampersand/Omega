@@ -20,13 +20,13 @@ class operobj(methodobj):
         else:
             args[0].eval(ldict)
             for arg in args[1:]:
-                last = ldict.lastval
+                last = ldict.last
                 arg.eval(ldict)
                 if __debug__:
-                    assert hasattr(ldict.lastval.base, self.attrstr),\
+                    assert hasattr(ldict.last.base, self.attrstr),\
                         "cannot perform '{}' on '{}'!".format(self.attrstr, repr(arg))
-                ldict.lastval = ldict.lastval.deepcopy()
-                ldict.lastval.base.base = getattr(last.base, self.attrstr).__call__(ldict.lastval.base)
+                ldict.last = ldict.last.deepcopy()
+                ldict.last.base.base = getattr(last.base, self.attrstr).__call__(ldict.last.base)
 
             return
     def _speceval(self, args, ldict):
@@ -37,7 +37,7 @@ class operobj(methodobj):
                 for line in args: #each ';' is a line.
                     if not line.base.isnull():
                         line.eval(ldict)
-                    if ldict.hasret():
+                    if not ldict.ret.base.isnull():
                         break
                 return
             elif name in ctrl.delims['arraysep']:
@@ -48,14 +48,14 @@ class operobj(methodobj):
                 for ele in args:
                     if not ele.base.isnull():
                         ele.eval(ldict)
-                    if ldict.hasret():
+                    if not ldict.ret.base.isnull():
                         break
-                    l.base.base.append(ldict.lastval)
-                ldict.lastval = l
+                    l.base.base.append(ldict.last)
+                ldict.last = l
                 return
             elif name in ctrl.delims['applier']:
                 args[0].eval(ldict)
-                ldict.lastval.base.eval(args[1:], ldict)
+                ldict.last.base.eval(args[1:], ldict)
                 return
         elif name in ctrl.opers['binary']:
             if __debug__:
@@ -75,31 +75,31 @@ class operobj(methodobj):
         if __debug__:
             assert str(self) in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
-        last = ldict.lastval
+        last = ldict.last
         args.eval(ldict)
         sname = str(self)[1:-1]
         if sname == '':
             # print('self\t::\t'+repr(self),'args\t::\t'+str(args),'ldict\t::\t'+str(ldict),\
             #       'last\t::\t'+str(last),'sname\t::\t'+repr(sname),\
-            #       'ld.lv\t::\t'+repr(ldict.lastval),'----',sep='\n')
+            #       'ld.lv\t::\t'+repr(ldict.last),'----',sep='\n')
             from Objects.Obj import obj
-            if type(ldict.lastval.base) == obj: #aka, if it isn't a special object.
-                ldict[str(ldict.lastval)] = last
-                ldict.lastval = ldict[str(ldict.lastval)] #is deepcopy really required?
+            if type(ldict.last.base) == obj: #aka, if it isn't a special object.
+                ldict[str(ldict.last)] = last
+                ldict.last = ldict[str(ldict.last)] #is deepcopy really required?
                 return
-            ldict.lastval.base.updatebase(last.base, sname, ldict)
-            ldict.lastval = ldict.lastval.deepcopy() #is deepcopy really required?
+            ldict.last.base.updatebase(last.base, sname, ldict)
+            ldict.last = ldict.last.deepcopy() #is deepcopy really required?
         else:
             assert 0, "iopers aren't supported yet!"
             if argstr not in ldict:
-                ldict[argstr] = ldict.lastval
-                ldict.lastval = ldict.lastval.deepcopy()
+                ldict[argstr] = ldict.last
+                ldict.last = ldict.last.deepcopy()
             else:
                 from Group import group
                 group(base = args.control.allopers[sname],\
                       args = [ldict[argstr], last]).eval(ldict)
-                ldict[argstr] = ldict.lastval.deepcopy()
-                ldict[argstr] = ldict.lastval
+                ldict[argstr] = ldict.last.deepcopy()
+                ldict[argstr] = ldict.last
 
 
 
