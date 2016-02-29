@@ -77,9 +77,6 @@ class operobj(methodobj):
         args.eval(ldict)
         sname = str(self)[1:-1]
         if sname == '':
-            # print('self\t::\t'+repr(self),'args\t::\t'+str(args),'ldict\t::\t'+str(ldict),\
-            #       'last\t::\t'+str(last),'sname\t::\t'+repr(sname),\
-            #       'ld.lv\t::\t'+repr(ldict.last),'----',sep='\n')
             if type(ldict.last.base) == obj: #aka, if it isn't a special object.
                 ldict[str(ldict.last)] = last
                 ldict.last = ldict[str(ldict.last)] #is deepcopy really required?
@@ -87,15 +84,22 @@ class operobj(methodobj):
             ldict.last.base.updatebase(last.base, sname, ldict)
             ldict.last = ldict.last.deepcopy() #is deepcopy really required?
         else:
-            assert 0, "iopers aren't supported yet!"
-            if argstr not in ldict:
-                ldict[argstr] = ldict.last
-                ldict.last = ldict.last.deepcopy()
-            else:
-                args.newgroup(base = args.control.allopers[sname],\
-                      args = [ldict[argstr], last]).eval(ldict)
-                ldict[argstr] = ldict.last.deepcopy()
-                ldict[argstr] = ldict.last
+            if type(ldict.last.base) == obj: #aka, if it isn't a special object.
+                ldict[str(ldict.last)] = last
+                ldict.last = ldict[str(ldict.last)] #is deepcopy really required?
+                return
+            ldict.last.base.updatebase(last.base, sname, ldict)
+            # ldict.last = ldict.last.deepcopy() #is deepcopy really required?
+            # print(repr(ldict.last.base))
+            # assert 0, "iopers aren't supported yet!"
+            # if argstr not in ldict:
+            #     ldict[argstr] = ldict.last
+            #     ldict.last = ldict.last.deepcopy()
+            # else:
+            #     args.newgroup(base = args.control.allopers[sname],\
+            #           args = [ldict[argstr], last]).eval(ldict)
+            #     ldict[argstr] = ldict.last.deepcopy()
+            #     ldict[argstr] = ldict.last
 
 
 

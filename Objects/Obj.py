@@ -89,9 +89,20 @@ class obj():
     def _func_le     (self, other): return self.base <= other.base
 
 
-    def updatebase(self, other, funcname, ldict):
+    def updatebase(self, other, fname, ldict):
         ret = str(self)
-        self.base = other.base
+        if   fname == '': self.base = other.base
+        elif fname == '+': self.base += other.base
+        elif fname == '-': self.base -= other.base
+        elif fname == '*': self.base *= other.base
+        elif fname == '/': self.base /= other.base
+        elif fname == '%': self.base %= other.base
+        elif fname == '**': self.base **= other.base
+        elif fname == '&': self.base &= other.base
+        elif fname == '^': self.base ^= other.base
+        elif fname == '|': self.base |= other.base
+        elif fname == '>>': self.base >>= other.base
+        elif fname == '<<': self.base <<= other.base
         return ret
 
 

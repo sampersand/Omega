@@ -24,8 +24,29 @@ func:main::{
     srt <- bubblesort:(uns:copy, )
     disp:('uns : ', uns, '\n', 'srt : ', srt):''
 }
-main:
-# 1->$dnd#
-rm:
-(1,2,3,4)->arr
-rm:(arr:get:1,1)
+#main:#
+1 ->  $dnd
+2 ->  a
+3 ->b
+1->c
+5 -+> a -+> b -+> c
+disp:(a,b, c)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
