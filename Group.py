@@ -1,4 +1,6 @@
-from Objects import *
+import copy
+import Control
+from Objects import obj, nullobj
 class group(list):
 
     def __new__(self, base = None, control = None, args = [], parens = ('', '')):
@@ -6,12 +8,14 @@ class group(list):
 
     def __init__(self, base = None, control = None, args = [], parens = ('', '')):
         super().__init__(args)
-        if control == None:
-            import Control
-            control = Control.control()
+        if __debug__:
+            assert control != None, 'should be set from somewhere'
         self.control = control
         self.base = obj.frombase(base, self.control)
         self.parens = parens
+
+    def newgroup(self, base = None, args = [], parens = ('', '')):
+        return group(base, self.control, args, parens)
 
     def isnull(self):
         return not bool(self or not self.base.isnull() or self.parens[0] or self.parens[1])
@@ -51,7 +55,7 @@ class group(list):
 
     def __getitem__(self, item): #so i can slice stuff...
         if isinstance(item, slice):
-            return group(base = self.base, args = super().__getitem__(item), parens = self.parens)
+            return group(base = self.base, control = self.control, args = super().__getitem__(item), parens = self.parens)
         return super().__getitem__(item)
 
     # def linestr(self):
@@ -134,30 +138,6 @@ class group(list):
         else:
             assert 0, 'when does this happen?' + str(self)
 
-    def resetbase(self):
-        from Objects import nullobj
-        self.base = nullobj()
-        return self
-
     def deepcopy(self):
-        import copy
         return copy.deepcopy(self)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

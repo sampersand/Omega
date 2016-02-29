@@ -1,20 +1,31 @@
-import Objects.ArrayObj, Objects.BoolObj, Objects.DictObj,\
-       Objects.FuncObj, Objects.MethodObj, Objects.NullObj,\
-       Objects.NumObj, Objects.Obj, Objects.OperObj,\
-       Objects.UserFuncObj, Objects.FloatObj, Objects.IntObj
-arrayobj  = Objects. ArrayObj. arrayobj
-boolobj   = Objects.  BoolObj.  boolobj
-dictobj   = Objects.  DictObj.  dictobj
-funcobj   = Objects.  FuncObj.  funcobj
-floatobj  = Objects. FloatObj. floatobj
-intobj    = Objects.   IntObj.   intobj
-methodobj = Objects.MethodObj.methodobj
-nullobj   = Objects.  NullObj.  nullobj
-numobj    = Objects.   NumObj.   numobj
-obj       = Objects.      Obj.      obj
-operobj   = Objects.  OperObj.  operobj
-userfuncobj=Objects.UserFuncObj.userfuncobj
-__all__  = ['arrayobj', 'boolobj', 'dictobj',\
-            'funcobj', 'methodobj', 'nullobj',\
-            'numobj', 'obj', 'operobj',\
-            'userfuncobj', 'intobj', 'floatobj']
+from Objects import Obj
+obj = Obj.obj
+
+from Objects import NullObj, MethodObj
+methodobj = MethodObj.methodobj
+nullobj = NullObj.nullobj
+
+from Objects import StrObj, NumObj
+strobj = StrObj.strobj
+numobj = NumObj.numobj
+
+from Objects import IntObj, FloatObj
+intobj = IntObj.intobj
+floatobj = FloatObj.floatobj
+
+from Objects import BoolObj
+boolobj = BoolObj.boolobj
+
+from Objects import DictObj, ArrayObj
+dictobj = DictObj.dictobj
+arrayobj = ArrayObj.arrayobj
+
+from Objects import FuncObj, OperObj
+funcobj = FuncObj.funcobj
+operobj = OperObj.operobj
+
+from Objects import UserFuncObj
+userfuncobj = UserFuncObj.userfuncobj
+
+__all__  = [x for x in locals().keys() if x[-3:] == 'obj']
+print(__all__)

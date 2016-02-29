@@ -1,3 +1,4 @@
+import copy
 class obj():
     """
     The base class for all of the objects.
@@ -17,24 +18,24 @@ class obj():
 
     def scrubstr(self, control):
         return str(self)
+
     @staticmethod
     def frombase(ele, control):
         """
         Used when passing a string to determine which base to use.
         """
+        from Objects import numobj, nullobj, strobj #todo: put at the top of the file
+        
         if isinstance(ele, obj):
             return ele
         if ele == None:
-            from Objects.NullObj import nullobj
             return nullobj()
         if __debug__:
             assert isinstance(ele, str), type(ele) #can only read strs. otherwise, use appropriate subclass.
         if ele in control.allkws:
             return control.allkws[ele]
-        from Objects.NumObj import numobj
         ret = numobj.frombase(ele, control)
         if ret == None:
-            from Objects.StrObj import strobj
             ret = strobj.frombase(ele, control)
             if ret == None:
                 ret = obj(ele)
@@ -43,7 +44,7 @@ class obj():
         return ret
 
     def isnull(self):
-        from Objects.NullObj import nullobj
+        from Objects import nullobj
         return isinstance(self, nullobj)
 
     def eval(self, args, ldict):
@@ -66,7 +67,6 @@ class obj():
 
 
     def copybase(self):
-        import copy
         return copy.deepcopy(self.base)
 
     def __bool__     (self): return bool(self.base)

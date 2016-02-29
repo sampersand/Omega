@@ -1,4 +1,4 @@
-from Objects.NumObj import numobj
+from Objects import numobj
 class floatobj(numobj):
     def __init__(self, base):
         if __debug__:
@@ -14,6 +14,5 @@ class floatobj(numobj):
         except SyntaxError:
             name = str(args[0])
             if name == 'round':
-                from Objects.IntObj import intobj
-                from Group import group
-                ldict.last = group(base = intobj(round(self.base)))
+                from Objects import intobj
+                ldict.last = args.newgroup(intobj(round(self.base)))

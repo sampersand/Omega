@@ -1,4 +1,5 @@
-from Objects.MethodObj import methodobj
+import random
+from Objects import methodobj, floatobj, dictobj
 class funcobj(methodobj):
     """
     The class that represents an inbuilt function.
@@ -60,8 +61,7 @@ class funcobj(methodobj):
                         end = args[2].base.scrubstr(args.control)
         print(*dispargs, sep = sep, end = end)
     def _if(self, args, ldict):
-        from Group import group
-        cond, iftrue, iffalse = args[0], group(), group()
+        cond, iftrue, iffalse = args[0], args.newgroup(None), args.newgroup(None)
         if len(args) > 1:
             iftrue = args[1]
             if len(args) > 2:
@@ -109,11 +109,10 @@ class funcobj(methodobj):
             args[1].eval(ldict) #execute the statement(s)
             args[0][2].eval(ldict) #increment
     def _func(self, args, ldict):
-        from Group import group
-        from Objects import userfuncobj
         args[0].eval(ldict)
         name = str(ldict.last)
-        ldict[name] = group(base = userfuncobj(name, args[1], args[2]))
+        from Objects import userfuncobj
+        ldict[name] = args.newgroup(userfuncobj(name, args[1], args[2]))
         ldict.last = ldict[name]
 
     def _return(self, args, ldict):
@@ -129,14 +128,9 @@ class funcobj(methodobj):
             assert len(args) > 0, "currently '{}' doesn't support empty function calls!".format(self)
         name = str(args[0])
         if name == 'rand':
-            import random
-            from Objects.FloatObj import floatobj
-            from Group import group
-            ldict.last = group(base = floatobj(random.random()))
+            ldict.last = args.newgroup(floatobj(random.random()))
         elif name == 'ldict' or name == 'locals':
-            from Objects.DictObj import dictobj
-            from Group import group
-            ldict.last = group(base = dictobj(ldict.deepcopy()))
+            ldict.last = args.newgroup(dictobj(ldict.deepcopy()))
             del ldict.last.base.base.last
             # del ldict.last.base.base.last
         else:

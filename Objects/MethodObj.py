@@ -1,4 +1,4 @@
-from Objects.Obj import obj
+from Objects import obj
 class methodobj(obj):
     """
     The class that represents a function.

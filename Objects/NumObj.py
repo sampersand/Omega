@@ -1,4 +1,4 @@
-from Objects.Obj import obj
+from Objects import obj
 class numobj(obj):
     """
     The super class for all numbers.
@@ -15,11 +15,10 @@ class numobj(obj):
 
     @staticmethod
     def frombase(base, control):
+        from Objects import floatobj, intobj #very bad placing
         #still very hacked together. TODO: regex for this.
         if '.' in base: 
-            from Objects.FloatObj import floatobj
             return floatobj(float(base))
         if not base.isnumeric():
             return None
-        from Objects.IntObj import intobj
         return intobj(int(base))

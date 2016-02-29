@@ -1,4 +1,4 @@
-from Objects.MethodObj import methodobj
+from Objects import arrayobj, obj, methodobj
 class operobj(methodobj):
     """
     The class that represents operators on objects.
@@ -41,9 +41,7 @@ class operobj(methodobj):
                         break
                 return
             elif name in ctrl.delims['arraysep']:
-                from Group import group
-                l = group(parens = args.parens)
-                from Objects import arrayobj
+                l = args.newgroup(parens = args.parens)
                 l.base = arrayobj()
                 for ele in args:
                     if not ele.base.isnull():
@@ -82,7 +80,6 @@ class operobj(methodobj):
             # print('self\t::\t'+repr(self),'args\t::\t'+str(args),'ldict\t::\t'+str(ldict),\
             #       'last\t::\t'+str(last),'sname\t::\t'+repr(sname),\
             #       'ld.lv\t::\t'+repr(ldict.last),'----',sep='\n')
-            from Objects.Obj import obj
             if type(ldict.last.base) == obj: #aka, if it isn't a special object.
                 ldict[str(ldict.last)] = last
                 ldict.last = ldict[str(ldict.last)] #is deepcopy really required?
@@ -95,8 +92,7 @@ class operobj(methodobj):
                 ldict[argstr] = ldict.last
                 ldict.last = ldict.last.deepcopy()
             else:
-                from Group import group
-                group(base = args.control.allopers[sname],\
+                args.newgroup(base = args.control.allopers[sname],\
                       args = [ldict[argstr], last]).eval(ldict)
                 ldict[argstr] = ldict.last.deepcopy()
                 ldict[argstr] = ldict.last

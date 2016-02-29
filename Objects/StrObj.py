@@ -1,4 +1,4 @@
-from Objects.Obj import obj
+from Objects import obj
 class strobj(obj):
     """
     The super class for all numbers.

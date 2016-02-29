@@ -1,4 +1,4 @@
-from Objects.Obj import obj
+from Objects import obj, intobj
 class arrayobj(obj):
     """
     The class that represents an array.
@@ -32,9 +32,7 @@ class arrayobj(obj):
             elif name == 'len':
                 if __debug__:
                     assert len(args) == 1, 'array:len'
-                from Group import group
-                from Objects.IntObj import intobj
-                ldict.last = group(base = intobj(len(self.base)))
+                ldict.last = args.newgroup(intobj(len(self.base)))
             elif name == 'add':
                 if __debug__:
                     assert len(args) == 2, 'array:add:(pos, ele) or array:add:(ele,) not '+ str(args)

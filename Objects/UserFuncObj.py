@@ -1,4 +1,4 @@
-from Objects.FuncObj import funcobj
+from Objects import funcobj
 class userfuncobj(funcobj):
     def __init__(self, base, args, func):
         super().__init__(base, func)
@@ -25,7 +25,6 @@ class userfuncobj(funcobj):
         if args.base is self:
             ldict.last = args
             return
-        from Group import group
         nldict = ldict.onlyfuncs() if not args else self._genargs(args[0], ldict)
         self.func.deepcopy().eval(nldict)
         if not nldict.ret.base.isnull():

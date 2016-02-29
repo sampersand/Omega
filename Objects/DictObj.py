@@ -1,4 +1,4 @@
-from Objects.Obj import obj
+from Objects import obj
 class dictobj(obj):
     def __init__(self, base = None):
         if base == None:

@@ -1,15 +1,17 @@
+import Control
+import codecs
+import copy
+from Group import group
+from LocalsDict import localsdict
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
         if control == None:
-            import Control
             control = Control.control()
         self.control = control
         self.filepath = filepath
-        import codecs
         with codecs.open(filepath, 'r', encoding) as f:
             self.striptext = self._striptext(f.read())
         tokens = self._tokenize(self.striptext)
-        import copy
         self.lines = self._compresstokens(copy.deepcopy(tokens))
     def __str__(self):
         ret = "file '%s':\n==[start]==" % self.filepath
@@ -98,7 +100,6 @@ class file:
         return [e for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
 
     def _compresstokens(self, linetokens):
-        from Group import group
         def compresstokens(linegrp): #this is non-stable
             ret = group(parens = linegrp.parens, control = self.control) #universe
             while linegrp:
@@ -175,7 +176,6 @@ class file:
             return ret
         return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
     def eval(self):
-        import LocalsDict
-        ldict = LocalsDict.localsdict()
+        ldict = localsdict(self.control)
         self.lines.eval(ldict)
         return ldict

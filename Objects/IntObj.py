@@ -1,4 +1,4 @@
-from Objects.NumObj import numobj
+from Objects import numobj
 class intobj(numobj):
     def __init__(self, base):
         if __debug__:

@@ -1,5 +1,5 @@
-from Objects.NumObj import numobj
-class boolobj(numobj):
+from Objects import intobj
+class boolobj(intobj):
     """
     The class that represents a boolean.
     """
