@@ -88,7 +88,7 @@ class funcobj(methodobj):
             assert len(args) == 2, 'whilst:(cond):(statement(s))'
         while True:
             args[0].eval(ldict) #evaluate the condition
-            if not ldict.last.base:
+            if not ldict.last.base or ldict.escape:
                 break
             args[1].eval(ldict) #execute the statement(s)
     def _abort(self, args, ldict):
@@ -104,7 +104,7 @@ class funcobj(methodobj):
         args[0][0].eval(ldict) #initialization
         while True:
             args[0][1].eval(ldict) #evaluate the condition
-            if not ldict.last.base:
+            if not ldict.last.base or ldict.escape:
                 break
             args[1].eval(ldict) #execute the statement(s)
             args[0][2].eval(ldict) #increment
@@ -123,6 +123,7 @@ class funcobj(methodobj):
 
     def _escape(self, args, ldict):
         ldict.escape = True
+
     def _om(self, args, ldict):
         if __debug__:
             assert len(args) > 0, "currently '{}' doesn't support empty function calls!".format(self)
