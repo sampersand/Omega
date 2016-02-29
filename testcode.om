@@ -4,8 +4,7 @@ a:get:1 <- 1093
 1->b
 b:copy->c;
 2<-b;#
-1->a
-a->b
+1->a->b
 disp:(a,b)
 2->a
 disp:(a,b)

@@ -84,7 +84,7 @@ class operobj(methodobj):
             from Objects.Obj import obj
             if type(ldict.lastval.base) == obj: #aka, if it isn't a special object.
                 ldict[str(ldict.lastval)] = last
-                ldict.lastval = ldict[str(ldict.lastval)].deepcopy() #is deepcopy really required?
+                ldict.lastval = ldict[str(ldict.lastval)] #is deepcopy really required?
                 return
             ldict.lastval.base.updatebase(last, sname, ldict)
             ldict.lastval = ldict.lastval.deepcopy() #is deepcopy really required?
