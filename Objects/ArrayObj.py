@@ -32,6 +32,9 @@ class arrayobj(obj):
             from Group import group
             from Objects.IntObj import intobj
             ldict.lastval = group(base = intobj(len(self.base)))
+        else:
+            raise SyntaxError("Unknown array function '{}' with parameters '{}'!".format(name,
+                len(args) >1 and args[1:] or ''))
     #     if eles.base is self:
     #         locls.lv = eles
     #         return

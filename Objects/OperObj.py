@@ -78,13 +78,16 @@ class operobj(methodobj):
         args.eval(ldict)
         sname = str(self)[1:-1]
         if sname == '':
-            print('self:'+str(self),'args:'+str(args),'ldict:'+str(ldict),\
-                  'last:'+str(last),'sname:'+str(sname),'----',sep='\n')
-            # a = ldict.lastval.base.updatebase(last, sname, ldict)
-            # print(a,last,sname,ldict,'@',args,'@')
-            # ldict[ldict.lastval.base.updatebase(last, sname, ldict)]
-            ldict[str(ldict.lastval)] = last
-            ldict.lastval = ldict[str(ldict.lastval)].deepcopy()
+            # print('self\t::\t'+repr(self),'args\t::\t'+str(args),'ldict\t::\t'+str(ldict),\
+            #       'last\t::\t'+str(last),'sname\t::\t'+repr(sname),\
+            #       'ld.lv\t::\t'+repr(ldict.lastval),'----',sep='\n')
+            from Objects.Obj import obj
+            if type(ldict.lastval.base) == obj: #aka, if it isn't a special object.
+                ldict[str(ldict.lastval)] = last
+                ldict.lastval = ldict[str(ldict.lastval)].deepcopy() #is deepcopy really required?
+                return
+            ldict.lastval.base.updatebase(last, sname, ldict)
+            ldict.lastval = ldict.lastval.deepcopy() #is deepcopy really required?
         else:
             assert 0, "iopers aren't supported yet!"
             if argstr not in ldict:

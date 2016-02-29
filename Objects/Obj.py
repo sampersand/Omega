@@ -53,6 +53,7 @@ class obj():
         else:
             if __debug__:
                 assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
+            print(args.base)
             ldict.lastval = args
 
     def copybase(self):
