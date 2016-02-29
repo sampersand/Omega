@@ -16,3 +16,7 @@ class floatobj(numobj):
             if name == 'round':
                 from Objects import intobj
                 ldict.last = args.newgroup(intobj(round(self.base)))
+
+    @staticmethod
+    def frombase(base, control):
+        pass

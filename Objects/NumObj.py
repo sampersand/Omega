@@ -16,9 +16,9 @@ class numobj(obj):
     @staticmethod
     def frombase(base, control):
         from Objects import floatobj, intobj #very bad placing
-        #still very hacked together. TODO: regex for this.
-        if '.' in base: 
-            return floatobj(float(base))
-        if not base.isnumeric():
-            return None
-        return intobj(int(base))
+        ret = intobj.frombase(base, control)
+        if ret == None:
+            ret = floatobj.frombase(base, control)
+            if ret == None:
+                pass #this would be for imag numbers
+        return ret
