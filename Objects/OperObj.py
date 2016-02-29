@@ -76,17 +76,17 @@ class operobj(methodobj):
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = ldict.lastval
         args.eval(ldict)
-        if __debug__:
-            print(args,'@',ldict.lastval)
-            if str(args) != 'a':
-                ldict.lastval.base.base = 1039
-                assert 0, ldict
-        argstr = str(ldict.lastval)
         sname = str(self)[1:-1]
         if sname == '':
-            ldict[argstr] = last
-            ldict.lastval = ldict[argstr].deepcopy()
+            print('self:'+str(self),'args:'+str(args),'ldict:'+str(ldict),\
+                  'last:'+str(last),'sname:'+str(sname),'----',sep='\n')
+            # a = ldict.lastval.base.updatebase(last, sname, ldict)
+            # print(a,last,sname,ldict,'@',args,'@')
+            # ldict[ldict.lastval.base.updatebase(last, sname, ldict)]
+            ldict[str(ldict.lastval)] = last
+            ldict.lastval = ldict[str(ldict.lastval)].deepcopy()
         else:
+            assert 0, "iopers aren't supported yet!"
             if argstr not in ldict:
                 ldict[argstr] = ldict.lastval
                 ldict.lastval = ldict.lastval.deepcopy()
@@ -97,7 +97,6 @@ class operobj(methodobj):
                 ldict[argstr] = ldict.lastval.deepcopy()
                 ldict[argstr] = ldict.lastval
 
-            # assert 0, "iopers aren't supported yet!"
 
 
 

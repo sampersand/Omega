@@ -17,7 +17,6 @@ class obj():
 
     def scrubstr(self, control):
         return str(self)
-
     @staticmethod
     def frombase(ele, control):
         """
@@ -80,6 +79,10 @@ class obj():
     def _func_le     (self, other): return self.base <= other.base
 
 
+    def updatebase(self, other, funcname, ldict):
+        ret = str(self)
+        self.base = other.base
+        return ret
 
 
 

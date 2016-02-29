@@ -90,7 +90,6 @@ class group(list):
                     continue
                 x = _linestr(l, [], indent + isendl)
                 q.append(x)
-                print(x)
             ret.__iadd__(q)
             return ret
         lines = _linestr(self, [], 0)
