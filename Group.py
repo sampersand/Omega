@@ -129,8 +129,7 @@ class group(list):
 
     def eval(self, ldict):
         if self.basestr in ldict:
-            import copy
-            ldict.lastval = ldict[self.basestr].deepcopy() #oh boy this is slooow
+            ldict.lastval = ldict[self.basestr]
         elif not self.base.isnull():
             self.base.eval(self, ldict)
         else:

@@ -76,6 +76,11 @@ class operobj(methodobj):
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = ldict.lastval
         args.eval(ldict)
+        if __debug__:
+            print(args,'@',ldict.lastval)
+            if str(args) != 'a':
+                ldict.lastval.base.base = 1039
+                assert 0, ldict
         argstr = str(ldict.lastval)
         sname = str(self)[1:-1]
         if sname == '':
