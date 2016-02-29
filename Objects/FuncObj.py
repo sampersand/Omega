@@ -104,7 +104,7 @@ class funcobj(methodobj):
             args[0].eval(ldict)
         else:
             del ldict.last # resets
-        quit('Aborting!' + (" Message: " + str(ldict.last) if ldict.haslast() else ''))
+        quit('Aborting!' + (" Message: " + str(ldict.last) if not ldict.last.isnull() else ''))
     def _for(self, args, ldict):
         if __debug__:
             assert len(args) == 2, 'for:(init;cond;inc):(statement(s))'

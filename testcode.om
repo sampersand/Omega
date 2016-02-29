@@ -1,5 +1,47 @@
-1.5->a
-0.5->b
-1e9->c
-0x2b -> d
-1->f 
+func:genarr:(size,):{
+    , -> arr
+    whilst:(arr:len < size):{
+        arr:add:((om:rand * 10.0):round,)
+    }
+    return:arr
+}
+func:bubblesort:(arr,):{
+    0 -> i
+    whilst:(i < arr:len - 1):{
+        if:(arr:get:i > arr:get:(i + 1)):{
+            temp <- {arr:get:i}:copy
+            arr:get:i <- {arr:get:(i + 1)}:copy
+            arr:get:(i + 1) <- temp
+            0 -> i
+        }:{
+            i <+- 1
+        }
+    }
+    return : arr
+}
+func:main::{
+    uns <- genarr:(20,)
+    srt <- bubblesort:(uns:copy, )
+    disp:('uns : ', uns, '\n', 'srt : ', srt):''
+}
+main:
+1 -> $dnd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

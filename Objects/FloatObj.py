@@ -27,4 +27,5 @@ class floatobj(numobj):
             ret = ret[0]
             ret = (ret[2] and '{}e{}{}'.format(ret[0], ret[1] in 'pP' and '+' or '-', ret[2]) or ret[0])
             # for some reason, '' in 'pP' is true.
+        print(ret)
         return floatobj(float(ret)) if ret else None
