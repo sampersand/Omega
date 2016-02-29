@@ -5,10 +5,20 @@ func:genarr:(size,):{
     }
     return:arr
 }
-func:bubblesort:(arr,):{}
-func:main::{
-    arr <- genarr:(10,)
-    disp:(arr,)
+func:bubblesort:(arr,):{
+    0->i
+    whilst:(i < 100):{
+        # break;#
+        i <- i + 1
+        #abort:(om:ldict)#
     }
+    disp:(i,)
+}
+func:main::{
+    uns <- genarr:(10,)
+    srt <- bubblesort:(uns:copy, )
+    disp:('uns : ', uns, '\n', 'srt : ', srt):''
+    return:(om:ldict,)
+}
 main:
 1->$dnd
