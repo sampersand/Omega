@@ -27,6 +27,7 @@ class operobj(methodobj):
                         "cannot perform '{}' on '{}'!".format(self.attrstr, repr(arg))
                 ldict.lastval = ldict.lastval.deepcopy()
                 ldict.lastval.base.base = getattr(last.base, self.attrstr).__call__(ldict.lastval.base)
+                
             return
     def _speceval(self, args, ldict):
         ctrl = args.control

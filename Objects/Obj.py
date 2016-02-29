@@ -62,7 +62,7 @@ class obj():
             else:
                 if __debug__:
                     assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
-                ldict.lastval = args
+                ldict.lastval = args.deepcopy()
 
 
     def copybase(self):
