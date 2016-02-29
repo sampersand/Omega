@@ -21,4 +21,5 @@ class numobj(obj):
             return floatobj(float(base))
         if not base.isnumeric():
             return None
-        return numobj(int(base))
+        from Objects.IntObj import intobj
+        return intobj(int(base))

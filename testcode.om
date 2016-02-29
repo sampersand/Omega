@@ -1,9 +1,14 @@
 func:genarr:(size,):{
     , -> arr
-    for:(0->inc; inc < size; inc<-inc+1):{
-        arr:add:(om:rand * 10.0,)
+    whilst:(arr:len < size):{
+        arr:add:((om:rand * 10.0):round,)
     }
     return:arr
 }
-genarr:(10,)->arr
-disp:(arr,)
+func:bubblesort:(arr,):{}
+func:main::{
+    arr <- genarr:(10,)
+    disp:(arr,)
+    }
+main:
+1->$dnd

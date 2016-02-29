@@ -11,6 +11,7 @@ class localsdict(dict):
     def resetlast(self):
         import Group
         self[localsdict.LAST_VAL] = Group.group()
+
     def resetret(self):
         import Group
         self[localsdict.RET_VAL]  = Group.group()
@@ -61,7 +62,12 @@ class localsdict(dict):
         return ret
 
     def onlyfuncs(self):
-        return localsdict()
+        ret = localsdict()
+        from Objects import userfuncobj
+        for e in self:
+            if isinstance(self[e].base, userfuncobj):
+                ret[e] = self[e]
+        return ret
 
     def deepcopy(self):
         import copy

@@ -32,7 +32,7 @@ class arrayobj(obj):
             from Group import group
             from Objects.IntObj import intobj
             ldict.lastval = group(base = intobj(len(self.base)))
-        if name == 'add':
+        elif name == 'add':
             if __debug__:
                 assert len(args) == 2, 'array:add:(pos, ele) or array:add:(ele,) not '+ str(args)
             if len(args[1]) == 2:

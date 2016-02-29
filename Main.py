@@ -5,5 +5,5 @@ if __name__ == '__main__':
     print('--')
     ldict = f.eval()
     print('--')
-    if __debug__:
+    if __debug__ and '$dnd' not in ldict:
         print('LocalsDict ::', ldict)
