@@ -51,10 +51,16 @@ class obj():
             #this is ignoring the parens...
             ldict[str(self)].base.eval(args, ldict)
         else:
-            if __debug__:
-                assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
-            print(args.base)
-            ldict.lastval = args
+            if str(args.base) in args.control.delims['applier']:
+                if __debug__:
+                    assert len(args) > 0, "No known Obj function '{}'!".format(args)
+                name = str(args[0])
+                if name == 'copy':
+                    ldict.lastval = ldict.lastval.deepcopy()
+            else:
+                if __debug__:
+                    assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
+                ldict.lastval = args
 
     def copybase(self):
         import copy
