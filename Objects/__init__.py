@@ -1,3 +1,12 @@
+import re
+floatre = re.compile(r'^(\d*\.?\d+)(?:[eE]([nNpP]?)(\d+))?F?$') #float can have fF at the end
+decre = re.compile(r'^(?:0([dD]))?(\d+)I?$')    #can have 'I' at the end
+binre = re.compile(r'^0([bB])([01]+)I?$')       #can have 'I' at the end
+hexre = re.compile(r'^0([xX])([\dA-Fa-f]+)I?$') #can have 'I' at the end
+octre = re.compile(r'^0([oO])([0-7]+)I?$')      #can have 'I' at the end
+unire = re.compile(r'^0[uU](\d+)[uU](\d+)I?$')  #can have 'I' at the end
+nbases = {'d':10, '':10, 'b':2, 'x':16, 'o':8}
+
 from Objects import Obj
 obj = Obj.obj
 

@@ -1,34 +1,26 @@
-from Objects import numobj
+from Objects import numobj, decre, binre, hexre, octre, unire, nbases
 class intobj(numobj):
-    import re
-    decre = re.compile(r'^(?:0([dD]))?(\d+)I?$')    #can have 'I' at the end
-    binre = re.compile(r'^0([bB])([01]+)I?$')       #can have 'I' at the end
-    hexre = re.compile(r'^0([xX])([\dA-Fa-f]+)I?$') #can have 'I' at the end
-    octre = re.compile(r'^0([oO])([0-7]+)I?$')      #can have 'I' at the end
-    unire = re.compile(r'^0[uU](\d+)[uU](\d+)I?$')  #can have 'I' at the end
-
-    nbases = {'d':10, '':10, 'b':2, 'x':16, 'o':8}
-    def __init__(self, base, nbases = 10):
+    def __init__(self, base, nbase = 10):
         if __debug__:
             assert isinstance(base, int), type(base)
         super().__init__(base)
-        self.nbases = nbases 
+        self.nbase = nbase 
     def __repr__(self):
-        return 'intobj({}{})'.format(self.base, '' if self.nbases == 10 else 'nbases='+str(self.nbases))
+        return 'intobj({}{})'.format(self.base, '' if self.nbase == 10 else 'nbase='+str(self.nbase))
 
     @staticmethod
     def frombase(base, control):
-        ret = intobj.decre.findall(base)
+        ret = decre.findall(base)
         if not ret:
-            ret = intobj.binre.findall(base)
+            ret = binre.findall(base)
             if not ret:
-                ret = intobj.hexre.findall(base)
+                ret = hexre.findall(base)
                 if not ret:
-                    ret = intobj.octre.findall(base)
+                    ret = octre.findall(base)
         if ret:
-            ret = (intobj.nbases[ret[0][0].lower()], ret[0][1])
+            ret = (nbases[ret[0][0].lower()], ret[0][1])
         if not ret:
-            ret = intobj.unire.findall(base)
+            ret = unire.findall(base)
             if ret:
                 ret = (int(ret[0][0]), ret[0][1])
         if ret:

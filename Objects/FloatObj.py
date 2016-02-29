@@ -19,4 +19,4 @@ class floatobj(numobj):
 
     @staticmethod
     def frombase(base, control):
-        pass
+        return
