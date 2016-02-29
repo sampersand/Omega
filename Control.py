@@ -116,15 +116,25 @@ class control():
                         '->>'  : operobj('->>',  15, None), # y >>= x 
                         }),
                     }),
-                
                 'delims':control._specdict({
 
                     }),
                 }),
-            'unary':{
-                'l':{},
-            }
-        })
+            'unary' : control._specdict({
+                'l' : control._specdict({
+                    # '~'   : operobj('~',    1, '_func_not'),
+                    # 'pos' : operobj('pos',  1, '_func_pos'),
+                    # 'neg' : operobj('neg',  1, '_func_neg'),
+                    # '>+'  : operobj('>+',   1, None),
+                    # '>-'  : operobj('>-',   1, None),
+                    }),
+                'r' : control._specdict({
+                    # '!'   : operobj('!',    2, None),
+                    # '+<'  : operobj('+<',   2, None),
+                    # '-<'  : operobj('-<',   2, None),
+                    })
+                })
+            })
         self.funcs = control._specdict({
             'if'     : funcobj('if'),
             'rm'     : funcobj('rm'),
@@ -136,7 +146,7 @@ class control():
             'abort'  : funcobj('abort'),
             'whilst' : funcobj('whilst'),
             'return' : funcobj('return'),#Watch out! return:a+b is {return:a} + b
-            'escape'  : funcobj('escape'),
+            'escape' : funcobj('escape'),
         })
         self.delims = control._specdelimsdict({
             'arraysep': control._spectuple((',',   operobj(',', 14, None))),
