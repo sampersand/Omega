@@ -15,6 +15,10 @@ class numobj(obj):
 
     @staticmethod
     def frombase(base, control):
+        #still very hacked together. TODO: regex for this.
+        if '.' in base: 
+            from Objects.FloatObj import floatobj
+            return floatobj(float(base))
         if not base.isnumeric():
             return None
         return numobj(int(base))
