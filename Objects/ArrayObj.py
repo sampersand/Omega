@@ -32,6 +32,17 @@ class arrayobj(obj):
             from Group import group
             from Objects.IntObj import intobj
             ldict.lastval = group(base = intobj(len(self.base)))
+        if name == 'add':
+            if __debug__:
+                assert len(args) == 2, 'array:add:(pos, ele) or array:add:(ele,) not '+ str(args)
+            if len(args[1]) == 2:
+                args[1][0].eval(ldict)
+                pos = ldict.lastval.base.base
+            else:
+                pos = -1
+            args[1][len(args[1]) == 2].eval(ldict)
+            self.base.insert(pos, ldict.lastval)
+            ldict.lastval = self.base[pos]
         else:
             raise SyntaxError("Unknown array function '{}' with parameters '{}'!".format(name,
                 len(args) >1 and args[1:] or ''))

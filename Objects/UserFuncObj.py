@@ -6,8 +6,10 @@ class userfuncobj(funcobj):
 
     def __repr__(self):
         return 'userfuncobj({},{},{})'.format(self.base, self.args, self.func)
+
     def __str__(self):
         return super().__str__() + ':' + str(self.args)
+
     def _genargs(self, args, ldict):
         ret = ldict.onlyfuncs()
         # if __debug__:
@@ -25,8 +27,7 @@ class userfuncobj(funcobj):
             return
         from Group import group
         nldict = ldict.onlyfuncs() if not args else self._genargs(args[0], ldict)
-        import copy
-        copy.deepcopy(self.func).eval(nldict)
+        self.func.deepcopy().eval(nldict)
         if not nldict.retval.base.isnull():
             ldict.lastval = nldict.retval
 

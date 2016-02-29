@@ -43,9 +43,9 @@ class localsdict(dict):
         def fset(self, value):
             if __debug__:
                 assert isinstance(value, group)
-            self.resetret()
+            self[localsdict.RET_VAL] = value
         def fdel(self):
-            self[localsdict.RET_VAL].reset()
+            self.resetret()
         return locals()
     retval = property(**retval())
 
