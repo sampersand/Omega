@@ -26,10 +26,11 @@ func:main::{
 }
 #main:#
 1 ->  $dnd
-3 ->  a
-1 -<> a
+3 -> b
+2 -> a
+a <+- b + 2
 
-disp:(a,)
+disp:(a,b)
 
 
 
