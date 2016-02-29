@@ -1,4 +1,9 @@
-func:genarr:(size,):{
+0->i
+whilst:(i<100):{
+    i <- i + 1
+}
+
+#func:genarr:(size,):{
     , -> arr
     whilst:(arr:len < size):{
         arr:add:((om:rand * 10.0):round,)
@@ -8,9 +13,7 @@ func:genarr:(size,):{
 func:bubblesort:(arr,):{
     0->i
     whilst:(i < 100):{
-        # break;#
         i <- i + 1
-        #abort:(om:ldict)#
     }
     disp:(i,)
 }
@@ -22,3 +25,4 @@ func:main::{
 }
 main:
 1->$dnd
+#

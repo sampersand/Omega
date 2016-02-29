@@ -27,7 +27,7 @@ class operobj(methodobj):
                         "cannot perform '{}' on '{}'!".format(self.attrstr, repr(arg))
                 ldict.lastval = ldict.lastval.deepcopy()
                 ldict.lastval.base.base = getattr(last.base, self.attrstr).__call__(ldict.lastval.base)
-                
+
             return
     def _speceval(self, args, ldict):
         ctrl = args.control
@@ -87,7 +87,7 @@ class operobj(methodobj):
                 ldict[str(ldict.lastval)] = last
                 ldict.lastval = ldict[str(ldict.lastval)] #is deepcopy really required?
                 return
-            ldict.lastval.base.updatebase(last, sname, ldict)
+            ldict.lastval.base.updatebase(last.base, sname, ldict)
             ldict.lastval = ldict.lastval.deepcopy() #is deepcopy really required?
         else:
             assert 0, "iopers aren't supported yet!"
