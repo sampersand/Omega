@@ -37,8 +37,10 @@ class funcobj(methodobj):
             self._func(args, ldict)
         elif name == 'return':
             self._return(args, ldict)
+        elif name == 'om':
+            self._om(args, ldict)
         else:
-            raise SyntaxError("Unknown Function '{}' in arguments '{}'! Known Functions: {}".format(self, args, 
+            raise SyntaxError("Unknown Function '{}' with arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
     def _disp(self, args, ldict):
         dispargs, sep, end = [''], ', ', '\n'
@@ -117,6 +119,25 @@ class funcobj(methodobj):
         args[0].eval(ldict)
         ldict.retval = ldict.lastval
 
+    def _om(self, args, ldict):
+        if __debug__:
+            assert len(args) > 0, "currently '{}' doesn't support empty function calls!".format(self)
+        name = str(args[0])
+        if name == 'rand':
+            import random
+            from Objects.FloatObj import floatobj
+            from Group import group
+            ldict.lastval = group(base = floatobj(random.random()))
+        elif name == 'ldict' or name == 'locals':
+            from Objects.DictObj import dictobj
+            from Group import group
+            ldict.lastval = group(base = dictobj(ldict.deepcopy()))
+            del ldict.lastval.base.base.lastval
+            # del ldict.lastval.base.base.lastval
+        else:
+            raise SyntaxError("No known '{}' function '{}' with arguments '{}'!".format(self, name, 
+                                                                                        '' if len(args) == 0 else \
+                                                                                        args[1:]))
 
 
 

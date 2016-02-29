@@ -5,11 +5,14 @@ class localsdict(dict):
 
     def __init__(self):
         super().__init__({})
-        self.gendefaults()
+        self.resetlast()
+        self.resetret()
 
-    def gendefaults(self):
+    def resetlast(self):
         import Group
         self[localsdict.LAST_VAL] = Group.group()
+    def resetret(self):
+        import Group
         self[localsdict.RET_VAL]  = Group.group()
 
     def __iter__(self):
@@ -29,7 +32,7 @@ class localsdict(dict):
                 assert isinstance(value, group)
             self[localsdict.LAST_VAL] = value
         def fdel(self):
-            self[localsdict.LAST_VAL].reset()
+            self.resetlast()
         return locals()
     lastval = property(**lastval())
 
@@ -40,7 +43,7 @@ class localsdict(dict):
         def fset(self, value):
             if __debug__:
                 assert isinstance(value, group)
-            self[localsdict.RET_VAL] = value
+            self.resetret()
         def fdel(self):
             self[localsdict.RET_VAL].reset()
         return locals()
@@ -48,12 +51,18 @@ class localsdict(dict):
 
     def hasret(self):
         return not self[localsdict.RET_VAL].base.isnull()
+
     def haslast(self):
         return not self[localsdict.LAST_VAL].base.isnull()
+
     def clear(self):
         ret = super().clear()
         self.gendefaults()
         return ret
+
     def onlyfuncs(self):
         return localsdict()
-    
+
+    def deepcopy(self):
+        import copy
+        return copy.deepcopy(self)
