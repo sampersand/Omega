@@ -101,8 +101,9 @@ class obj():
         elif fname == '&': self.base &= other.base
         elif fname == '^': self.base ^= other.base
         elif fname == '|': self.base |= other.base
-        elif fname == '>>': self.base >>= other.base
-        elif fname == '<<': self.base <<= other.base
+        elif fname == '>': self.base >>= other.base
+        elif fname == '<': self.base <<= other.base
+        else: raise SyntaxError("Unknown updatebase function '{}'!".format(fname))
         return ret
 
 
