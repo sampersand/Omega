@@ -1,4 +1,4 @@
-from Objects import obj, intobj
+from Objects import obj, intobj, strobj
 class arrayobj(obj):
     """
     The class that represents an array.
@@ -16,6 +16,21 @@ class arrayobj(obj):
     def __str__(self):
         return '[' + ', '.join(str(e) for e in self.base) + ']'
 
+    def convstr(self):
+        b = self.base
+        for e in range(len(b)):
+            b[e].base = strobj(str(b[e].base.base))
+        return arrayobj(b)
+
+    def __contains__(self, item):
+        if __debug__:
+            from Group import group
+        for e in self.base:
+            if __debug__:
+                assert isinstance(e, group), "element '{}' should be of type group, not {}".format(e, type(e))
+            if e.base.base == item.base:
+                return True
+        return False
     def eval(self, args, ldict):
         if not args:
             ldict.last = self

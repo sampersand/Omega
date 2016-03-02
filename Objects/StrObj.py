@@ -3,24 +3,26 @@ class strobj(obj):
     """
     The super class for all numbers.
     """
-    def __init__(self, base = None):
+    def __init__(self, base = None, quotes = ('', '')):
         if base == None:
             base = str()
         if __debug__:
             assert isinstance(base, str), type(base)
         super().__init__(base)
+        self.quotes = quotes
 
     def __repr__(self):
-        return 'strobj({})'.format(self.base)
+        return 'strobj({},quotes={})'.format(self.base, self.quotes)
 
     @staticmethod
     def fromstr(base, control):
-        return strobj(base) if len(base) > 1 and base[0] in control.allquotes and base[0] in control.allquotes else None
+        if base and base[0] in control.allquotes and base and base[-1] in control.allquotes: 
+                return strobj(base = base[1:-1], quotes = (base[0], base[-1]))
+        else:
+            return None
 
     def scrubstr(self, control):
         base = self.base
         for c in control.escapechars:
             base = base.replace(c, control.escapechars[c])
-        if base and base[0] in control.allquotes:  base = base[1:]
-        if base and base[-1] in control.allquotes: base = base[:-1]
         return base

@@ -1,4 +1,4 @@
-a<-input:'input a number: ',(2,4,9)
+a<-input:'input a number: ':(2,4,9)
 disp:('a:',a)
 @eof
 func:genarr:(size,):{
