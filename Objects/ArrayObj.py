@@ -33,6 +33,13 @@ class arrayobj(obj):
                     assert len(args) == 2, 'array:get:pos'
                 args[1].eval(ldict)
                 ldict.last = self.base[ldict.last.base.base]
+            elif name == 'pop':
+                if __debug__:
+                    assert len(args) == 2, 'array:get:pos'
+                args[1].eval(ldict)
+                pos = ldict.last.base.base
+                ldict.last = self.base[pos]
+                del self.base[pos]
             elif name == 'add':
                 if __debug__:
                     assert len(args) == 2, 'array:add:(pos, ele) or array:add:(ele,) not '+ str(args)
@@ -44,6 +51,17 @@ class arrayobj(obj):
                 args[1][len(args[1]) == 2].eval(ldict)
                 self.base.insert(pos, ldict.last)
                 ldict.last = self.base[pos]
+            elif name == 'addall':
+                for arr in args[1]:
+                    arr.eval(ldict)
+                    self.base += ldict.last.base.base
+                    # pos = ldict.last.base.base
+                # else:
+                    # pos = -1
+                # args[1][len(args[1]) == 2].eval(ldict)
+                # self.base.insert(pos, ldict.last)
+                # ldict.last = self.base[pos]
+
             else:
                 raise SyntaxError("Unknown array function '{}' with parameters '{}'!".format(name,
                     len(args) >1 and args[1:] or ''))

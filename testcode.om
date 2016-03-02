@@ -1,11 +1,11 @@
 func:genarr:(size,):{
     , -> arr
     whilst:(arr:len < size):{
-        arr:add:((om:rand * 10.0):round,)
+        arr:add:((100 * om:rand):round,)
     }
     return:arr
 }
-func:bubblesort:(arr,):{
+#func:bubblesort:(arr,):{
     0 -> i
     whilst:(i + 1 < arr:len):{
         if:(arr:get:i > arr:get:(i + 1)):{
@@ -18,10 +18,24 @@ func:bubblesort:(arr,):{
         }
     }
     return : arr
+}#
+func:qsort:(uns,):{ #unstable quicksort#
+    return:{
+        if:[uns:len <= 1]:uns:{
+            piv <- {uns <- uns:copy}:pop:0
+            , -> ret;:copy -> low;:copy-> upp
+            for:(i <- 0; i < uns:len; i <+- 1):{
+                (if:(uns:get:i -> e; < piv):upp:low):add:[e:copy,]
+            }
+            ret:addall:(qsort:[upp,], [piv,],qsort:[low,])
+            ret
+        }
+    }
+
 }
 func:main::{
     uns <- genarr:(30,)
-    srt <- bubblesort:(uns:copy, )
+    srt <- qsort:(uns:copy, )
     disp:('uns : ', uns, '\n', 'srt : ', srt):''
 }
 main:
