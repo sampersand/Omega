@@ -1,5 +1,5 @@
-import random
-from Objects import methodobj, floatobj, dictobj, obj
+from Objects import methodobj, obj
+import Objects.OmFuncs
 class funcobj(methodobj):
     """
     The class that represents an inbuilt function.
@@ -123,20 +123,7 @@ class funcobj(methodobj):
         ldict.escape = True
 
     def _om(self, args, ldict):
-        if __debug__:
-            assert len(args) > 0, "currently '{}' doesn't support empty function calls!".format(self)
-        name = str(args[0])
-        if name == 'rand':
-            ldict.last = args.newgroup(floatobj(random.random()))
-        elif name == 'ldict' or name == 'locals':
-            ldict.last = args.newgroup(dictobj(ldict.deepcopy()))
-            del ldict.last.base.base.last
-            # del ldict.last.base.base.last
-        else:
-            raise SyntaxError("No known '{}' function '{}' with arguments '{}'!".format(self, name, 
-                                                                                        '' if len(args) == 0 else \
-                                                                                        args[1:]))
-
+        return Objects.OmFuncs.eval(self, args, ldict)
     def _input(self, args, ldict):
         from Objects import strobj #this could be moved to the top
         msg, valid, err = ldict.last.newgroup('> '), None, ldict.last.newgroup(strobj("Invalid input!"))

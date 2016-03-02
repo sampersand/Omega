@@ -26,3 +26,5 @@ class strobj(obj):
         for c in control.escapechars:
             base = base.replace(c, control.escapechars[c])
         return base
+
+    def _func_add    (self, other): return self.base + str(other.base) #this thing's base shbould be a str already
