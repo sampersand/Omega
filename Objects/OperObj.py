@@ -72,30 +72,20 @@ class operobj(methodobj):
         last = ldict.last
         args.eval(ldict)
         sname = str(self)[1:-1]
+        lstr = str(ldict.last)
         if sname == '':
             if type(ldict.last.base) == obj: #aka, if it isn't a special object.
-                ldict[str(ldict.last)] = last
-                ldict.last = ldict[str(ldict.last)] #is deepcopy really required?
+                ldict[lstr] = last
+                ldict.last = ldict[lstr] #is deepcopy really required?
             else:
                 ldict.last.base.updatebase(last.base, sname)
-                ldict.last = ldict.last.deepcopy() #is deepcopy really required?
+                # ldict.last = ldict.last.deepcopy() #is deepcopy really required?
         else:
             if type(ldict.last.base) == obj: #aka, if it isn't a special object.
-                ldict[str(ldict.last)] = last
-                ldict.last = ldict[str(ldict.last)] #is deepcopy really required?
+                ldict[lstr] = last
+                ldict.last = ldict[lstr] #is deepcopy really required?
             else:
                 ldict.last.base.updatebase(last.base, sname)
-            # ldict.last = ldict.last.deepcopy() #is deepcopy really required?
-            # print(repr(ldict.last.base))
-            # assert 0, "iopers aren't supported yet!"
-            # if argstr not in ldict:
-            #     ldict[argstr] = ldict.last
-            #     ldict.last = ldict.last.deepcopy()
-            # else:
-            #     args.newgroup(base = args.control.allopers[sname],\
-            #           args = [ldict[argstr], last]).eval(ldict)
-            #     ldict[argstr] = ldict.last.deepcopy()
-            #     ldict[argstr] = ldict.last
 
 
 

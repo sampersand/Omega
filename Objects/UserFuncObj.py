@@ -10,22 +10,21 @@ class userfuncobj(funcobj):
     def __str__(self):
         return super().__str__() + ':' + str(self.args)
 
-    def _genargs(self, args, ldict):
-        ret = ldict.onlyfuncs()
-        # if __debug__:
-        #     assert len(args) == len(self.args), "{} args are required for '{}', got {} {}!".\
-        #             format(len(self.args), self.base, len(args), str(args)[1:])
-        for elep in range(len(self.args)):
-            args[elep].eval(ldict)
-            ret[str(self.args[elep])] = ldict.last
-        return ret
+    # def _genargs(self, args, ldict):
     def eval(self, args, ldict):
         if __debug__:
             assert args.basestr in args.control.delims['applier'][0] #f :(args) <-- needs the ':'
         if args.base is self:
             ldict.last = args
             return
-        nldict = ldict.onlyfuncs() if not args else self._genargs(args[0], ldict)
+
+        nldict = ldict.onlyfuncs()
+        if args:
+            args = args[0]
+            for elep in range(len(self.args)):
+                args[elep].eval(ldict)
+                nldict[str(self.args[elep])] = ldict.last
+
         self.func.deepcopy().eval(nldict)
         if not nldict.ret.base.isnull():
             ldict.last = nldict.ret

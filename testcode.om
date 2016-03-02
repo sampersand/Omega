@@ -7,10 +7,10 @@ func:genarr:(size,):{
 }
 func:bubblesort:(arr,):{
     0 -> i
-    whilst:(i < arr:len - 1):{
+    whilst:(i + 1 < arr:len):{
         if:(arr:get:i > arr:get:(i + 1)):{
             temp <- {arr:get:i}:copy
-            arr:get:i <- {arr:get:(i + 1)}:copy
+            arr:get:i <- arr:get:(i + 1)
             arr:get:(i + 1) <- temp
             0 -> i
         }:{

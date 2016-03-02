@@ -24,15 +24,15 @@ class arrayobj(obj):
             super().eval(args, ldict)
         except SyntaxError:
             name = str(args[0])
-            if name == 'get':
+            if name == 'len':
+                if __debug__:
+                    assert len(args) == 1, 'array:len'
+                ldict.last = args.newgroup(intobj(len(self.base)))
+            elif name == 'get':
                 if __debug__:
                     assert len(args) == 2, 'array:get:pos'
                 args[1].eval(ldict)
                 ldict.last = self.base[ldict.last.base.base]
-            elif name == 'len':
-                if __debug__:
-                    assert len(args) == 1, 'array:len'
-                ldict.last = args.newgroup(intobj(len(self.base)))
             elif name == 'add':
                 if __debug__:
                     assert len(args) == 2, 'array:add:(pos, ele) or array:add:(ele,) not '+ str(args)
@@ -47,12 +47,6 @@ class arrayobj(obj):
             else:
                 raise SyntaxError("Unknown array function '{}' with parameters '{}'!".format(name,
                     len(args) >1 and args[1:] or ''))
-        #     if eles.base is self:
-        #         locls.lv = eles
-        #         return
-        #     import inbuiltfuncs
-        #     inbuiltfuncs.evalarray(self, eles, locls)
-
 
 
 

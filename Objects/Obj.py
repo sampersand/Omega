@@ -70,8 +70,8 @@ class obj():
                 ldict.last = args.deepcopy()
 
 
-    def copybase(self):
-        return copy.deepcopy(self.base)
+    def deepcopy(self):
+        return copy.deepcopy(self)
 
     def __bool__     (self): return bool(self.base)
     def _func_add    (self, other): return self.base +  other.base
@@ -109,8 +109,6 @@ class obj():
         elif fname == '<': self.base <<= other.base
         else: raise SyntaxError("Unknown updatebase function '{}'!".format(fname))
         return ret
-
-
 
 
 
