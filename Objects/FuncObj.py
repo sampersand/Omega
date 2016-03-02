@@ -22,32 +22,19 @@ class funcobj(methodobj):
         if __debug__:
             assert name in args.control.funcs,\
                 "In-built Function '{}' isn't a known function: {}".format(self, args.control.funcs)
-        if name == 'disp':
-            self._disp(args, ldict)
-        elif name == 'if':
-            self._if(args, ldict)
-        elif name == 'skip':
-            self._skip(args, ldict)
-        elif name == 'rm':
-            self._rm(args, ldict)
-        elif name == 'whilst':
-            self._whilst(args, ldict)
-        elif name == 'abort':
-            self._abort(args, ldict)
-        elif name == 'for':
-            self._for(args, ldict)
-        elif name == 'func':
-            self._func(args, ldict)
-        elif name == 'return':
-            self._return(args, ldict)
-        elif name == 'om':
-            self._om(args, ldict)
-        elif name == 'escape':
-            self._escape(args, ldict)
-        elif name == 'input':
-            self._input(args, ldict)
-        else:
-            raise SyntaxError("Unknown Function '{}' with arguments '{}'! Known Functions: {}".format(self, args, 
+        if   name == 'if':      self._if(args, ldict)
+        elif name == 'for':     self._for(args, ldict)
+        elif name == 'return':  self._return(args, ldict)
+        elif name == 'whilst':  self._whilst(args, ldict)
+        elif name == 'disp':    self._disp(args, ldict)
+        elif name == 'func':    self._func(args, ldict)
+        elif name == 'abort':   self._abort(args, ldict)
+        elif name == 'om':      self._om(args, ldict)
+        elif name == 'input':   self._input(args, ldict)
+        elif name == 'escape':  self._escape(args, ldict)
+        elif name == 'rm':      self._rm(args, ldict)
+        elif name == 'skip':    self._skip(args, ldict)
+        else: raise SyntaxError("Unknown Function '{}' with arguments '{}'! Known Functions: {}".format(self, args,
                                                                                         args.control.funcs.keys()))
     def _disp(self, args, ldict):
         dispargs, sep, end = [''], ' ', '\n'
