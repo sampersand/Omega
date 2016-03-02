@@ -138,8 +138,33 @@ class funcobj(methodobj):
                                                                                         args[1:]))
 
     def _input(self, args, ldict):
-        pass
-
+        msg, valid, err = '> ', None, "Invalid input!"
+        if len(args) > 0:
+            args[0].eval(ldict)
+            msg = ldict.last
+            if len(args) > 1:
+                args[1].eval(ldict)
+                valid = ldict.last
+                if len(args) > 2:
+                    args[2].eval(ldict)
+                    err = ldict.last
+                    if __debug__:
+                        if len(args) > 3:
+                            raise SyntaxError('input:[question,[valid results (array) [, error messg]]]')
+        from Objects import strobj #this could be moved to the top
+        ldict.last = ldict.last.newgroup(base = strobj())
+        while True:
+            ldict.last.base.base = str(input(msg.base.scrubstr(args.control)))
+            if valid != None:
+                if __debug__:
+                    from Objects import arrayobj
+                    assert isinstance(valid.base, arrayobj), 'Only accepts array of valid results!, not ' + str(type(valid))
+                if ldict.base.base not in valid.base:
+                    print(err.base.scrubstr(args.control))
+                else:
+                    break;
+            else:
+                break;
 
 
 

@@ -1,9 +1,13 @@
+a<-input:'input a number: ',(2,4,9)
+disp:('a:',a)
+@eof
 func:genarr:(size,):{
-    , -> arr
-    whilst:(arr:len < size):{
-        arr:add:((100 * om:rand):round,)
+    return:{, -> arr
+        whilst:(arr:len < size):{
+            arr:add:((100 * om:rand):round,)
+        }
+        arr
     }
-    return:arr
 }
 #func:bubblesort:(arr,):{
     0 -> i
@@ -19,7 +23,7 @@ func:genarr:(size,):{
     }
     return : arr
 }#
-func:qsort:(uns,):{ #unstable quicksort#
+func:qsort:(uns,):{
     return:{
         if:[uns:len <= 1]:uns:{
             piv <- {uns <- uns:copy}:pop:0
@@ -39,4 +43,4 @@ func:main::{
     disp:('uns : ', uns, '\n', 'srt : ', srt):''
 }
 main:
-#1 ->  $dnd#
+1 ->  $dnd

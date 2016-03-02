@@ -1,16 +1,17 @@
 func:genarr:(size,):{
-    , -> arr
-    whilst:(arr:len < size):{
-        arr:add:((om:rand * 10.0):round,)
+    return:{, -> arr
+        whilst:(arr:len < size):{
+            arr:add:((100 * om:rand):round,)
+        }
+        arr
     }
-    return:arr
 }
-func:bubblesort:(arr,):{
+#func:bubblesort:(arr,):{
     0 -> i
-    whilst:(i < arr:len - 1):{
+    whilst:(i + 1 < arr:len):{
         if:(arr:get:i > arr:get:(i + 1)):{
             temp <- {arr:get:i}:copy
-            arr:get:i <- {arr:get:(i + 1)}:copy
+            arr:get:i <- arr:get:(i + 1)
             arr:get:(i + 1) <- temp
             0 -> i
         }:{
@@ -18,30 +19,25 @@ func:bubblesort:(arr,):{
         }
     }
     return : arr
+}#
+func:qsort:(uns,):{
+    return:{
+        if:[uns:len <= 1]:uns:{
+            piv <- {uns <- uns:copy}:pop:0
+            , -> ret;:copy -> low;:copy-> upp
+            for:(i <- 0; i < uns:len; i <+- 1):{
+                (if:(uns:get:i -> e; < piv):upp:low):add:[e:copy,]
+            }
+            ret:addall:(qsort:[upp,], [piv,],qsort:[low,])
+            ret
+        }
+    }
+
 }
 func:main::{
-    uns <- genarr:(10,)
-    srt <- bubblesort:(uns:copy, )
+    uns <- genarr:(30,)
+    srt <- qsort:(uns:copy, )
     disp:('uns : ', uns, '\n', 'srt : ', srt):''
 }
-#main:#
-#1 ->  $dnd#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+main:
+1 ->  $dnd
