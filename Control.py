@@ -213,10 +213,6 @@ class control():
         """ invert parens - used in file parsing. eg, '(' -> ')'. """
         return self.parens[paren in self.parens['l'] and 'l' or 'r'][paren]
 
-    
-
-
-
 
 
 

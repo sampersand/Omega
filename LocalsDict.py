@@ -47,23 +47,32 @@ class localsdict(dict):
 
     def last():
         doc = "The last value evaluated"
-        def fget(self): return self[localsdict.IVALS][localsdict.LAST_VAL]
-        def fset(self, value): self[localsdict.IVALS][localsdict.LAST_VAL] = value
-        def fdel(self): self[localsdict.IVALS][localsdict.LAST_VAL] = group(control = self.control)
+        def fget(self):
+            return self[localsdict.IVALS][localsdict.LAST_VAL]
+        def fset(self, value):
+            self[localsdict.IVALS][localsdict.LAST_VAL] = value
+        def fdel(self):
+            self[localsdict.IVALS][localsdict.LAST_VAL] = group(control = self.control)
         return locals()
     last = property(**last())
     def ret():
         doc = "The value to return"
-        def fget(self): return self[localsdict.IVALS][localsdict.RET_VAL]
-        def fset(self, value): self[localsdict.IVALS][localsdict.RET_VAL] = value
-        def fdel(self): self[localsdict.IVALS][localsdict.RET_VAL] = group(control = self.control)
+        def fget(self):
+            return self[localsdict.IVALS][localsdict.RET_VAL]
+        def fset(self, value):
+            self[localsdict.IVALS][localsdict.RET_VAL] = value
+        def fdel(self):
+            self[localsdict.IVALS][localsdict.RET_VAL] = group(control = self.control)
         return locals()
     ret = property(**ret())
     def escape():
         doc = "Set to True when trying to break out."
-        def fget(self): return self[localsdict.IVALS][localsdict.ESCAPE_VAL]
-        def fset(self, value): self[localsdict.IVALS][localsdict.ESCAPE_VAL] = value
-        def fdel(self): self[localsdict.IVALS][localsdict.ESCAPE_VAL] = group(control = self.control)
+        def fget(self):
+            return self[localsdict.IVALS][localsdict.ESCAPE_VAL]
+        def fset(self, value):
+            self[localsdict.IVALS][localsdict.ESCAPE_VAL] = value
+        def fdel(self):
+            self[localsdict.IVALS][localsdict.ESCAPE_VAL] = group(control = self.control)
         return locals()
     escape = property(**escape())
 

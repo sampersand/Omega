@@ -49,8 +49,7 @@ class obj():
         return ret
 
     def isnull(self):
-        from Objects import nullobj
-        return isinstance(self, nullobj)
+        return False
 
     def eval(self, args, ldict):
         if str(self) in ldict:
@@ -94,7 +93,7 @@ class obj():
     def _func_le     (self, other): return self.base <= other.base
 
 
-    def updatebase(self, other, fname, ldict):
+    def updatebase(self, other, fname):
         ret = str(self)
         if   fname == '': self.base = other.base
         elif fname == '+': self.base += other.base
