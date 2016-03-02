@@ -1,5 +1,6 @@
 from Objects import numobj, floatre
 class floatobj(numobj):
+    pytype = float
     def __init__(self, base):
         if __debug__:
             assert isinstance(base, float), type(base)

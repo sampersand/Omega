@@ -3,6 +3,8 @@ class arrayobj(obj):
     """
     The class that represents an array.
     """
+    pytype = list
+    
     def __init__(self, base = None):
         if base == None:
             base = []

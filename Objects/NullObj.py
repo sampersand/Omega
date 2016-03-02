@@ -4,6 +4,7 @@ class nullobj(obj):
     The class that represents a null object.
     In reality, it is representing a 'None' object type, but there is no way to access 'None'.
     """
+    pytype = type(None)
     def __init__(self, isuser = False):
         super().__init__(None)
         self.isuser = isuser

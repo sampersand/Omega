@@ -1,5 +1,6 @@
 from Objects import numobj, decre, binre, hexre, octre, unire, nbases
 class intobj(numobj):
+    pytype = int
     def __init__(self, base, nbase = 10):
         if __debug__:
             assert isinstance(base, int), type(base)

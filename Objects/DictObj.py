@@ -1,5 +1,6 @@
 from Objects import obj
 class dictobj(obj):
+    pytype = dict
     def __init__(self, base = None):
         if base == None:
             base = {}

@@ -3,6 +3,7 @@ class numobj(obj):
     """
     The super class for all numbers.
     """
+
     def __init__(self, base = None):
         if base == None:
             base = 0

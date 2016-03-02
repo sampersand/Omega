@@ -3,6 +3,7 @@ class strobj(obj):
     """
     The super class for all numbers.
     """
+    pytype = str
     def __init__(self, base = None, quotes = ('', '')):
         if base == None:
             base = str()

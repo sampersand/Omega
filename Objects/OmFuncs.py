@@ -17,13 +17,17 @@ def _ldict(self, args, ldict):
     ldict.last = args.newgroup(dictobj(ldict.deepcopy()))
     del ldict.last.base.base.last
 
-def _itos(self, args, ldict):
-    #args 0 is itos
+def _changetype(self, args, ldict):
     if __debug__:
-        assert str(args[0]) == 'itos', "... how was it passed if the first argument wasn't this function?"
-        assert len(args[1]) == 1, 'om:itos:(string to convert,)'
+        assert str(args[0]) == 'changetype', "... how was it passed if the first argument wasn't this function?"
+        assert len(args[1]) == 2, 'om:changetype:(object to convert, type to convert it to)'
+    args[1][1].eval(ldict)
+    typ = ldict.last.base
+    if __debug__:
+        assert isinstance(typ, typeobj), "can only change an object's type by passing a type object!"
     args[1][0].eval(ldict)
-    ldict.last.base = strobj(str(ldict.last.base.base))
+
+    ldict.last.base = typ.base(typ.base.pytype(ldict.last.base.base))
 def _type(self, args, ldict):
     if __debug__:
         assert str(args[0]) == 'type', "... how was it passed if the first argument wasn't this function?"
@@ -34,13 +38,9 @@ def _type(self, args, ldict):
 _definedfuncs = {
     'rand' : _rand,
     'ldict': _ldict,
-    'itos' : _itos,
+    'changetype' : _changetype,
     'type' : _type,
 }
-
-
-
-
 
 
 

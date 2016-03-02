@@ -3,6 +3,7 @@ class boolobj(intobj):
     """
     The class that represents a boolean.
     """
+    pytype = bool
     def __init__(self, base = None):
         if base == None:
             base = False

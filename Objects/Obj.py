@@ -4,7 +4,6 @@ class obj():
     The base class for all of the objects.
     """
 
-    #used to translate from symbols to functions.
     def __init__(self, base):
         if __debug__:
             assert not isinstance(base, obj), type(base) #only allowed to pass non-objs
@@ -109,9 +108,6 @@ class obj():
         elif fname == '<': self.base <<= other.base
         else: raise SyntaxError("Unknown updatebase function '{}'!".format(fname))
         return ret
-
-
-
 
 
 
