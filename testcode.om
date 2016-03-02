@@ -1,47 +1,11 @@
-func:genarr:(size,):{
-    , -> arr
-    whilst:(arr:len < size):{
-        arr:add:((om:rand * 10.0):round,)
+func:f::{
+    whilst:((a <+- 1) < 10):{
+        disp:('in whilst! a=',a)
     }
-    return:arr
+    return:a
 }
-func:bubblesort:(arr,):{
-    0 -> i
-    whilst:(i < arr:len - 1):{
-        if:(arr:get:i > arr:get:(i + 1)):{
-            temp <- {arr:get:i}:copy
-            arr:get:i <- {arr:get:(i + 1)}:copy
-            arr:get:(i + 1) <- temp
-            0 -> i
-        }:{
-            i <+- 1
-        }
-    }
-    return : arr
-}
-func:main::{
-    uns <- genarr:(20,)
-    srt <- bubblesort:(uns:copy, )
-    disp:('uns : ', uns, '\n', 'srt : ', srt):''
-}
-main:
-1 -> $dnd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+disp:(f:,)
+x = (1,)
+1.0 -> c
+disp:((if:(c == 1):'yes!':'no!'),)
+abort:'my children'

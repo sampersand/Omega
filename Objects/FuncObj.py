@@ -14,6 +14,8 @@ class funcobj(methodobj):
         return 'funcobj({},func={})'.format(self.base, self.func)
 
     def eval(self, args, ldict):
+        if self.base[0] == ldict.IVAL_PREF:
+            return ldict.last
         if self is args.base and not args: #aka, no params passed, then just do whatever is done normally.
             return super().eval(args, ldict)
         name = str(self)
@@ -42,6 +44,8 @@ class funcobj(methodobj):
             self._om(args, ldict)
         elif name == 'escape':
             self._escape(args, ldict)
+        elif name == 'input':
+            self._input(args, ldict)
         else:
             raise SyntaxError("Unknown Function '{}' with arguments '{}'! Known Functions: {}".format(self, args, 
                                                                                         args.control.funcs.keys()))
@@ -146,7 +150,8 @@ class funcobj(methodobj):
                                                                                         '' if len(args) == 0 else \
                                                                                         args[1:]))
 
-
+    def _input(self, args, ldict):
+        pass
 
 
 

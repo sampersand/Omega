@@ -2,10 +2,11 @@ from Group import group
 from Objects import userfuncobj
 import copy
 class localsdict(dict):
-    IVALS = '$ivals'
-    LAST_VAL = '$'
-    RET_VAL = '$ret'
-    ESCAPE_VAL = '$esc'
+    IVAL_PREF = '$'
+    IVALS = IVAL_PREF + 'ivals'
+    LAST_VAL = IVAL_PREF + ''
+    RET_VAL = IVAL_PREF + 'ret'
+    ESCAPE_VAL = IVAL_PREF + 'esc'
 
     def __new__(self, control, useIvals = True):
         return super().__new__(self)

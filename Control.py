@@ -49,6 +49,7 @@ class control():
             'null' : nullobj(True),
             'True'  : boolobj(True),  'true'  : boolobj(True),  
             'False' : boolobj(False), 'false' : boolobj(False), 
+            '$': funcobj('$')
         })
         self.opers = control._specdict({
             'binary':control._specdict({
@@ -144,6 +145,7 @@ class control():
             'skip'   : funcobj('skip'),
             'func'   : funcobj('func'),
             'abort'  : funcobj('abort'),
+            'input'  : funcobj('input'),
             'whilst' : funcobj('whilst'),
             'return' : funcobj('return'),#Watch out! return:a+b is {return:a} + b
             'escape' : funcobj('escape'),
