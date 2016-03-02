@@ -27,9 +27,11 @@ func:qsort:(uns,):{
     return:{
         if:[uns:len <= 1]:uns:{
             piv <- {uns <- uns:copy}:pop:0
-            , -> ret;:copy -> low;:copy-> upp
+            , -> ret;
+            $:copy -> low;
+            $:copy-> upp
             for:(i <- 0; i < uns:len; i <+- 1):{
-                (if:(uns:get:i -> e; < piv):upp:low):add:[e:copy,]
+                (if:(uns:get:i -> e; $ < piv):upp:low):add:[e:copy,]
             }
             ret:addall:(qsort:[upp,], [piv,],qsort:[low,])
             ret

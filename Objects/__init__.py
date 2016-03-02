@@ -12,9 +12,10 @@ nbases = {'d':10, '':10, 'b':2, 'x':16, 'o':8}
 from Objects import Obj
 obj = Obj.obj
 
-from Objects import NullObj, MethodObj
-methodobj = MethodObj.methodobj
+from Objects import NullObj, MethodObj, TypeObj
 nullobj = NullObj.nullobj
+methodobj = MethodObj.methodobj
+typeobj = TypeObj.typeobj
 
 from Objects import StrObj, NumObj
 strobj = StrObj.strobj

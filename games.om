@@ -1,9 +1,8 @@
 func:guess:(max,):{
     (max * om:rand):round + 1 -> randnum
     whilst:True:{
-        input:('Chose a number from 1 - ' + max + ': ') -> inp
-        om:itos:(inp,) -> e
-        disp:(e, om:type:e)
+        om:tostr:(input:('Chose a number from 1 - ' + max + ': '),) -> inp
+        abort:(om:type:(inp,))
         escape:
     }
 }
