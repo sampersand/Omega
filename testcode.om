@@ -20,9 +20,9 @@ func:bubblesort:(arr,):{
     return : arr
 }
 func:main::{
-    uns <- genarr:(20,)
+    uns <- genarr:(30,)
     srt <- bubblesort:(uns:copy, )
     disp:('uns : ', uns, '\n', 'srt : ', srt):''
 }
 main:
-1 ->  $dnd
+#1 ->  $dnd#

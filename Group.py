@@ -135,8 +135,8 @@ class group(list):
             ldict.last = ldict[self.basestr]
         elif not self.base.isnull():
             self.base.eval(self, ldict)
-        else:
-            assert 0, 'when does this happen?' + str(self)
+        # else:
+        #     assert 0, 'when does this happen?' + str(self)
 
     def deepcopy(self):
         return copy.deepcopy(self)

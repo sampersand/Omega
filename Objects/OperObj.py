@@ -31,40 +31,40 @@ class operobj(methodobj):
         ctrl = args.control
         name = str(self)
         if name in ctrl.delims:
+            if name in ctrl.delims['applier']:
+                args[0].eval(ldict)
+                ldict.last.base.eval(args[1:], ldict)
+                return
             if name in ctrl.delims['endline']:
                 for line in args: #each ';' is a line.
-                    if not line.base.isnull():
-                        line.eval(ldict)
+                    line.eval(ldict)
                     if not ldict.ret.base.isnull():
                         break
-            elif name in ctrl.delims['arraysep']:
+                return
+            if name in ctrl.delims['arraysep']:
                 l = args.newgroup(parens = args.parens)
                 l.base = arrayobj()
                 for ele in args:
-                    if not ele.base.isnull():
-                        ele.eval(ldict)
+                    ele.eval(ldict)
                     if not ldict.ret.base.isnull():
                         break
                     l.base.base.append(ldict.last)
                 ldict.last = l
-            elif name in ctrl.delims['applier']:
-                args[0].eval(ldict)
-                ldict.last.base.eval(args[1:], ldict)
-        elif name in ctrl.opers['binary']:
+                return
+        if name in ctrl.opers['binary']:
             if __debug__:
                 assert name not in ctrl.opers['binary']['math'], 'all math should have a func associated!'
                 assert name not in ctrl.opers['binary']['bitwise'], 'all bitwise should have a func associated!'
-            if name in ctrl.opers['binary']['logic']:
-                raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".format(self, args, 
-                                                                                                ctrl.allopers.keys()))
-            elif name in ctrl.opers['binary']['assignment']:
+            if name in ctrl.opers['binary']['assignment']:
                 d = name in args.control.opers['binary']['assignment']['r']
                 args[d - 1].eval(ldict)
                 for arg in args[slice(d or None, d - 1 or None, None)]:
                     self._evalassign(arg, ldict)
-        else:
-            raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".format(self, args, 
-                                                                                                ctrl.allopers.keys()))
+                return
+            if name in ctrl.opers['binary']['logic']:
+                pass
+        raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".\
+                          format(self, args, ctrl.allopers.keys()))
     def _evalassign(self, args, ldict):
         if __debug__:
             assert str(self) in args.control.opers['binary']['assignment'],\
