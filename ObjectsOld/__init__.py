@@ -9,6 +9,34 @@ octre = re.compile(r'^0([oO])([0-7]+)[dD]?$')      #can have one of '[dD]' at th
 unire = re.compile(r'^0[uU](\d+)[uU](\d+)[dD]?$')  #can have one of '[dD]' at the end (digit)
 nbases = {'d':10, '':10, 'b':2, 'x':16, 'o':8}
 
-from Objects.Object import ObjTypes
-locals().update(ObjTypes._alldict)
-__all__ = [x for x in locals().keys() if x[-3:] == 'obj']
+from Objects import Obj
+obj = Obj.obj
+
+from Objects import NullObj, MethodObj, TypeObj
+nullobj = NullObj.nullobj
+methodobj = MethodObj.methodobj
+typeobj = TypeObj.typeobj
+
+from Objects import StrObj, NumObj
+strobj = StrObj.strobj
+numobj = NumObj.numobj
+
+from Objects import IntObj, FloatObj
+intobj = IntObj.intobj
+floatobj = FloatObj.floatobj
+
+from Objects import BoolObj
+boolobj = BoolObj.boolobj
+
+from Objects import DictObj, ArrayObj
+dictobj = DictObj.dictobj
+arrayobj = ArrayObj.arrayobj
+
+from Objects import FuncObj, OperObj
+funcobj = FuncObj.funcobj
+operobj = OperObj.operobj
+
+from Objects import UserFuncObj
+userfuncobj = UserFuncObj.userfuncobj
+
+__all__  = [x for x in locals().keys() if x[-3:] == 'obj']

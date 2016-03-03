@@ -123,7 +123,7 @@ class obj():
     objtype = property(**objtype())
 
 
-
+o.objtype
 
 
 
