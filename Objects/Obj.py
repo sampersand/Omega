@@ -61,8 +61,7 @@ class obj():
                 if name == 'copy':
                     ldict.last = ldict.last.deepcopy()
                 if name == 'type':
-                    from Objects import typeobj
-                    ldict.last.base = typeobj(type(ldict.last.base))
+                    ldict.last.base = ldict.last.base.objtype
                 else:
                     raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             else:
@@ -111,7 +110,17 @@ class obj():
         else: raise SyntaxError("Unknown updatebase function '{}'!".format(fname))
         return ret
 
-
+    def objtype():
+        doc = "The type of this object"
+        def fget(self):
+            from Objects import typeobj
+            return typeobj(type(self), self)
+        def fset(self, value):
+            assert 0, 'todo!'
+        def fdel(self):
+            assert 0, 'todo!'
+        return locals()
+    objtype = property(**objtype())
 
 
 

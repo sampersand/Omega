@@ -14,7 +14,7 @@ def _rand(self, args, ldict):
     ldict.last = args.newgroup(floatobj(random.random()))
 
 def _ldict(self, args, ldict):
-    ldict.last = args.newgroup(dictobj(ldict.deepcopy()))
+    ldict.last = args.newgroup(dictobj(ldict))
     del ldict.last.base.base.last
 
 def _changetype(self, args, ldict):

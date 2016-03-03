@@ -11,7 +11,7 @@ class strobj(obj):
             assert isinstance(base, str), type(base)
         super().__init__(base)
         self.quotes = quotes
-
+    
     def __repr__(self):
         return 'strobj({},quotes={})'.format(self.base, self.quotes)
 
