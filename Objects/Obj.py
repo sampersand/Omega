@@ -8,7 +8,6 @@ class obj():
         if __debug__:
             assert not isinstance(base, obj), type(base) #only allowed to pass non-objs
         self.base = base
-
     def __repr__(self):
         return 'obj({})'.format(self.base)
 
@@ -61,6 +60,9 @@ class obj():
                 name = str(args[0])
                 if name == 'copy':
                     ldict.last = ldict.last.deepcopy()
+                if name == 'type':
+                    from Objects import typeobj
+                    ldict.last.base = typeobj(type(ldict.last.base))
                 else:
                     raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             else:

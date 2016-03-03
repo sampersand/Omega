@@ -1,6 +1,3 @@
-a<-input:'input a number: ':(2,4,9)
-disp:('a:',a)
-@eof
 func:genarr:(size,):{
     return:{, -> arr
         whilst:(arr:len < size):{

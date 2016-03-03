@@ -1,7 +1,7 @@
 from Objects import obj
 class typeobj(obj):
     """
-    The class that represents a boolean.
+    The class that represents an omega object type.
     """
     def __init__(self, base = None):
         if base == None:
