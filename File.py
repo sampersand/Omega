@@ -1,7 +1,7 @@
 import Control
 import codecs
 import copy
-from ObjGroup import objgrp
+from Group import group
 from LocalsDict import localsdict
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
@@ -95,16 +95,16 @@ class file:
                     else:
                         ret2.append(token)
 
-            return [objgrp(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
+            return [group(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
         def compresstokens(self, linetokens):
             def compresstokens(linegrp): #this is non-stable
-                ret = objgrp(control = self.control, parens = linegrp.parens) #universe
+                ret = group(control = self.control, parens = linegrp.parens) #universe
                 while len(linegrp) != 0:
                     ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
                     if str(ele) not in self.control.allparens:
                         ret.append(ele)
                     else:
-                        toappend = objgrp(control = self.control)
+                        toappend = group(control = self.control)
                         parens = {str(ele):1}
                         while sum(parens.values()) > 0 and len(linegrp) != 0:
                             toappend.append(linegrp.pop(0))
@@ -154,24 +154,24 @@ class file:
                         return fixtkns(line[0])
                 fhp = findhighest(line)
                 if __debug__:
-                    assert isinstance(fhp, objgrp), 'expected a objgrp for fhp! (not %s)' % fhp
+                    assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
                     assert not fhp and fhp.data, fhp
-                ret = objgrp(data = fhp.data, control = self.control, parens = line.parens)
-                current = objgrp(control = self.control)
+                ret = group(data = fhp.data, control = self.control, parens = line.parens)
+                current = group(control = self.control)
                 while line:
                     e = line.pop(0) #was formerly .pop(0)
                     if e.data == ret.data:
                         # if current: #these used to strip out null values, but is ignored now
                         #     ret.append(fixtkns(current))
                         ret.append(fixtkns(current))
-                        current = objgrp(control = self.control)
+                        current = group(control = self.control)
                     else:
                         current.append(e)
                 if current:
                     ret.append(fixtkns(current))
 
                 return ret
-            return fixtkns(compresstokens(objgrp(args = linetokens, control = self.control)))
+            return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = localsdict(self.control)

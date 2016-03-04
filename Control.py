@@ -1,4 +1,5 @@
-from Objects import *
+from Objects import nullobj, boolobj, funcobj, operobj
+from Group import group
 class control():
 
     class _specdict(dict):
@@ -46,10 +47,10 @@ class control():
         })
 
         self.consts = control._specdict({
-            'null' : nullobj(True),
-            'True'  : boolobj(True),  'true'  : boolobj(True),  
-            'False' : boolobj(False), 'false' : boolobj(False), 
-            '$': funcobj('$')
+            'null'  : group(data = None,  obj = nullobj(True)),
+            'True'  : group(data = True,  obj = boolobj()),  'true'  : group(data = True,  obj = boolobj()),  
+            'False' : group(data = False, obj = boolobj()), 'false' : group(data = False, obj = boolobj()), 
+            '$'     :  group(data = None, obj = funcobj('$'))
         })
         self.opers = control._specdict({
             'binary':control._specdict({

@@ -1,5 +1,5 @@
-from ObjGroup import objgrp
-from Objects import userfuncobj
+from Group import group
+from Objects import ufuncobj
 import copy
 class localsdict(dict):
     IVAL_PREF = '$'
@@ -20,7 +20,7 @@ class localsdict(dict):
     def resetivals(self):
         self[localsdict.IVALS] = localsdict(self.control, False)
         for val in (localsdict.LAST_VAL, localsdict.RET_VAL, localsdict.ESCAPE_VAL):
-            self[localsdict.IVALS][val] = objgrp(control = self.control)
+            self[localsdict.IVALS][val] = group(control = self.control)
 
     def __iter__(self):
         for i in super().__iter__():
@@ -38,7 +38,7 @@ class localsdict(dict):
     def onlyfuncs(self):
         ret = localsdict(self.control)
         for e in self:
-            if not isinstance(self[e], dict) and isinstance(self[e].base, userfuncobj):
+            if not isinstance(self[e], dict) and isinstance(self[e].base, ufuncobj):
                 ret[e] = self[e]
         return ret
 
@@ -52,7 +52,7 @@ class localsdict(dict):
         def fset(self, value):
             self[localsdict.IVALS][localsdict.LAST_VAL] = value
         def fdel(self):
-            self[localsdict.IVALS][localsdict.LAST_VAL] = objgrp(control = self.control)
+            self[localsdict.IVALS][localsdict.LAST_VAL] = group(control = self.control)
         return locals()
     last = property(**last())
     def ret():
@@ -62,7 +62,7 @@ class localsdict(dict):
         def fset(self, value):
             self[localsdict.IVALS][localsdict.RET_VAL] = value
         def fdel(self):
-            self[localsdict.IVALS][localsdict.RET_VAL] = objgrp(control = self.control)
+            self[localsdict.IVALS][localsdict.RET_VAL] = group(control = self.control)
         return locals()
     ret = property(**ret())
     def escape():
@@ -72,7 +72,7 @@ class localsdict(dict):
         def fset(self, value):
             self[localsdict.IVALS][localsdict.ESCAPE_VAL] = value
         def fdel(self):
-            self[localsdict.IVALS][localsdict.ESCAPE_VAL] = objgrp(control = self.control)
+            self[localsdict.IVALS][localsdict.ESCAPE_VAL] = group(control = self.control)
         return locals()
     escape = property(**escape())
 
