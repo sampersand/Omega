@@ -99,18 +99,17 @@ class file:
         def compresstokens(self, linetokens):
             def compresstokens(linegrp): #this is non-stable
                 ret = objgrp(control = self.control, parens = linegrp.parens) #universe
-                while linegrp.args:
-                    ele = linegrp.args.pop(0) #pop(0) is inefficient for list. update this in the future
+                while len(linegrp) != 0:
+                    ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
                     if str(ele) not in self.control.allparens:
-                        ret.args.append(ele)
+                        ret.append(ele)
                     else:
                         toappend = objgrp(control = self.control)
                         parens = {str(ele):1}
-                        while sum(parens.values()) > 0 and linegrp.args:
-                            toappend.args.append(linegrp.args.pop(0))
-                            print(toappend)
-                            if str(toappend.args[-1]) in self.control.allparens:
-                                last = str(toappend.args[-1])
+                        while sum(parens.values()) > 0 and len(linegrp) != 0:
+                            toappend.append(linegrp.pop(0))
+                            if str(toappend[-1]) in self.control.allparens:
+                                last = str(toappend[-1])
                                 if last in self.control.parens['l']:
                                     if last not in parens:
                                         parens[last] = 0
@@ -120,10 +119,10 @@ class file:
                                         assert self.control._invertparen(last) in parens, "unmatched paren '{}'!".format(last)
                                     parens[self.control._invertparen(last)] -= 1
                         if __debug__:
-                            assert str(toappend.args[-1]) in self.control.allparens, toappend #the last element should be in allparens
-                        toappend.parens = (str(ele), str(toappend.args.pop()))
+                            assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
+                        toappend.parens = (str(ele), str(toappend.pop()))
                         toappend = compresstokens(toappend)
-                        ret.args.append(toappend)
+                        ret.append(toappend)
                 return ret
             def findhighest(linegrp):
                 if __debug__:
@@ -131,7 +130,7 @@ class file:
                     #change this in the future when boolean for linegrp changes
                 highest = None
                 for elep in range(len(linegrp)):
-                    ele = linegrp[elep].basestr
+                    ele = str(linegrp[elep])
                     if ele in self.control.allopers and (highest == None or
                             self.control.allopers[ele].priority >=\
                             self.control.allopers[linegrp[highest].basestr].priority):

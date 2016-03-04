@@ -6,16 +6,16 @@ class objgrp(list):
             assert control != None, 'Cannot pass an empty control!'
             assert isinstance(data, (str, type(None))), repr(data)
             assert isinstance(args, list)
+        super().__init__(args)
         self.data = data
         self.objtype = objtype
-        self.args = args
         self.control = control
         self.parens = parens
     def __repr__(self):
         ret = 'objgrp('
         if self.data != None: ret += 'data=%r,' % self.data
         if self.objtype != None: ret += 'objtype=%r,' % self.objtype
-        if self.args != []: ret += 'args=%r,' % self.args
+        if super().__bool__() != []: ret += 'args=%r,' % super().__str__()
         # if self.control != None: ret += 'control=%r,' % self.control
         if self.parens != ('', ''): ret += 'parens=%r,' % self.parens
         return (ret != 'objgrp(' and ret[:-1] or objgrp) + ')'

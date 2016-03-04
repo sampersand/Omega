@@ -3,7 +3,7 @@ if __name__ == '__main__':
         from time import clock #yes, i understand that clock is depreciated.
         start = clock()
     from File import file
-    f = file('/Users/westerhack/code/python/Omega/games.om') #hardcode ftw
+    f = file('/Users/westerhack/code/python/Omega/games.om') #hardcode ftws
     print(f)
     print('--')
     ldict = f.eval()
