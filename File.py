@@ -181,5 +181,5 @@ class file:
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = localsdict(self.control)
-        self.lines.eval(ldict)
+        self.lines.evaluate(ldict)
         return ldict

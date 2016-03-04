@@ -2,11 +2,11 @@ from Group import group
 from Objects import ufuncobj
 import copy
 class localsdict(dict):
-    IVAL_PREF = '$'
-    IVALS = IVAL_PREF + 'ivals'
-    LAST_VAL = IVAL_PREF + ''
-    RET_VAL = IVAL_PREF + 'ret'
-    ESCAPE_VAL = IVAL_PREF + 'esc'
+    om_pref = '$' #om prefix
+    om_vals = om_pref + 'ivals'
+    last_val = om_pref + ''
+    ret_val = om_pref + 'ret'
+    esc_val = om_pref + 'esc'
 
     def __new__(self, control, useIvals = True):
         return super().__new__(self)
@@ -18,9 +18,9 @@ class localsdict(dict):
             self.resetivals()
 
     def resetivals(self):
-        self[localsdict.IVALS] = localsdict(self.control, False)
-        for val in (localsdict.LAST_VAL, localsdict.RET_VAL, localsdict.ESCAPE_VAL):
-            self[localsdict.IVALS][val] = group(control = self.control)
+        self[localsdict.om_vals] = localsdict(self.control, False)
+        for val in (localsdict.last_val, localsdict.ret_val, localsdict.esc_val):
+            self[localsdict.om_vals][val] = group(control = self.control)
 
     def __iter__(self):
         for i in super().__iter__():
@@ -48,30 +48,32 @@ class localsdict(dict):
     def last():
         doc = "The last value evaluated"
         def fget(self):
-            return self[localsdict.IVALS][localsdict.LAST_VAL]
+            return self[localsdict.om_vals][localsdict.last_val]
         def fset(self, value):
-            self[localsdict.IVALS][localsdict.LAST_VAL] = value
+            self[localsdict.om_vals][localsdict.last_val] = value
         def fdel(self):
-            self[localsdict.IVALS][localsdict.LAST_VAL] = group(control = self.control)
+            self[localsdict.om_vals][localsdict.last_val] = group(control = self.control)
         return locals()
     last = property(**last())
-    def ret():
-        doc = "The value to return"
-        def fget(self):
-            return self[localsdict.IVALS][localsdict.RET_VAL]
-        def fset(self, value):
-            self[localsdict.IVALS][localsdict.RET_VAL] = value
-        def fdel(self):
-            self[localsdict.IVALS][localsdict.RET_VAL] = group(control = self.control)
-        return locals()
-    ret = property(**ret())
-    def escape():
-        doc = "Set to True when trying to break out."
-        def fget(self):
-            return self[localsdict.IVALS][localsdict.ESCAPE_VAL]
-        def fset(self, value):
-            self[localsdict.IVALS][localsdict.ESCAPE_VAL] = value
-        def fdel(self):
-            self[localsdict.IVALS][localsdict.ESCAPE_VAL] = group(control = self.control)
-        return locals()
-    escape = property(**escape())
+
+    # def ret():
+    #     doc = "The value to return"
+    #     def fget(self):
+    #         return self[localsdict.om_vals][localsdict.ret_val]
+    #     def fset(self, value):
+    #         self[localsdict.om_vals][localsdict.ret_val] = value
+    #     def fdel(self):
+    #         self[localsdict.om_vals][localsdict.ret_val] = group(control = self.control)
+    #     return locals()
+    # ret = property(**ret())
+
+    # def escape():
+    #     doc = "Set to True when trying to break out."
+    #     def fget(self):
+    #         return self[localsdict.om_vals][localsdict.esc_val]
+    #     def fset(self, value):
+    #         self[localsdict.om_vals][localsdict.esc_val] = value
+    #     def fdel(self):
+    #         self[localsdict.om_vals][localsdict.esc_val] = group(control = self.control)
+    #     return locals()
+    # escape = property(**escape())
