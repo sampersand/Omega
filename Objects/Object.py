@@ -39,7 +39,7 @@ class obj():
     def __init__(self, base, otype = ObjTypes.obj):
         if __debug__:
             assert not isinstance(base, obj), type(base) #only allowed to pass non-objs
-            # assert not isinstance(otype, ObjTypes), type(base) #only allowed to pass non-objs
+            assert not isinstance(otype, ObjTypes), type(base) #only allowed to pass non-objs
         self.base = base
         self.otype = otype
     def __repr__(self):
