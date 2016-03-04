@@ -47,10 +47,10 @@ class control():
         })
 
         self.consts = control._specdict({
-            'null'  : group(data = None,  obj = nullobj(True)),
-            'True'  : group(data = True,  obj = boolobj()),  'true'  : group(data = True,  obj = boolobj()),  
-            'False' : group(data = False, obj = boolobj()), 'false' : group(data = False, obj = boolobj()), 
-            '$'     :  group(data = None, obj = funcobj('$'))
+            'null'  : group(data = None,  pobj = nullobj(True)),
+            'True'  : group(data = True,  pobj = boolobj()),  'true'  : group(data = True,  pobj = boolobj()),  
+            'False' : group(data = False, pobj = boolobj()), 'false' : group(data = False, pobj = boolobj()), 
+            '$'     :  group(data = None, pobj = funcobj('$'))
         })
         self.opers = control._specdict({
             'binary':control._specdict({

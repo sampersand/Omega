@@ -62,7 +62,7 @@ class file:
                             return [par[0] + par[1]] + createtokens(par[2])
                         return createtokens(par[0]) + [par[1]] + createtokens(par[2])
                 return [rawt]
-            tokens = createtokens(rawt)
+            tokens = [token for token in createtokens(rawt) if token]
             ret = []
             currentquote = None
             for token in tokens:
@@ -95,6 +95,12 @@ class file:
                     else:
                         ret2.append(token)
 
+            ret = []
+            for e in (e.strip(self.control.nbwhitespace) for e in ret2):
+                if not ret or not e or e not in self.control.delims['endline']\
+                    or str(ret[-1].data) not in self.control.delims['endline']:
+                    ret.append(group(e, control = self.control))
+            return ret
             return [group(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
         def compresstokens(self, linetokens):
             def compresstokens(linegrp): #this is non-stable
@@ -133,7 +139,7 @@ class file:
                     ele = str(linegrp[elep])
                     if ele in self.control.allopers and (highest == None or
                             self.control.allopers[ele].priority >=\
-                            self.control.allopers[linegrp[highest].basestr].priority):
+                            self.control.allopers[str(linegrp[highest].data)].priority):
                         highest = elep
                 if __debug__:
                     if highest == None:
