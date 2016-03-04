@@ -1,7 +1,7 @@
 import Control
 import codecs
 import copy
-from Group import group
+from ObjGroup import objgrp
 from LocalsDict import localsdict
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
@@ -82,7 +82,7 @@ class file:
             linep = 0
             while linep < len(ret): 
                 if ret[linep] and ret[linep] in self.control.datadef:
-                    self.control.applyrules(ret.pop(0))
+                    self.control.applyrules(ret.args.pop(0))
                 linep+=1
             ret2 = []
             for token in ret:
@@ -95,21 +95,22 @@ class file:
                     else:
                         ret2.append(token)
 
-            return [e for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
+            return [objgrp(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
         def compresstokens(self, linetokens):
             def compresstokens(linegrp): #this is non-stable
-                ret = group(parens = linegrp.parens, control = self.control) #universe
-                while linegrp:
-                    ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
+                ret = objgrp(control = self.control, parens = linegrp.parens) #universe
+                while linegrp.args:
+                    ele = linegrp.args.pop(0) #pop(0) is inefficient for list. update this in the future
                     if str(ele) not in self.control.allparens:
-                        ret.append(group(base = ele, control = self.control))
+                        ret.args.append(ele)
                     else:
-                        toappend = group(control = self.control)
+                        toappend = objgrp(control = self.control)
                         parens = {str(ele):1}
-                        while sum(parens.values()) > 0 and linegrp:
-                            toappend.append(linegrp.pop(0))
-                            if str(toappend[-1]) in self.control.allparens:
-                                last = str(toappend[-1])
+                        while sum(parens.values()) > 0 and linegrp.args:
+                            toappend.args.append(linegrp.args.pop(0))
+                            print(toappend)
+                            if str(toappend.args[-1]) in self.control.allparens:
+                                last = str(toappend.args[-1])
                                 if last in self.control.parens['l']:
                                     if last not in parens:
                                         parens[last] = 0
@@ -119,14 +120,14 @@ class file:
                                         assert self.control._invertparen(last) in parens, "unmatched paren '{}'!".format(last)
                                     parens[self.control._invertparen(last)] -= 1
                         if __debug__:
-                            assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
-                        toappend.parens = (str(ele), str(toappend.pop()))
+                            assert str(toappend.args[-1]) in self.control.allparens, toappend #the last element should be in allparens
+                        toappend.parens = (str(ele), str(toappend.args.pop()))
                         toappend = compresstokens(toappend)
-                        ret.append(toappend)
+                        ret.args.append(toappend)
                 return ret
             def findhighest(linegrp):
                 if __debug__:
-                    assert linegrp or linegrp.base, linegrp
+                    assert linegrp or linegrp.data, linegrp
                     #change this in the future when boolean for linegrp changes
                 highest = None
                 for elep in range(len(linegrp)):
@@ -137,7 +138,7 @@ class file:
                         highest = elep
                 if __debug__:
                     if highest == None:
-                    #     linegrp.base = self.control.delims['applier'][1]
+                    #     linegrp.data = self.control.delims['applier'][1]
                     #     return linegrp
                         raise SyntaxError("no operator for string '{}'!".format(repr(linegrp))) # ':' was still required
                 return linegrp[highest]
@@ -154,24 +155,24 @@ class file:
                         return fixtkns(line[0])
                 fhp = findhighest(line)
                 if __debug__:
-                    assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
-                    assert not fhp and fhp.base, fhp
-                ret = group(base = fhp.base, parens = line.parens, control = self.control)
-                current = group(control = self.control)
+                    assert isinstance(fhp, objgrp), 'expected a objgrp for fhp! (not %s)' % fhp
+                    assert not fhp and fhp.data, fhp
+                ret = objgrp(data = fhp.data, control = self.control, parens = line.parens)
+                current = objgrp(control = self.control)
                 while line:
                     e = line.pop(0) #was formerly .pop(0)
-                    if e.base == ret.base:
+                    if e.data == ret.data:
                         # if current: #these used to strip out null values, but is ignored now
                         #     ret.append(fixtkns(current))
                         ret.append(fixtkns(current))
-                        current = group(control = self.control)
+                        current = objgrp(control = self.control)
                     else:
                         current.append(e)
                 if current:
                     ret.append(fixtkns(current))
 
                 return ret
-            return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
+            return fixtkns(compresstokens(objgrp(args = linetokens, control = self.control)))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = localsdict(self.control)

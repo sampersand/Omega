@@ -1,7 +1,7 @@
 import copy
 import Control
 from Objects import obj, nullobj
-class group(list):
+class groupOLD(list):
 
     def __new__(self, base = None, control = None, args = [], parens = ('', '')):
         return super().__new__(self, args)
