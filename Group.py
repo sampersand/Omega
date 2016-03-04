@@ -82,8 +82,7 @@ class groupOLD(list):
     #         l = lines[line]
     #         ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
     #     return ret
-    def linestr(self):
-        def _linestr(self, ret, indent):
+    def linestr(self):        def _linestr(self, ret, indent):
             if not self:
                 # ret.append((str(self), indent))
                 return (str(self), indent)
@@ -102,33 +101,33 @@ class groupOLD(list):
             l = lines[line]
             ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
         return ret
-    def linestr(self):
-        linep = []
-        def _linestr(self, indent):
-            if not self:
-                return str(self)
-            isendl = self.basestr in self.control.delims['endline'][0]
-            if __debug__:
-                assert self.basestr
-            ret = []
-            for l in self:
-                if l.isnull():
-                    continue
-                if isendl:
-                    linep.append([])
-                linel = len(linep) 
-                ls = _linestr(l, indent + 1)
-                if isendl:
-                    ret.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
-                else:
-                    ret.append(ls)
-            retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
-            if isendl and self.parens[1]:
-                linep.append([])
-                retu += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
-            retu += self.parens[1]
-            return retu
-        return _linestr(self, 0)
+    # def linestr(self):
+    #     linep = []
+    #     def _linestr(self, indent):
+    #         if not self:
+    #             return str(self)
+    #         isendl = self.basestr in self.control.delims['endline'][0]
+    #         if __debug__:
+    #             assert self.basestr
+    #         ret = []
+    #         for l in self:
+    #             if l.isnull():
+    #                 continue
+    #             if isendl:
+    #                 linep.append([])
+    #             linel = len(linep) 
+    #             ls = _linestr(l, indent + 1)
+    #             if isendl:
+    #                 ret.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
+    #             else:
+    #                 ret.append(ls)
+    #         retu = self.parens[0] + ('' if isendl else ' ' + self.basestr + ' ').join(ret)
+    #         if isendl and self.parens[1]:
+    #             linep.append([])
+    #             retu += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
+    #         retu += self.parens[1]
+    #         return retu
+    #     return _linestr(self, 0)
 
     def eval(self, ldict):
         if self.basestr in ldict:
