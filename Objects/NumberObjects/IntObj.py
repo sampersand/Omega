@@ -1,3 +1,4 @@
 from Objects import numobj
 class intobj(numobj):
-    pass
+    def evalobj(self, arg, lcls):
+        lcls.iv.last.updatedata(int(arg.data), arg.baseobj)

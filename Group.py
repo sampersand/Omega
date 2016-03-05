@@ -87,4 +87,6 @@ class group(list):
     @property
     def datastr(self):
         return str(self.data)
-    
+    def updatedata(self, data, baseobj):
+        self.data = data
+        self.baseobj = baseobj

@@ -14,13 +14,14 @@ class operobj(mthdobj):
             self._speceval(args, lcls)
         else:
             args[0].evalgrp(lcls)
+            print(repr(args[0]))
+            quit(lcls)
             for arg in args[1:]:
                 last = lcls.iv.last
                 arg.evalgrp(lcls)
                 if __debug__:
                     assert hasattr(lcls.iv.last.baseobj, self.attrstr),\
-                        "cannot perform '{}' on '{}'!".format(self.attrstr, repr(arg.baseobj))
-                assert 0,' todo'
+                        "cannot perform '{}' on '{}'!".format(self.attrstr, repr(lcls.iv.last.baseobj))
                 lcls.iv.last = lcls.iv.last.deepcopy()
                 lcls.iv.last.data = getattr(last.data, self.attrstr).__call__(lcls.iv.last.data)
     def _speceval(self, args, lcls):
@@ -29,49 +30,40 @@ class operobj(mthdobj):
             if self.name in ctrl.delims['applier']:
                 args[0].evalgrp(lcls)
                 lcls.iv.last.baseobj.eval(args[1:], lcls)
-            elif self.name in ctrl.delims['endline']:
+                return
+            if self.name in ctrl.delims['endline']:
                 for arg in args:
                     arg.evalgrp(lcls)
                     if not lcls.iv.ret.isnull():
                         del lcls.iv.ret
                         break
-    #     ctrl = args.control
-    #     name = str(self)
-    #     if name in ctrl.delims:
-    #         if name in ctrl.delims['applier']:
-    #             args[0].eval(lcls)
-    #             lcls.iv.last.data.eval(args[1:], lcls)
-    #             return
-    #         if name in ctrl.delims['endline']:
-    #             for line in args: #each ';' is a line.
-    #                 line.eval(lcls)
-    #                 if not lcls.ret.data.isnull():
-    #                     break
-    #             return
-    #         if name in ctrl.delims['arraysep']:
-    #             l = args.newgroup(parens = args.parens)
-    #             l.data = arrayobj()
-    #             for ele in args:
-    #                 ele.eval(lcls)
-    #                 if not lcls.ret.data.isnull():
-    #                     break
-    #                 l.data.append(lcls.iv.last)
-    #             lcls.iv.last = l
-    #             return
-    #     if name in ctrl.opers['binary']:
-    #         if __debug__:
-    #             assert name not in ctrl.opers['binary']['math'], 'all math should have a func associated!'
-    #             assert name not in ctrl.opers['binary']['bitwise'], 'all bitwise should have a func associated!'
-    #         if name in ctrl.opers['binary']['assignment']:
-    #             d = name in args.control.opers['binary']['assignment']['r']
-    #             args[d - 1].eval(lcls)
-    #             for args in args[slice(d or None, d - 1 or None, None)]:
-    #                 self._evalassign(args, lcls)
-    #             return
-    #         if name in ctrl.opers['binary']['logic']:
-    #             pass
-    #     raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".\
-    #                       format(self, args, ctrl.allopers.keys()))
+                return
+            if self.name in ctrl.delims['arraysep']:
+                assert 0, 'todo: arraysep'
+                # l = args.newgroup(parens = args.parens)
+                # l.data = arrayobj()
+                # for ele in args:
+                #     ele.eval(lcls)
+                #     if not lcls.ret.data.isnull():
+                #         break
+                #     l.data.append(lcls.iv.last)
+                # lcls.iv.last = l
+                # return
+            
+        if self.name in ctrl.opers['binary']:
+            if __debug__:
+                assert self.name not in ctrl.opers['binary']['math'], 'all math should have a func associated!'
+                assert self.name not in ctrl.opers['binary']['bitwise'], 'all bitwise should have a func associated!'
+            if self.name in ctrl.opers['binary']['assignment']:
+                d = self.name in args.control.opers['binary']['assignment']['r']
+                args[d - 1].evalgrp(lcls)
+                for arg in args[slice(d or None, d - 1 or None, None)]:
+                    self._evalassign(arg, lcls)
+                return
+            if self.name in ctrl.opers['binary']['logic']:
+                pass
+        raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".\
+                          format(self, args, ctrl.allopers.keys()))
     # def _evalassign(self, args, lcls):
     #     if __debug__:
     #         assert str(self) in args.control.opers['binary']['assignment'],\

@@ -1,4 +1,4 @@
 from Objects import obj
 class numobj(obj):
-    def evaluate(self, arg, lcls):
-        pass
+    def evalobj(self, arg, lcls):
+        raise NotImplementedError()
