@@ -18,6 +18,8 @@ class operobj(mthdobj):
                 last = lcls.iv.last
                 arg.evalgrp(lcls)
                 if __debug__:
+                    assert last is not lcls.iv.last, type(arg.baseobj)
+                if __debug__:
                     assert hasattr(last.baseobj, self.attrstr),\
                         "cannot perform '{}' on '{}'!".format(self.attrstr, repr(last.baseobj))
                 lcls.iv.last = lcls.iv.last.deepcopy()
