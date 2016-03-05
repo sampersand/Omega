@@ -7,7 +7,7 @@ class _lclsivls(dict):
         'ret'  : omp + 'ret',
         'esc'  : omp + 'esc',
     }
-
+    _invivalsdict = {v: k for k, v in ivalsdict.items()}
     def __init__(self):
         super().__init__(dict())
         for iv in self.ivalsdict:
@@ -20,7 +20,7 @@ class _lclsivls(dict):
         if not isinstance(other, lcls):
             return NotImplemented
         x = other.copy()
-        x.update({_lclsivls.ivalsdict[e]:self[e] for e in self})
+        x.update({_lclsivls.ivalsdict[e]:self[e] for e in self if not self[e].isnull()})
         return x
 class lcls(dict):
     def __new__(self, control):
@@ -46,6 +46,6 @@ class lcls(dict):
         return ret
 
     def __getitem__(self, item):
-        if item[0] != self.iv.omp or item not in self.iv:
-            return super().__getitem__(item)
-        return self.iv[item]
+        if item in self.iv._invivalsdict:
+            return self.iv[self.iv._invivalsdict[item]]
+        return super().__getitem__(item)
