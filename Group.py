@@ -1,4 +1,4 @@
-from copy import deepcopy
+import copy
 from Objects import nullobj, obj
 from Objects import objregexes
 class group(list):
@@ -11,31 +11,31 @@ class group(list):
         self.args = args
 
     def __repr__(self):
-        ret = 'objgrp('
+        ret = 'group('
         if self.data != None: ret += 'data={},'.format(repr(self.data))
         if self.baseobj != None: ret += 'pobj={},'.format(repr(self.baseobj))
         if bool(self): ret += 'args={},'.format(super().__repr__())
         # if self.control != None: ret += 'control=%r,' % self.control
         if self.parens != ('', ''): ret += 'parens={},'.format(repr(self.parens))
-        return (ret != 'objgrp(' and ret[:-1] or objgrp) + ')'
+        return (ret != 'group(' and ret[:-1] or ret) + ')'
 
     def __str__(self):
         if not self:
-            return ''.join((str(self.parens[0]), str(self.data), str(self.parens[1])))
-        if str(self.data) in self.control.opers['binary']:
+            return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
+        if self.datastr in self.control.opers['binary']:
             if __debug__:
                 assert len(self.parens) == 2, repr(self)
-            return self.parens[0] + (' ' + str(self.data) +' ').join(str(e) for e in self) + str(self.parens[1])
-        return ''.join((str(self.data), str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+            return self.parens[0] + (' ' + self.datastr +' ').join(str(e) for e in self) + str(self.parens[1])
+        return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
 
     def linestr(self):
         linep = []
         def _linestr(self, indent):
             if not self:
                 return str(self)
-            isendl = str(self.data) in self.control.delims['endline'][0]
+            isendl = self.datastr in self.control.delims['endline'][0]
             if __debug__:
-                assert str(self.data)
+                assert self.datastr
             lines = []
             for l in self:
                 if l.isnull():
@@ -48,7 +48,7 @@ class group(list):
                     lines.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
                 else:
                     lines.append(ls)
-            ret = self.parens[0] + ('' if isendl else ' ' + str(self.data) + ' ').join(lines)
+            ret = self.parens[0] + ('' if isendl else ' ' + self.datastr + ' ').join(lines)
             if isendl and self.parens[1]:
                 linep.append([])
                 ret += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
@@ -66,15 +66,16 @@ class group(list):
         if __debug__:
             assert isinstance(self.data, str), "'%s' has to be of type str, not '%s'" %(self.data, type(self.data))
         for key in objregexes:
-            if key.fullmatch(self.data):
+            if key.fullmatch(self.datastr):
                 return objregexes[key]()
+        if self.data in self.control.allkws:
+            return self.control.allkws[self.data]
         return obj()
 
     def evalgrp(self, lcls):
         return self.baseobj.evalobj(self, lcls)
 
-    def dcopy(self):
-
+    def deepcopy(self):
         return deepcopy(self)
 
     def __deepcopy__(self, memo):
@@ -83,3 +84,7 @@ class group(list):
                      control = self.control,
                      args = deepcopy(self.args, memo),
                      parens = deepcopy(self.parens, memo))
+    @property
+    def datastr(self):
+        return str(self.data)
+    

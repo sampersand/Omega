@@ -1,92 +1,54 @@
 from Group import group
 from Objects import ufuncobj
 import copy
-class lcls(dict):
+class lclsivals(dict):
     omp = '$' #om prefix
     ivd = { #ivals dict
-        'ivals': omp + 'ivals',
         'last' : omp,
         'ret'  : omp + 'ret',
         'esc'  : omp + 'esc',}
 
-    def __new__(self, control, useIvals = True):
+class lcls(dict):
+    _ivalpref = lclsivals.omp + 'ivals'
+    def __new__(self, control):
         return super().__new__(self)
 
-    def __init__(self, control, useIvals = True):
+    def __init__(self, control):
         super().__init__(dict())
         self.control = control
         if useIvals:
             self.resetivals()
 
-    def resetivals(self):
-        self.ivals = lcls(self.control, False)
-        for val in lcls.ivd.values():
-            if val is not lcls.ivd['ivals']:
-                self.ivals[val] = group(control = self.control)
-
-    def __iter__(self):
-        for i in super().__iter__():
-            if isinstance(self[i], dict) or not self[i].isnull():
-                yield i
+    # def resetivals(self):
+    #     self.ivals = lcls(self.control, False)
+    #     for val in lcls.ivd.values():
+    #         if val is not lcls.ivd['ivals']:
+    #             self.ivals[val] = group(control = self.control)
 
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self) + '}'
+        return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self + self.ivals) +  + '}'
 
     def clear(self):
-        ret = super().clear()
-        self.resetivals()
-        return ret
+        del self.ivals
+        return super().clear()
+        # ret = super().clear()
+        # return ret
 
     def onlyfuncs(self):
         ret = lcls(self.control)
         for e in self:
-            if not isinstance(self[e], dict) and isinstance(self[e].base, ufuncobj):
+            if isinstance(self[e].base, ufuncobj):
                 ret[e] = self[e]
         return ret
 
     def deepcopy(self):
         return copy.deepcopy(self)
 
-    def ivals():
-        doc = "The internal values (used to keep track of things like return values)"
-        def fget(self):
-            return self[lcls.ivd['ivals']]
-        def fset(self, value):
-            self[lcls.ivd['ivals']] = value
-        def fdel(self):
-            self.resetivals()
-        return locals()
-    ivals = property(**ivals())
+    # @property
+    # def ivals(self):
+    #     """ The internal values (used to keep track of things like return values) """
+    #     return self._ivals
 
-    def last():
-        doc = "The last value evaluated"
-        def fget(self):
-            return self.ivals[lcls.ivd['last']]
-        def fset(self, value):
-            self.ivals[lcls.ivd['last']] = value
-        def fdel(self):
-            self.ivals[lcls.ivd['last']] = group(control = self.control)
-        return locals()
-    last = property(**last())
-
-    # def ret():
-    #     doc = "The value to return"
-    #     def fget(self):
-    #         return self.ivals[lcls.ret_val]
-    #     def fset(self, value):
-    #         self.ivals[lcls.ret_val] = value
-    #     def fdel(self):
-    #         self.ivals[lcls.ret_val] = group(control = self.control)
-    #     return locals()
-    # ret = property(**ret())
-
-    # def escape():
-    #     doc = "Set to True when trying to break out."
-    #     def fget(self):
-    #         return self.ivals[lcls.esc_val]
-    #     def fset(self, value):
-    #         self.ivals[lcls.esc_val] = value
-    #     def fdel(self):
-    #         self.ivals[lcls.esc_val] = group(control = self.control)
-    #     return locals()
-    # escape = property(**escape())
+    # @ivals.deleter
+    # def ivals(self):
+    #     del self._ivals

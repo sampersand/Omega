@@ -2,13 +2,13 @@ class obj(object):
     def __repr__(self):
         return type(self).__qualname__ + '()'
 
-    def evalobj(self, arg, lcls):
-        if str(arg) in lcls:
-            return locls[arg].bobj.eval(arg, lcls)
-        elif str(arg.data) in arg.control.delims['applier']:
-            assert 0, 'todo! ' + str(arg)
+    def evalobj(self, args, lcls):
+        if str(args) in lcls:
+            return locls[args].baseobj.eval(args, lcls)
+        elif str(args.data) in args.control.delims['applier']:
+            assert 0, 'todo! ' + str(args)
         else:
-            lcls.last = arg.dcopy()
+            lcls.last = args.deepcopy()
         # if str(args.base)
         # if str(self) in ldict:
         #     #this is ignoring the parens...
