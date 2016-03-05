@@ -14,16 +14,14 @@ class operobj(mthdobj):
             self._speceval(args, lcls)
         else:
             args[0].evalgrp(lcls)
-            print(repr(args[0]))
-            quit(lcls)
             for arg in args[1:]:
                 last = lcls.iv.last
                 arg.evalgrp(lcls)
                 if __debug__:
-                    assert hasattr(lcls.iv.last.baseobj, self.attrstr),\
-                        "cannot perform '{}' on '{}'!".format(self.attrstr, repr(lcls.iv.last.baseobj))
+                    assert hasattr(last.baseobj, self.attrstr),\
+                        "cannot perform '{}' on '{}'!".format(self.attrstr, repr(last.baseobj))
                 lcls.iv.last = lcls.iv.last.deepcopy()
-                lcls.iv.last.data = getattr(last.data, self.attrstr).__call__(lcls.iv.last.data)
+                lcls.iv.last.data = getattr(last.baseobj, self.attrstr).__call__(last, lcls.iv.last)
     def _speceval(self, args, lcls):
         ctrl = args.control
         if self.name in ctrl.delims:
@@ -64,24 +62,24 @@ class operobj(mthdobj):
                 pass
         raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".\
                           format(self, args, ctrl.allopers.keys()))
-    # def _evalassign(self, args, lcls):
-    #     if __debug__:
-    #         assert str(self) in args.control.opers['binary']['assignment'],\
-    #               "Cant evalassign when '%s' isnt assgn oper!" % self
-    #     last = lcls.iv.last
-    #     args.eval(lcls)
-    #     sname = str(self)[1:-1]
-    #     lstr = str(lcls.iv.last)
-    #     if sname == '':
-    #         if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
-    #             lcls[lstr] = last
-    #             lcls.iv.last = lcls[lstr] #is deepcopy really required?
-    #         else:
-    #             lcls.iv.last.data.updatedata(last.data, sname)
-    #             # lcls.iv.last = lcls.iv.last.deepcopy() #is deepcopy really required?
-    #     else:
-    #         if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
-    #             lcls[lstr] = last
-    #             lcls.iv.last = lcls[lstr] #is deepcopy really required?
-    #         else:
-    #             lcls.iv.last.data.updatedata(last.data, sname)
+    def _evalassign(self, args, lcls):
+        if __debug__:
+            assert str(self) in args.control.opers['binary']['assignment'],\
+                  "Cant evalassign when '%s' isnt assgn oper!" % self
+        last = lcls.iv.last
+        args.eval(lcls)
+        sname = str(self)[1:-1]
+        lstr = str(lcls.iv.last)
+        if sname == '':
+            if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
+                lcls[lstr] = last
+                lcls.iv.last = lcls[lstr] #is deepcopy really required?
+            else:
+                lcls.iv.last.data.updatedata(last.data, sname)
+                # lcls.iv.last = lcls.iv.last.deepcopy() #is deepcopy really required?
+        else:
+            if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
+                lcls[lstr] = last
+                lcls.iv.last = lcls[lstr] #is deepcopy really required?
+            else:
+                lcls.iv.last.data.updatedata(last.data, sname)
