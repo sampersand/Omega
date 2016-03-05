@@ -13,7 +13,7 @@ class group(list):
     def __repr__(self):
         ret = 'group('
         if self.data != None: ret += 'data={},'.format(repr(self.data))
-        if self.baseobj != None: ret += 'pobj={},'.format(repr(self.baseobj))
+        if self.baseobj != nullobj: ret += 'pobj={},'.format(repr(self.baseobj))
         if bool(self): ret += 'args={},'.format(super().__repr__())
         # if self.control != None: ret += 'control=%r,' % self.control
         if self.parens != ('', ''): ret += 'parens={},'.format(repr(self.parens))
@@ -76,14 +76,14 @@ class group(list):
         return self.baseobj.evalobj(self, lcls)
 
     def deepcopy(self):
-        return deepcopy(self)
+        return copy.deepcopy(self)
 
     def __deepcopy__(self, memo):
-        return group(data = deepcopy(self.data, memo),
-                     pobj = deepcopy(self.baseobj, memo),
+        return group(data = copy.deepcopy(self.data, memo),
+                     pobj = copy.deepcopy(self.baseobj, memo),
                      control = self.control,
-                     args = deepcopy(self.args, memo),
-                     parens = deepcopy(self.parens, memo))
+                     args = copy.deepcopy(self.args, memo),
+                     parens = copy.deepcopy(self.parens, memo))
     @property
     def datastr(self):
         return str(self.data)

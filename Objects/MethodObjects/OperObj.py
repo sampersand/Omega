@@ -1,18 +1,4 @@
-from Objects import obj
-class mthdobj(obj):
-    def __init__(self, name):
-        self.name = name
-    def __repr__(self):
-        return super().__repr__().replace(')', '%r)' % self.name)
-
-class funcobj(mthdobj):
-    def __init__(self, name):
-        super().__init__(name)
-
-class ufuncobj(mthdobj):
-    def __init__(self, name):
-        super().__init__(name)
-
+from Objects import mthdobj
 class operobj(mthdobj):
     def __init__(self, name, priority, attrstr):
         """ name is used to print, attrstr is used to actually execute the function. """
@@ -29,32 +15,32 @@ class operobj(mthdobj):
         else:
             args[0].evalgrp(lcls)
             for arg in args[1:]:
-                last = lcls.last
+                last = lcls.iv.last
                 arg.evalgrp(lcls)
                 if __debug__:
-                    assert hasattr(lcls.last.baseobj, self.attrstr),\
+                    assert hasattr(lcls.iv.last.baseobj, self.attrstr),\
                         "cannot perform '{}' on '{}'!".format(self.attrstr, repr(arg.baseobj))
                 assert 0,' todo'
-                lcls.last = lcls.last.deepcopy()
-                lcls.last.data = getattr(last.data, self.attrstr).__call__(lcls.last.data)
+                lcls.iv.last = lcls.iv.last.deepcopy()
+                lcls.iv.last.data = getattr(last.data, self.attrstr).__call__(lcls.iv.last.data)
     def _speceval(self, args, lcls):
         ctrl = args.control
         if self.name in ctrl.delims:
             if self.name in ctrl.delims['applier']:
                 args[0].evalgrp(lcls)
-                lcls.last.baseobj.eval(args[1:], lcls)
+                lcls.iv.last.baseobj.eval(args[1:], lcls)
             elif self.name in ctrl.delims['endline']:
                 for arg in args:
                     arg.evalgrp(lcls)
-                    if not lcls.ret.isnull():
-                        del lcls.ret
+                    if not lcls.iv.ret.isnull():
+                        del lcls.iv.ret
                         break
     #     ctrl = args.control
     #     name = str(self)
     #     if name in ctrl.delims:
     #         if name in ctrl.delims['applier']:
     #             args[0].eval(lcls)
-    #             lcls.last.data.eval(args[1:], lcls)
+    #             lcls.iv.last.data.eval(args[1:], lcls)
     #             return
     #         if name in ctrl.delims['endline']:
     #             for line in args: #each ';' is a line.
@@ -69,8 +55,8 @@ class operobj(mthdobj):
     #                 ele.eval(lcls)
     #                 if not lcls.ret.data.isnull():
     #                     break
-    #                 l.data.append(lcls.last)
-    #             lcls.last = l
+    #                 l.data.append(lcls.iv.last)
+    #             lcls.iv.last = l
     #             return
     #     if name in ctrl.opers['binary']:
     #         if __debug__:
@@ -90,37 +76,20 @@ class operobj(mthdobj):
     #     if __debug__:
     #         assert str(self) in args.control.opers['binary']['assignment'],\
     #               "Cant evalassign when '%s' isnt assgn oper!" % self
-    #     last = lcls.last
+    #     last = lcls.iv.last
     #     args.eval(lcls)
     #     sname = str(self)[1:-1]
-    #     lstr = str(lcls.last)
+    #     lstr = str(lcls.iv.last)
     #     if sname == '':
-    #         if type(lcls.last.data) == obj: #aka, if it isn't a special object.
+    #         if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
     #             lcls[lstr] = last
-    #             lcls.last = lcls[lstr] #is deepcopy really required?
+    #             lcls.iv.last = lcls[lstr] #is deepcopy really required?
     #         else:
-    #             lcls.last.data.updatedata(last.data, sname)
-    #             # lcls.last = lcls.last.deepcopy() #is deepcopy really required?
+    #             lcls.iv.last.data.updatedata(last.data, sname)
+    #             # lcls.iv.last = lcls.iv.last.deepcopy() #is deepcopy really required?
     #     else:
-    #         if type(lcls.last.data) == obj: #aka, if it isn't a special object.
+    #         if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
     #             lcls[lstr] = last
-    #             lcls.last = lcls[lstr] #is deepcopy really required?
+    #             lcls.iv.last = lcls[lstr] #is deepcopy really required?
     #         else:
-    #             lcls.last.data.updatedata(last.data, sname)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    #             lcls.iv.last.data.updatedata(last.data, sname)

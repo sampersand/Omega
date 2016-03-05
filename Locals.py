@@ -1,38 +1,42 @@
 from Group import group
 from Objects import ufuncobj
-import copy
-class lclsivals(dict):
+class _lclsivls(dict):
     omp = '$' #om prefix
-    ivd = { #ivals dict
+    ivalsdict = { #ivals dict
         'last' : omp,
         'ret'  : omp + 'ret',
-        'esc'  : omp + 'esc',}
+        'esc'  : omp + 'esc',
+    }
 
+    def __init__(self):
+        super().__init__(dict())
+        for iv in self.ivalsdict:
+            self[iv] = group()
+
+    def __getattr__(self, attr):
+        return super().__getattr__(attr) if attr not in self.ivalsdict else self[attr]
+
+    def __radd__(self, other):
+        if not isinstance(other, lcls):
+            return NotImplemented
+        x = other.copy()
+        x.update({_lclsivls.ivalsdict[e]:self[e] for e in self})
+        return x
 class lcls(dict):
-    _ivalpref = lclsivals.omp + 'ivals'
     def __new__(self, control):
         return super().__new__(self)
 
     def __init__(self, control):
         super().__init__(dict())
         self.control = control
-        if useIvals:
-            self.resetivals()
-
-    # def resetivals(self):
-    #     self.ivals = lcls(self.control, False)
-    #     for val in lcls.ivd.values():
-    #         if val is not lcls.ivd['ivals']:
-    #             self.ivals[val] = group(control = self.control)
-
+        self.iv = _lclsivls() #ivals
+        
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self + self.ivals) +  + '}'
+        return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self + self.iv) + '}'
 
     def clear(self):
-        del self.ivals
+        del self.iv
         return super().clear()
-        # ret = super().clear()
-        # return ret
 
     def onlyfuncs(self):
         ret = lcls(self.control)
@@ -41,14 +45,7 @@ class lcls(dict):
                 ret[e] = self[e]
         return ret
 
-    def deepcopy(self):
-        return copy.deepcopy(self)
-
-    # @property
-    # def ivals(self):
-    #     """ The internal values (used to keep track of things like return values) """
-    #     return self._ivals
-
-    # @ivals.deleter
-    # def ivals(self):
-    #     del self._ivals
+    def __getitem__(self, item):
+        if item[0] != self.iv.omp or item not in self.iv:
+            return super().__getitem__(item)
+        return self.iv[item]
