@@ -1,4 +1,4 @@
-from Objects import mthdobj
+from Objects import mthdobj, obj
 class operobj(mthdobj):
     def __init__(self, name, priority, attrstr):
         """ name is used to print, attrstr is used to actually execute the function. """
@@ -27,7 +27,7 @@ class operobj(mthdobj):
         if self.name in ctrl.delims:
             if self.name in ctrl.delims['applier']:
                 args[0].evalgrp(lcls)
-                lcls.iv.last.baseobj.eval(args[1:], lcls)
+                lcls.iv.last.baseobj.evalobj(args[1:], lcls)
                 return
             if self.name in ctrl.delims['endline']:
                 for arg in args:
@@ -41,7 +41,7 @@ class operobj(mthdobj):
                 # l = args.newgroup(parens = args.parens)
                 # l.data = arrayobj()
                 # for ele in args:
-                #     ele.eval(lcls)
+                #     ele.evalevalgrp(lcls)
                 #     if not lcls.ret.data.isnull():
                 #         break
                 #     l.data.append(lcls.iv.last)
@@ -64,14 +64,16 @@ class operobj(mthdobj):
                           format(self, args, ctrl.allopers.keys()))
     def _evalassign(self, args, lcls):
         if __debug__:
-            assert str(self) in args.control.opers['binary']['assignment'],\
+            assert self.name in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = lcls.iv.last
-        args.eval(lcls)
-        sname = str(self)[1:-1]
+        args.evalgrp(lcls)
+        if __debug__:
+            assert last is not lcls.iv.last, type(args.baseobj)
+        sname = self.name[1:-1]
         lstr = str(lcls.iv.last)
         if sname == '':
-            if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
+            if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
                 lcls[lstr] = last
                 lcls.iv.last = lcls[lstr] #is deepcopy really required?
             else:
@@ -83,3 +85,16 @@ class operobj(mthdobj):
                 lcls.iv.last = lcls[lstr] #is deepcopy really required?
             else:
                 lcls.iv.last.data.updatedata(last.data, sname)
+
+
+
+
+
+
+
+
+
+
+
+
+

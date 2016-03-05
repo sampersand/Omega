@@ -1,4 +1,4 @@
-1 + 2 -> a
+1 + 9 -> a
 @eof
 func:guess:(max,):{
     (max * om:rand):round + 1 -> randnum

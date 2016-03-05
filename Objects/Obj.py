@@ -4,11 +4,11 @@ class obj(object):
 
     def evalobj(self, args, lcls):
         if str(args) in lcls:
-            return locls[args].baseobj.eval(args, lcls)
+            locls[args].baseobj.eval(args, lcls)
         elif str(args.data) in args.control.delims['applier']:
             assert 0, 'todo! ' + str(args)
         else:
-            lcls.last = args.deepcopy()
+            lcls.iv.last = args.deepcopy()
         # if str(args.base)
         # if str(self) in ldict:
         #     #this is ignoring the parens...
