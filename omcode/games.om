@@ -1,3 +1,5 @@
+1 + 2 -> a
+@eof
 func:guess:(max,):{
     (max * om:rand):round + 1 -> randnum
     whilst:True:{

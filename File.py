@@ -2,7 +2,7 @@ import Control
 import codecs
 import copy
 from Group import group
-from LocalsDict import localsdict
+from Locals import lcls
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
         if control == None:
@@ -180,6 +180,6 @@ class file:
             return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
-        ldict = localsdict(self.control)
-        self.lines.evaluate(ldict)
+        ldict = lcls(self.control)
+        self.lines.evalgrp(ldict)
         return ldict

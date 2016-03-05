@@ -9,6 +9,6 @@ if __name__ == '__main__':
     ldict = f.eval()
     print('--')
     if __debug__ and '$dnd' not in ldict:
-        print('LocalsDict ::', str(ldict))
+        print('Locals ::', str(ldict))
         print('Total Elapsed Time ::', clock() - start, 'seconds')
  

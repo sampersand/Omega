@@ -1,7 +1,12 @@
 from Objects import obj
 class numobj(obj):
+    def evaluate(self, arg, lcls):
+        pass
+class intobj(numobj):
     pass
-class boolobj(obj):
+class floatobj(numobj):
     pass
-class floatobj(obj):
+class complexobj(floatobj):
+    pass
+class boolobj(intobj):
     pass

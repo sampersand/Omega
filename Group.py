@@ -1,17 +1,19 @@
+from copy import deepcopy
 from Objects import nullobj, obj
+from Objects import objregexes
 class group(list):
     def __init__(self, data = None, pobj = None, control = None, args = [], parens = ('', '')):
         super().__init__(args)
         self.data = data
-        self.obj = obj() if pobj == None else pobj
         self.control = control
-        self.args = args
         self.parens = parens
+        self.baseobj = self.getobj() if pobj == None else pobj
+        self.args = args
 
     def __repr__(self):
         ret = 'objgrp('
         if self.data != None: ret += 'data={},'.format(repr(self.data))
-        if self.obj != None: ret += 'obj={},'.format(repr(self.obj))
+        if self.baseobj != None: ret += 'pobj={},'.format(repr(self.baseobj))
         if bool(self): ret += 'args={},'.format(super().__repr__())
         # if self.control != None: ret += 'control=%r,' % self.control
         if self.parens != ('', ''): ret += 'parens={},'.format(repr(self.parens))
@@ -20,7 +22,6 @@ class group(list):
     def __str__(self):
         if not self:
             return ''.join((str(self.parens[0]), str(self.data), str(self.parens[1])))
-        print(str(self.data))
         if str(self.data) in self.control.opers['binary']:
             if __debug__:
                 assert len(self.parens) == 2, repr(self)
@@ -57,8 +58,28 @@ class group(list):
 
     def isnull(self):
         """ cheks if this group's obj is null. """
-        return isinstance(self.obj, nullobj) 
+        return isinstance(self.baseobj, nullobj) 
 
+    def getobj(self):
+        if self.data == None:
+            return nullobj()
+        if __debug__:
+            assert isinstance(self.data, str), "'%s' has to be of type str, not '%s'" %(self.data, type(self.data))
+        for key in objregexes:
+            if key.fullmatch(self.data):
+                return objregexes[key]()
+        return obj()
 
-    def evaluate(self, ldict):
-        return self.obj.evaluate(self)
+    def evalgrp(self, lcls):
+        return self.baseobj.evalobj(self, lcls)
+
+    def dcopy(self):
+
+        return deepcopy(self)
+
+    def __deepcopy__(self, memo):
+        return group(data = deepcopy(self.data, memo),
+                     pobj = deepcopy(self.baseobj, memo),
+                     control = self.control,
+                     args = deepcopy(self.args, memo),
+                     parens = deepcopy(self.parens, memo))
