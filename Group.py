@@ -9,7 +9,6 @@ class group(list):
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
         self.args = args
-
     def __repr__(self):
         ret = 'group('
         if self.data != None: ret += 'data= {}, '.format(repr(self.data))
@@ -70,9 +69,6 @@ class group(list):
 
     def getobj(self):
         if self.parens != ('', ''):
-            if __debug__:
-                assert self, self
-                assert 0, 'shouldnt happen yet'
             return arrayobj()
         if self.data == None:
             return nullobj()

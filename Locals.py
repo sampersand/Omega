@@ -27,11 +27,18 @@ class _lclsivls(dict):
             assert attr in self.idict, "Attribute '{}' doesn't exist for _lclsivls!".format(attr)
         return self[attr]
 
+    def __setattr__(self, attr, value):
+        # return super().__getattr__(attr) if attr not in self.idict else self[attr]
+        if __debug__:
+            assert attr in self.idict, "Attribute '{}' doesn't exist for _lclsivls!".format(attr)
+        return self.__setitem__(attr, value)
+
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if k) + '}'
+        return '{' + ', '.join(repr(k) + ':' + str(v) for k, v in self.items() if v) + '}'
 
     def __repr__(self):
-        return '{' + ', '.join(repr(v) + ':' + repr(k) for v, k in self.items() if k) + '}'
+        return '{' + ', '.join(repr(k) + ':' + repr(v) for k, v in self.items() if v) + '}'
+
 class lcls(dict):
     def __new__(self, control):
         return super().__new__(self)
@@ -42,7 +49,7 @@ class lcls(dict):
 
         x = _lclsivls()
         self._ivalstr = x.omp + 'ivals'
-        self[self._ivalstr] = x #ivals
+        super().__setitem__(self._ivalstr, x) #ivals
 
         del x
 
@@ -58,6 +65,18 @@ class lcls(dict):
         if item in self.iv._invidict:
             return self.iv[self.iv._invidict[item]]
         return super().__getitem__(item)
+
+    def __setitem__(self, item, value):
+        if item in self.iv._invidict:
+            return self.iv.__setitem__(self.iv._invidict(item), value)
+        ret = super().__setitem__(item, value)
+        self.iv.last = value
+        print(repr(self.iv))
+        return ret
+    def __delitem__(self, item):
+        if item in self.iv._invidict:
+            return self.iv.__delitem__(self.iv._invidict(item))
+        return super().__delitem__(item)
 
     def __str__(self):
         return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if k) + '}'
