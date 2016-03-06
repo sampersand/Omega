@@ -82,7 +82,16 @@ class operobj(mthdobj):
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
             lcls[lstr] = last
         else:
-            lcls.iv.last.data.updatedata(last.data, sname)
+            lcls.iv.last.updatedata(last, sname)
+
+
+
+
+
+
+
+
+
 
 
 
