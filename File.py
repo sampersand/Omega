@@ -3,7 +3,7 @@ import codecs
 import copy
 from Group import group
 from Locals import lcls
-from Objects import arrayobj
+from Objects import arrayobj, obj
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
         if control == None:
@@ -160,21 +160,18 @@ class file:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
 
                 if isinstance(line.baseobj, arrayobj) or line.hasparens():# and len(line) <= 1:
-                    return line
-                    q = group(control = line.control, args = list(line))
-                    q = fixtkns(q)
-                    q.baseobj = line.baseobj
-                    q.parens = line.parens
-                    print(repr(q))
-                    return q
-                    print(line.data, line)
-                    line = group(data = line.data,
-                                 pobj = line.baseobj,
-                                 control = line.control,
-                                 parens = line.parens,
-                                 args = fixtkns(q))
+                    if __debug__:
+                        assert line.data == None, 'when would this happen??'
+                    cpy = line.deepcopy()
+                    cpy.parens, cpy.baseobj = cpy.defaultparens, obj #so it wont go into this again.
+                    cpy = fixtkns(cpy)
+                    line = group(control = line.control, parens = line.parens, pobj = line.baseobj,
+                                 args = [cpy])
+                    # cpy.parens, cpy.baseobj = line.parens, line.baseobj
+                    print(repr(cpy))
                     # for p in range(len(line)):
                     #     line[p] = fixtkns(line[p])
+                    # return line
                     return line
 
                 if not len(line):
