@@ -68,14 +68,18 @@ class operobj(mthdobj):
         if __debug__:
             assert self.name in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
-        print(repr(lcls),"@")
+        
+        print(repr(lcls),"in _evalassign")
+
         last = lcls.iv.last
         args.evalgrp(lcls)
+
         if __debug__:
             assert last is not lcls.iv.last, type(args.baseobj)
+
         sname = self.name[1:-1]
         lstr = str(lcls.iv.last)
-
+        print(lcls.iv.last,' <- lcls.iv.last, last ->', last, repr(lcls))
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
             lcls[lstr] = last
         else:
