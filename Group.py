@@ -34,7 +34,7 @@ class group(list):
 
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """
-        return isinstance(self.baseobj, nullobj)
+        return not isinstance(self.baseobj, nullobj)
 
     def linestr(self):
         class _int():
