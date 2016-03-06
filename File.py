@@ -167,11 +167,6 @@ class file:
                     cpy = fixtkns(cpy)
                     line = group(control = line.control, parens = line.parens, pobj = line.baseobj,
                                  args = [cpy])
-                    # cpy.parens, cpy.baseobj = line.parens, line.baseobj
-                    print(repr(cpy))
-                    # for p in range(len(line)):
-                    #     line[p] = fixtkns(line[p])
-                    # return line
                     return line
 
                 if not len(line):
