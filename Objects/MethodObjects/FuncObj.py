@@ -3,3 +3,27 @@ class funcobj(mthdobj):
     def __init__(self, name):
         super().__init__(name)
 
+    def evalobj(self, args, lcls):
+        if args.data == self.name:
+            lcls.iv.last = args
+            return
+        if __debug__:
+            assert '_' + self.name in dir(funcobj)
+        self.__getattribute__('_' + self.name)(args, lcls)
+
+    def _disp(self, args, lcls):
+        dispargs, sep, end = [''], ' ', '\n'
+        if len(args) > 0:
+            def scrub(pdispargs, lcls):
+                for disparg in pdispargs:
+                    disparg.evalgrp(lcls)
+                    yield lcls.iv.last.scrubstr(args.control)
+                    # yield lcls.iv.last.data.scrubstr(args.control)
+            dispargs = [x for x in scrub(args[0], lcls)]
+            if len(args) > 1:
+                if args[1]:
+                    sep = args[1].scrubstr(args.control)
+                if len(args) > 2:
+                    if args[2]:
+                        end = args[2].scrubstr(args.control)
+        print(*dispargs, sep = sep, end = end)

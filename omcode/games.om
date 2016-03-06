@@ -1,7 +1,5 @@
-#(2,3)->a#
-(0 -> a -> b):copy -> c
-1->a
-# b:copy->c#
+#(0 -> a -> b):copy -> c#
+disp:(1,2,3):0:1
 @eof
 
 func:guess:(max):{

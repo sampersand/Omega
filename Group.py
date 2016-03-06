@@ -112,8 +112,7 @@ class group(list):
         return '' if self.data == None else str(self.data)
 
     def updatedata(self, datagroup, funcname):
-        # todo: do somethign with funcname
         self.data = datagroup.data
-    # def updatedata(self, data, baseobj):
-    #     self.data = data
-    #     self.baseobj = baseobj
+
+    def scrubstr(self, control):
+        return str(self.data)
