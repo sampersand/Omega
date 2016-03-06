@@ -1,5 +1,6 @@
 
 1 -> a -> b
+, -> c
 disp:(a,b)
 disp:(if:(a=1):'a = 1':'a != 1')
 @eof
