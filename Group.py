@@ -12,12 +12,12 @@ class group(list):
 
     def __repr__(self):
         ret = 'group('
-        if self.data != None: ret += 'data={},'.format(repr(self.data))
-        if self.baseobj != nullobj: ret += 'pobj={},'.format(repr(self.baseobj))
-        if len(self): ret += 'args={},'.format(super().__repr__())
+        if self.data != None: ret += 'data= {}, '.format(repr(self.data))
+        if self.baseobj != nullobj: ret += 'pobj= {}, '.format(repr(self.baseobj))
+        if len(self): ret += 'args= {}, '.format(super().__repr__())
         # if self.control != None: ret += 'control=%r,' % self.control
-        if self.parens != ('', ''): ret += 'parens={},'.format(repr(self.parens))
-        return (ret != 'group(' and ret[:-1] or ret) + ')'
+        if self.parens != ('', ''): ret += 'parens= {}, '.format(repr(self.parens))
+        return (ret != 'group(' and ret[:-2] or ret) + ')'
 
     def __str__(self):
         # if self.datastr in self.control.delims['arraysep']:

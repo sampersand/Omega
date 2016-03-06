@@ -1,3 +1,3 @@
 from Objects import intobj
 class boolobj(intobj):
-    pass
+    _pyobj = bool
