@@ -68,6 +68,7 @@ class operobj(mthdobj):
         if __debug__:
             assert self.name in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
+        print(repr(lcls),"@")
         last = lcls.iv.last
         args.evalgrp(lcls)
         if __debug__:

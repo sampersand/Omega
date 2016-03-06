@@ -20,7 +20,7 @@ class _lclsivls(dict):
         if not isinstance(other, lcls):
             return NotImplemented
         x = other.copy()
-        x.update({_lclsivls.ivalsdict[e]:self[e] for e in self if not self[e].isnull()})
+        x.update({self.ivalsdict[e]:self[e] for e in self if not self[e].isnull()})
         return x
 class lcls(dict):
     def __new__(self, control):
@@ -33,7 +33,8 @@ class lcls(dict):
         
     def __str__(self):
         return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self + self.iv) + '}'
-
+    def __repr__(self):
+        return (self + self.iv).__repr__()
     def clear(self):
         del self.iv
         return super().clear()
