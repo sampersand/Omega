@@ -40,6 +40,7 @@ class _lclsivls(dict):
         return '{' + ', '.join(repr(k) + ':' + repr(v) for k, v in self.items() if v) + '}'
 
 class lcls(dict):
+    """ The keeper of all the variables that are being used. """
     def __new__(self, control):
         return super().__new__(self)
 
@@ -67,8 +68,6 @@ class lcls(dict):
         return super().__getitem__(item)
 
     def __setitem__(self, item, value):
-        print('setting item to value', item, value)
-        # assert 0
         if item in self.iv._invidict:
             ret = self.iv.__setitem__(self.iv._invidict(item), value)
             if value is self.iv.last: #so we don't accidentally set the return value twice

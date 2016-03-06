@@ -9,6 +9,7 @@ class group(list):
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
         self.args = args
+
     def __repr__(self):
         ret = 'group('
         if self.data != None:
