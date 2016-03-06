@@ -37,26 +37,32 @@ class group(list):
         return isinstance(self.baseobj, nullobj)
 
     def linestr(self):
-        linep = []
+        class _int():
+            def __init__(self):
+                self.pos = 0
+            def __iadd__(self, other):
+                self.pos += other
+            def __int__(self):
+                return self.pos
+        linep = _int()
         def _linestr(self, indent):
             if not self.data or not len(self):
                 return str(self)
             isendl = self.datastr in self.control.delims['endline'][0]
             lines = []
             for l in self:
-                if not l:
+                if l:
                     continue
                 if isendl:
-                    linep.append([])
-                linel = len(linep) 
+                    linep.__iadd__(1)
                 ls = _linestr(l, indent + 1)
                 if isendl:
-                    lines.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
+                    lines.append('\n{:^3}|  {}{}'.format(int(linep), '\t' * (indent), ls))
                 else:
                     lines.append(ls)
             ret = self.parens[0] + ('' if isendl else ' ' + self.datastr + ' ').join(lines)
             if isendl and self.parens[1]:
-                linep.append([])
+                linep.__iadd__(1)
                 ret += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
             ret += self.parens[1]
             return ret
