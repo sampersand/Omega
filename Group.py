@@ -51,7 +51,7 @@ class group(list):
             isendl = self.datastr in self.control.delims['endline'][0]
             lines = []
             for l in self:
-                if l:
+                if not l:
                     continue
                 if isendl:
                     linep.__iadd__(1)

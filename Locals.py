@@ -30,6 +30,8 @@ class _lclsivls(dict):
     def __str__(self):
         return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if k) + '}'
 
+    def __repr__(self):
+        return '{' + ', '.join(repr(v) + ':' + repr(k) for v, k in self.items() if k) + '}'
 class lcls(dict):
     def __new__(self, control):
         return super().__new__(self)
@@ -59,13 +61,6 @@ class lcls(dict):
 
     def __str__(self):
         return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if k) + '}'
-
-    def __repr__(self):
-        #[:-1] is '}'
-        r = super().__repr__()[:-1]
-        if __debug__:
-            assert r[-1] == '}' #should be..
-        return super().__repr__()[:-1] + self.iv.omp +'ivals:' + repr(self.iv) + '}'
 
     def clear(self):
         r = super().clear()
