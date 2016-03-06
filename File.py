@@ -135,7 +135,7 @@ class file:
                 return ret
             def findhighest(linegrp):
                 if __debug__:
-                    assert linegrp or linegrp.data, linegrp
+                    assert len(linegrp) or linegrp.data, linegrp
                     #change this in the future when boolean for linegrp changes
                 highest = None
                 for elep in range(len(linegrp)):
@@ -171,10 +171,10 @@ class file:
                 fhp = findhighest(line)
                 if __debug__:
                     assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
-                    assert not fhp and fhp.data, fhp
+                    assert not len(fhp) and fhp.data, fhp
                 ret = group(data = fhp.data, control = self.control, parens = line.parens)
                 current = group(control = self.control)
-                while line:
+                while len(line):
                     e = line.pop(0) #was formerly .pop(0)
                     if e.data == ret.data:
                         # if current: #these used to strip out null values, but is ignored now
@@ -183,7 +183,7 @@ class file:
                         current = group(control = self.control)
                     else:
                         current.append(e)
-                if current:
+                if len(current):
                     ret.append(fixtkns(current))
 
                 return ret

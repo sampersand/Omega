@@ -9,6 +9,7 @@ class group(list):
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
         self.args = args
+
     def __repr__(self):
         ret = 'group('
         if self.data != None: ret += 'data={},'.format(repr(self.data))
@@ -23,7 +24,7 @@ class group(list):
         #     if __debug__:
         #         assert len(self) == 0
         #     return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
-        if not self:
+        if not len(self):
             return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
         if self.datastr in self.control.opers['binary']:
             if __debug__:
@@ -31,10 +32,13 @@ class group(list):
             return self.parens[0] + (' ' + self.datastr +' ').join(str(e) for e in self) + str(self.parens[1])
         return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
 
+    def __bool__(self):
+        assert 0
+
     def linestr(self):
         linep = []
         def _linestr(self, indent):
-            if not self.data or not self:
+            if not self.data or not len(self):
                 return str(self)
             isendl = self.datastr in self.control.delims['endline'][0]
             lines = []
