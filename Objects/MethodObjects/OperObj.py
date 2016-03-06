@@ -16,7 +16,6 @@ class operobj(mthdobj):
             self._speceval(args, lcls)
         else:
             args[0].evalgrp(lcls)
-            # print(repr(args), repr(args[0]))
             for arg in args[1:]:
                 last = lcls.iv.last.deepcopy()
                 arg.evalgrp(lcls)

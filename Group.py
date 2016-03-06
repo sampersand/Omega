@@ -81,7 +81,7 @@ class group(list):
         return _linestr(self, 0)
 
     def getobj(self):
-        if self.parens != ('', ''):
+        if self.parens != ('', '') and self.data == None:
             return arrayobj()
         if self.data == None:
             return nullobj()

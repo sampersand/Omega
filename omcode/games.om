@@ -1,9 +1,7 @@
+(0+1) -> c
 #(2,3)->a#
-(0 -> a -> b) -> c
+#(0 -> a -> b) -> c#
 # b:copy->c#
-1->a
-
-a:type
 @eof
 
 func:guess:(max):{
