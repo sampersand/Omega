@@ -15,12 +15,12 @@ class _lclsivls(dict):
 
     def __bool__(self):
         return any(isinstance(v, nullobj) for v in self.values())
-    def isnull():
+
     def __getattr__(self, attr):
+        # return super().__getattr__(attr) if attr not in self.ivalsdict else self[attr]
         if __debug__:
             assert attr in self.ivalsdict, attr #needs to me in it!
         return self[attr]
-        # return super().__getattr__(attr) if attr not in self.ivalsdict else self[attr]
     def __str__(self):
         return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if not self[v].isnull()) + '}'
 
@@ -36,6 +36,13 @@ class lcls(dict):
         self[self._ivalstr] = x #ivals
         del x
 
+    def __iter__(self):
+        for k in super().__iter__():
+            if k is self._ivalstr:
+                for a in self[k]:
+                    yield a
+            else:
+                yield k
     def __str__(self):
         return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if not self[v].isnull()) + '}'
 
