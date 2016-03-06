@@ -67,6 +67,8 @@ class lcls(dict):
         return super().__getitem__(item)
 
     def __setitem__(self, item, value):
+        print('setting item to value', item, value)
+        # assert 0
         if item in self.iv._invidict:
             ret = self.iv.__setitem__(self.iv._invidict(item), value)
             if value is self.iv.last: #so we don't accidentally set the return value twice

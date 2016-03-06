@@ -11,11 +11,14 @@ class group(list):
         self.args = args
     def __repr__(self):
         ret = 'group('
-        if self.data != None: ret += 'data= {}, '.format(repr(self.data))
-        if self.baseobj != nullobj: ret += 'pobj= {}, '.format(repr(self.baseobj))
-        if len(self): ret += 'args= {}, '.format(super().__repr__())
-        # if self.control != None: ret += 'control=%r,' % self.control
-        if self.parens != ('', ''): ret += 'parens= {}, '.format(repr(self.parens))
+        if self.data != None:
+            ret += 'data= {}, '.format(repr(self.data))
+        if self.baseobj != nullobj:
+            ret += 'pobj= {}, '.format(repr(self.baseobj))
+        if len(self):
+            ret += 'args= {}, '.format(super().__repr__())
+        if self.parens != ('', ''):
+            ret += 'parens= {}, '.format(repr(self.parens))
         return (ret != 'group(' and ret[:-2] or ret) + ')'
 
     def __str__(self):
@@ -91,7 +94,7 @@ class group(list):
         return group(data = copy.deepcopy(self.data, memo),
                      pobj = copy.deepcopy(self.baseobj, memo),
                      control = self.control,
-                     args = copy.deepcopy(self.args, memo),
+                     args = copy.deepcopy(list(self), memo),
                      parens = copy.deepcopy(self.parens, memo))
 
     @property

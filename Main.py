@@ -6,7 +6,6 @@ if __name__ == '__main__':
     f = file('/Users/westerhack/code/python/Omega/omcode/games.om') #hardcode ftws
     print(f)
     print('--')
-    assert 0, repr(f.lines)
     ldict = f.eval()
     print('--')
     if __debug__ and '$dnd' not in ldict:
