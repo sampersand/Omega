@@ -9,7 +9,6 @@ class group(list):
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
         self.args = args
-        print(parens, self)
 
     def __repr__(self):
         ret = 'group('
@@ -62,8 +61,8 @@ class group(list):
         return isinstance(self.baseobj, nullobj) 
 
     def getobj(self):
-        if self.parens != ('', ''):
-            return arrayobj()
+        # if self.parens != ('', ''):
+        #     return arrayobj()
         if self.data == None:
             return nullobj()
         if __debug__:
@@ -87,9 +86,11 @@ class group(list):
                      control = self.control,
                      args = copy.deepcopy(self.args, memo),
                      parens = copy.deepcopy(self.parens, memo))
+
     @property
     def datastr(self):
-        return str(self.data)
+        return '' if self.data == None else str(self.data)
+
     def updatedata(self, data, baseobj):
         self.data = data
         self.baseobj = baseobj

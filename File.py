@@ -45,7 +45,9 @@ class file:
                         ret += char
             if '@eof' in ret:
                 ret = ret[0:ret.find('@eof')]
-            return self.control.delims['endline'][0][0] + ret + self.control.delims['endline'][0][0]
+            if not ret or ret[-1] not in self.control.delims['endline'][0]:
+                ret += self.control.delims['endline'][0][0]
+            return ret
         def tokenize(self, rawt):
             """ goes thru, and splits them up first based upon control.sortedopers and then by control.punctuation. """
             def createtokens(rawt):
@@ -101,7 +103,7 @@ class file:
                     or str(ret[-1].data) not in self.control.delims['endline']:
                     ret.append(group(e, control = self.control))
             return ret
-            return [group(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
+            # return [group(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
         def compresstokens(self, linetokens):
             def compresstokens(linegrp): #this is non-stable
                 ret = group(control = self.control, parens = linegrp.parens) #universe
@@ -110,7 +112,6 @@ class file:
                     if str(ele) not in self.control.allparens:
                         ret.append(ele)
                     else:
-                        print(self.control.allparens, ele)
                         toappend = group(control = self.control)
                         parens = {str(ele):1}
                         while sum(parens.values()) > 0 and len(linegrp) != 0:
@@ -128,7 +129,6 @@ class file:
                         if __debug__:
                             assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
                         toappend.parens = (str(ele), str(toappend.pop()))
-                        print(toappend.parens)
                         toappend = compresstokens(toappend)
                         ret.append(toappend)
                 return ret
@@ -150,12 +150,13 @@ class file:
                         raise SyntaxError("no operator for string '{}'!".format(repr(linegrp))) # ':' was still required
                 return linegrp[highest]
             def fixtkns(line):
-                #combine tokens using order of operations
-                if not line:
-                    # if __debug__:
-                        # assert 0, "when does this ever happen??"
+                """ combine tokens using order of operations """
+                if __debug__:
+                    assert isinstance(line, group), 'why wouldn\'t it be?'
+                if len(line) == 0:
                     return line
                 if len(line) == 1: #if the line is literally a single element, usually: ([blah, blah])
+                    print(repr(line))
                     if len(line[0]) == 0: #if the line[0] is literally a single constant, aka: blah
                         return line[0]
                     else:
@@ -177,7 +178,6 @@ class file:
                         current.append(e)
                 if current:
                     ret.append(fixtkns(current))
-
                 return ret
             return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
