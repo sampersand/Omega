@@ -15,11 +15,14 @@ class _lclsivls(dict):
 
     def __bool__(self):
         return any(isinstance(v, nullobj) for v in self.values())
-
+    def isnull():
     def __getattr__(self, attr):
-        return super().__getattr__(attr) if attr not in self.ivalsdict else self[attr]
+        if __debug__:
+            assert attr in self.ivalsdict, attr #needs to me in it!
+        return self[attr]
+        # return super().__getattr__(attr) if attr not in self.ivalsdict else self[attr]
     def __str__(self):
-        return self.omp + 'ivals:{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if self[v]) + '}'
+        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if not self[v].isnull()) + '}'
 
 class lcls(dict):
     def __new__(self, control):
@@ -28,22 +31,26 @@ class lcls(dict):
     def __init__(self, control):
         super().__init__(dict())
         self.control = control
-        self.iv = _lclsivls() #ivals
-        
+        x = _lclsivls()
+        self._ivalstr = x.omp + 'ivals'
+        self[self._ivalstr] = x #ivals
+        del x
+
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self) + (self.iv and str(self.iv) or '') + '}'
+        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if not self[v].isnull()) + '}'
 
     def __repr__(self):
         #[:-1] is '}'
         r = super().__repr__()[:-1]
         if __debug__:
             assert r[-1] == '}' #should be..
-        if self:
         return super().__repr__()[:-1] + self.iv.omp +'ivals:' + repr(self.iv) + '}'
 
     def clear(self):
+        r = super().clear()
         del self.iv
-        return super().clear()
+        assert 0,' when ??' #when
+        return r
 
     def onlyfuncs(self):
         ret = lcls(self.control)
@@ -56,3 +63,14 @@ class lcls(dict):
         if item in self.iv._invivalsdict:
             return self.iv[self.iv._invivalsdict[item]]
         return super().__getitem__(item)
+
+    def iv():
+        doc = "The internal values"
+        def fget(self):
+            return super().__getitem__(self._ivalstr)
+        def fset(self, value):
+            self[self._ivalstr] = value
+        def fdel(self):
+            del self[self._ivalstr]
+        return locals()
+    iv = property(**iv())

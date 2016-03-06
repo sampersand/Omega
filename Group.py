@@ -59,7 +59,7 @@ class group(list):
 
     def isnull(self):
         """ cheks if this group's obj is null. """
-        return isinstance(self.baseobj, nullobj) 
+        return isinstance(self.baseobj, nullobj)
 
     def getobj(self):
         if self.parens != ('', ''):
