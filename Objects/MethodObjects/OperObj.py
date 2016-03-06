@@ -78,7 +78,8 @@ class operobj(mthdobj):
         if __debug__:
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
-        lstr = str(lcls.iv.last)
+        # lstr = str(lcls.iv.last)
+        lstr = lcls.iv.last.data
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
             lcls[lstr] = last
         else:

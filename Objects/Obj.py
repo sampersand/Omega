@@ -8,7 +8,8 @@ class obj(object):
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
-        if str(args) in lcls:
+        if str(args.data) in lcls:
+            lcls[str(args.data)].evalgrp(lcls)
             lcls.iv.last = lcls[str(args.data)]
             return
         if str(args.data) in args.control.delims['applier']:
