@@ -27,3 +27,17 @@ class funcobj(mthdobj):
                     if args[2]:
                         end = args[2].scrubstr(args.control)
         print(*dispargs, sep = sep, end = end)
+    def _if(self, args, lcls):
+        cond, iftrue, iffalse = args[0], None, None
+        if len(args) > 1:
+            iftrue = args[1]
+            if len(args) > 2:
+                iffalse = args[2]
+                if __debug__:
+                    if len(args) > 3:
+                        raise SyntaxError('Not allowed to have more than 3 arguments for if statement(s)!')
+        cond.evalgrp(lcls)
+        if iftrue != None and lcls.iv.last.data:
+            iftrue.evalgrp(lcls)
+        elif iffalse != None and not lcls.iv.last.data:
+            iffalse.evalgrp(lcls)

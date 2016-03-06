@@ -1,5 +1,7 @@
 #(0 -> a -> b):copy -> c#
 disp:(1,2,3):' ':'\n\n'
+1 -> a
+disp:(if:(a=1):'a = 1':'a != 1')
 @eof
 
 func:guess:(max):{
