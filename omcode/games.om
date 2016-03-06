@@ -1,4 +1,7 @@
-1+2->a
+#(2,3)->a#
+2->a
+a->b
+a:type
 @eof
 
 func:guess:(max):{

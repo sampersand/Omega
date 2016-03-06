@@ -5,8 +5,10 @@ class operobj(mthdobj):
         super().__init__(name)
         self.priority = priority
         self.attrstr = attrstr
+
     def __repr__(self):
         return super().__repr__().replace(')', ', %r, %r)' % (self.priority, self.attrstr))
+
     def evalobj(self, args, lcls):
         if __debug__:
             assert args.datastr in args.control.opers, "'{}' should be in opers!".format(self)
@@ -15,7 +17,6 @@ class operobj(mthdobj):
         else:
             args[0].evalgrp(lcls)
             # print(repr(args), repr(args[0]))
-            print(repr(args),repr(args[1:]),sep='\n',end='\n\n')
             for arg in args[1:]:
                 last = lcls.iv.last.deepcopy()
                 arg.evalgrp(lcls)
@@ -26,6 +27,7 @@ class operobj(mthdobj):
                         "cannot perform '{}' on '{}'!".format(self.attrstr, repr(last.baseobj))
                 lcls.iv.last = lcls.iv.last.deepcopy()
                 lcls.iv.last.data = getattr(last.baseobj, self.attrstr).__call__(last, lcls.iv.last)
+
     def _speceval(self, args, lcls):
         ctrl = args.control
         if self.name in ctrl.delims:
@@ -66,13 +68,13 @@ class operobj(mthdobj):
                 pass
         raise SyntaxError("Unknown Special Operator '{}' in arguments '{}'! Known operators: {}".\
                           format(self, args, ctrl.allopers.keys()))
+
     def _evalassign(self, args, lcls):
         if __debug__:
             assert self.name in args.control.opers['binary']['assignment'],\
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = lcls.iv.last
         args.evalgrp(lcls)
-        print(args, repr(lcls),'@')
         if __debug__:
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
@@ -80,7 +82,6 @@ class operobj(mthdobj):
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
             lcls[lstr] = last
         else:
-            print(lcls.iv.last)
             lcls.iv.last.data.updatedata(last.data, sname)
 
 
