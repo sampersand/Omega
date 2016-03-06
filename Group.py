@@ -81,7 +81,7 @@ class group(list):
 
     def getobj(self):
         # print(list(self),list(self) == [])
-        if self.data == None and (self.parens != ('', '') or list(self) != list()):
+        if self.data == None and self.parens != ('', ''):
             return arrayobj()
         if self.data == None:
             return nullobj()

@@ -154,7 +154,8 @@ class file:
                 """ combine tokens using order of operations """
                 if __debug__:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
-                if isinstance(line.baseobj, arrayobj):# and len(line) <= 1:
+
+                if isinstance(line.baseobj, arrayobj) and len(line) <= 1:
                     for p in range(len(line)):
                         line[p] = fixtkns(line[p])
                     return line
@@ -172,23 +173,24 @@ class file:
                 ret = group(data = fhp.data, control = self.control, parens = line.parens)
                 current = group(control = self.control)
                 while len(line):
-                    e = line.pop(0)
-                    if e.data == ret.data and len(current):
-                        # if len(current):
-                            if isinstance(current[-1].baseobj, arrayobj):
-                                current.append(e)
-                            else:
+                    e = line.pop(0) #was formerly .pop(0)
+                    if e.data == ret.data:
+                        if len(current) and isinstance(current[-1].baseobj,arrayobj):
+                            for ele in current:
+                                print(ele,e,'@')
                                 ret.append(fixtkns(current))
-                                current = group(control = self.control)
-                        # else/
-                        # current = group(control = self.control)
+                        else:
+                        # if current: #these used to strip out null values, but is ignored now
+                        #     ret.append(fixtkns(current))
+                            ret.append(fixtkns(current))
+                        current = group(control = self.control)
                     else:
                         current.append(e)
                 if len(current):
-                    # current.baseobj = arrayobj()
                     ret.append(fixtkns(current))
                 return ret
             return fixtkns(comprtkns(group(args = linetokens, control = self.control)))
+        quit(repr(compresstokens(self, tokenize(self, striptext(self, rawt)))))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)
