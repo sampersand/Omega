@@ -160,8 +160,21 @@ class file:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
 
                 if isinstance(line.baseobj, arrayobj) or line.hasparens():# and len(line) <= 1:
-                    for p in range(len(line)):
-                        line[p] = fixtkns(line[p])
+                    return line
+                    q = group(control = line.control, args = list(line))
+                    q = fixtkns(q)
+                    q.baseobj = line.baseobj
+                    q.parens = line.parens
+                    print(repr(q))
+                    return q
+                    print(line.data, line)
+                    line = group(data = line.data,
+                                 pobj = line.baseobj,
+                                 control = line.control,
+                                 parens = line.parens,
+                                 args = fixtkns(q))
+                    # for p in range(len(line)):
+                    #     line[p] = fixtkns(line[p])
                     return line
 
                 if not len(line):
@@ -183,8 +196,6 @@ class file:
                             for ele in current:
                                 ret.append(fixtkns(current))
                         else:
-                        # if current: #these used to strip out null values, but is ignored now
-                        #     ret.append(fixtkns(current))
                             ret.append(fixtkns(current))
                         current = group(control = self.control)
                     else:

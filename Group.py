@@ -83,7 +83,6 @@ class group(list):
         return _linestr(self, 0)
 
     def getobj(self):
-        # print(list(self),list(self) == [])
         if self.data == None and self.hasparens():
             return arrayobj()
         if self.data == None:
