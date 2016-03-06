@@ -8,10 +8,6 @@ class group(list):
         self.control = control
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
-        if self.data and self.data[0] in self.control.allquotes:
-            if __debug__:
-                assert self.data[-1] in self.control.allquotes #can't have unmatched quotes
-            self.data = self.data[1:-1]
 
     def __repr__(self):
         ret = 'group('
@@ -120,6 +116,10 @@ class group(list):
 
     def scrubstr(self, control):
         ret = self.datastr
+        if ret and ret[0] in self.control.allquotes:
+            if __debug__:
+                assert ret[-1] in self.control.allquotes #can't have unmatched quotes
+            ret = ret[1:-1]
         for k, v in control.escapechars.items():
             ret = ret.replace(k, v)
         return ret

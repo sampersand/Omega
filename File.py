@@ -173,18 +173,22 @@ class file:
                 ret = group(data = fhp.data, control = self.control, parens = line.parens)
                 current = group(control = self.control)
                 while len(line):
-                    e = line.pop(0) #was formerly .pop(0)
-                    if e.data == ret.data and not (len(current) and isinstance(current[-1].baseobj, arrayobj)):
-                        ret.append(fixtkns(current))
-                        current = group(control = self.control)
+                    e = line.pop(0)
+                    if e.data == ret.data and len(current):
+                        # if len(current):
+                            if isinstance(current[-1].baseobj, arrayobj):
+                                current.append(e)
+                            else:
+                                ret.append(fixtkns(current))
+                                current = group(control = self.control)
+                        # else/
+                        # current = group(control = self.control)
                     else:
                         current.append(e)
                 if len(current):
-                    for ele in current:
-                        ret.append(fixtkns(ele))
+                    ret.append(fixtkns(current))
                 return ret
             return fixtkns(comprtkns(group(args = linetokens, control = self.control)))
-        quit(compresstokens(self, tokenize(self, striptext(self, rawt))))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)
