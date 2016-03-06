@@ -3,9 +3,9 @@ class obj(object):
         return type(self).__qualname__ + '()'
 
     def evalobj(self, args, lcls):
-        if str(args) in lcls:
-            locls[args].baseobj.eval(args, lcls)
-        elif str(args.data) in args.control.delims['applier']:
+        # if str(args) in lcls:
+            # lcls[str(args)].baseobj.evalobj(args, lcls)
+        if str(args.data) in args.control.delims['applier']:
             assert 0, 'todo! ' + str(args)
         else:
             lcls.iv.last = args.deepcopy()
@@ -46,6 +46,18 @@ class obj(object):
     def _func_ge(self, obj1, obj2): return obj1.data >= obj2.data
     def _func_eq(self, obj1, obj2): return obj1.data == obj2.data
     def _func_ne(self, obj1, obj2): return obj1.data != obj2.data
+
+    def _ifunc_pow(self, obj1, obj2):  obj1.data = self._func_pow(obj1, obj2)
+    def _ifunc_mul(self, obj1, obj2):  obj1.data = self._func_mul(obj1, obj2)
+    def _ifunc_div(self, obj1, obj2):  obj1.data = self._func_div(obj1, obj2)
+    def _ifunc_mod(self, obj1, obj2):  obj1.data = self._func_mod(obj1, obj2)
+    def _ifunc_add(self, obj1, obj2):  obj1.data = self._func_add(obj1, obj2)
+    def _ifunc_sub(self, obj1, obj2):  obj1.data = self._func_sub(obj1, obj2)
+    def _ifunc_rshift(self, obj1, obj2):  obj1.data._f = selfunc_rshift(obj1, obj2)
+    def _ifunc_lshift(self, obj1, obj2):  obj1.data._f = selfunc_lshift(obj1, obj2)
+    def _ifunc_and(self, obj1, obj2):  obj1.data = self._func_and(obj1, obj2)
+    def _ifunc_xor(self, obj1, obj2):  obj1.data = self._func_xor(obj1, obj2)
+    def _ifunc_or(self, obj1, obj2):  obj1.dat = selfa._func_or(obj1, obj2)
 
 
 
