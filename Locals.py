@@ -54,9 +54,9 @@ class lcls(dict):
         del x
 
     def __iter__(self):
-        for k in super().__iter__():
-            if k is self._ivalstr:
-                for a in self[k]:
+        for k, v in self.items():
+            if v is self.iv:
+                for a in v._invidict:
                     yield a
             else:
                 yield k
@@ -65,21 +65,20 @@ class lcls(dict):
         if item in self.iv._invidict:
             return self.iv[self.iv._invidict[item]]
         return super().__getitem__(item)
-
     def __setitem__(self, item, value):
         if item in self.iv._invidict:
             return self.iv.__setitem__(self.iv._invidict(item), value)
         ret = super().__setitem__(item, value)
         self.iv.last = value
-        print(repr(self.iv))
         return ret
+
     def __delitem__(self, item):
         if item in self.iv._invidict:
             return self.iv.__delitem__(self.iv._invidict(item))
         return super().__delitem__(item)
 
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if k) + '}'
+        return '{' + ', '.join(repr(k) + ':' + str(self[k]) for k in self if bool(self[k])) + '}'
 
     def clear(self):
         r = super().clear()
