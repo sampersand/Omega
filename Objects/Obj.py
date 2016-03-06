@@ -8,19 +8,18 @@ class obj(object):
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
-        # if str(args) in lcls:
-            # lcls[str(args)].baseobj.evalobj(args, lcls)
+        if str(args) in lcls:
+            lcls.iv.last = lcls[str(args.data)]
+            return
         if str(args.data) in args.control.delims['applier']:
             if __debug__:
                 assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
-            objname = str(lcls.iv.last.data)
+            # objname = str(lcls.iv.last.data)
             fncname = str(args[0])
-            if __debug__:
-                assert objname in lcls, "Cannot do Obj function '{}' with an object named '{}'".format(self,objname)
             if fncname == 'copy':
                 lcls.iv.last = lcls.iv.last.deepcopy()
             elif fncname == 'type':
-                lcls.iv.last.data = lcls.iv.last.baseobj
+                lcls.iv.copylast().data = lcls.iv.last.baseobj
             else:
                 raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             

@@ -39,6 +39,9 @@ class _lclsivls(dict):
     def __repr__(self):
         return '{' + ', '.join(repr(k) + ':' + repr(v) for k, v in self.items() if v) + '}'
 
+    def copylast(self):
+        self.last = self.last.deepcopy()
+        return self.last
 class lcls(dict):
     """ The keeper of all the variables that are being used. """
     def __new__(self, control):
