@@ -155,7 +155,7 @@ class file:
                 if __debug__:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
 
-                if isinstance(line.baseobj, arrayobj) and len(line) <= 1:
+                if isinstance(line.baseobj, arrayobj):# and len(line) <= 1:
                     for p in range(len(line)):
                         line[p] = fixtkns(line[p])
                     return line
@@ -174,17 +174,17 @@ class file:
                 current = group(control = self.control)
                 while len(line):
                     e = line.pop(0) #was formerly .pop(0)
-                    if e.data == ret.data:
-                        # if current: #these used to strip out null values, but is ignored now
-                        #     ret.append(fixtkns(current))
+                    if e.data == ret.data and not (len(current) and isinstance(current[-1].baseobj, arrayobj)):
                         ret.append(fixtkns(current))
                         current = group(control = self.control)
                     else:
                         current.append(e)
                 if len(current):
-                    ret.append(fixtkns(current))
+                    for ele in current:
+                        ret.append(fixtkns(ele))
                 return ret
             return fixtkns(comprtkns(group(args = linetokens, control = self.control)))
+        quit(compresstokens(self, tokenize(self, striptext(self, rawt))))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)
