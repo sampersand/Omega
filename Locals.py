@@ -1,5 +1,5 @@
 from Group import group
-from Objects import ufuncobj
+from Objects import ufuncobj, nullobj
 class _lclsivls(dict):
     omp = '$' #om prefix
     ivalsdict = { #ivals dict
@@ -13,15 +13,14 @@ class _lclsivls(dict):
         for iv in self.ivalsdict:
             self[iv] = group()
 
+    def __bool__(self):
+        return any(isinstance(v, nullobj) for v in self.values())
+
     def __getattr__(self, attr):
         return super().__getattr__(attr) if attr not in self.ivalsdict else self[attr]
+    def __str__(self):
+        return self.omp + 'ivals:{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if self[v]) + '}'
 
-    def __radd__(self, other):
-        if not isinstance(other, lcls):
-            return NotImplemented
-        x = other.copy()
-        x.update({self.ivalsdict[e]:self[e] for e in self if not self[e].isnull()})
-        return x
 class lcls(dict):
     def __new__(self, control):
         return super().__new__(self)
@@ -32,9 +31,16 @@ class lcls(dict):
         self.iv = _lclsivls() #ivals
         
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ' : ' + str(self[v]) for v in self + self.iv) + '}'
+        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self) + (self.iv and str(self.iv) or '') + '}'
+
     def __repr__(self):
-        return (self + self.iv).__repr__()
+        #[:-1] is '}'
+        r = super().__repr__()[:-1]
+        if __debug__:
+            assert r[-1] == '}' #should be..
+        if self:
+        return super().__repr__()[:-1] + self.iv.omp +'ivals:' + repr(self.iv) + '}'
+
     def clear(self):
         del self.iv
         return super().clear()

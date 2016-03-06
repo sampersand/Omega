@@ -65,6 +65,7 @@ class group(list):
         if self.parens != ('', ''):
             if __debug__:
                 assert self, self
+                assert 0, 'shouldnt happen yet'
             return arrayobj()
         if self.data == None:
             return nullobj()
