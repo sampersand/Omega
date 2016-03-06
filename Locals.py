@@ -22,7 +22,7 @@ class _lclsivls(dict):
             assert attr in self.ivalsdict, attr #needs to me in it!
         return self[attr]
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if not self[v].isnull()) + '}'
+        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if self[v]) + '}'
 
 class lcls(dict):
     def __new__(self, control):
@@ -45,7 +45,7 @@ class lcls(dict):
                 yield k
 
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if not k.isnull()) + '}'
+        return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if k) + '}'
 
     def __repr__(self):
         #[:-1] is '}'

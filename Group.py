@@ -33,7 +33,8 @@ class group(list):
         return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
 
     def __bool__(self):
-        assert 0
+        """ False if this thing's baseobj is a nullobj. """
+        return isinstance(self.baseobj, nullobj)
 
     def linestr(self):
         linep = []
@@ -43,7 +44,7 @@ class group(list):
             isendl = self.datastr in self.control.delims['endline'][0]
             lines = []
             for l in self:
-                if l.isnull():
+                if not l:
                     continue
                 if isendl:
                     linep.append([])
@@ -60,10 +61,6 @@ class group(list):
             ret += self.parens[1]
             return ret
         return _linestr(self, 0)
-
-    def isnull(self):
-        """ cheks if this group's obj is null. """
-        return isinstance(self.baseobj, nullobj)
 
     def getobj(self):
         if self.parens != ('', ''):

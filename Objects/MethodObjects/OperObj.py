@@ -34,7 +34,7 @@ class operobj(mthdobj):
             if self.name in ctrl.delims['endline']:
                 for arg in args:
                     arg.evalgrp(lcls)
-                    if not lcls.iv.ret.isnull():
+                    if lcls.iv.ret:
                         del lcls.iv.ret
                         break
                 return
@@ -44,7 +44,7 @@ class operobj(mthdobj):
                 # l.data = arrayobj()
                 # for ele in args:
                 #     ele.evalevalgrp(lcls)
-                #     if not lcls.ret.data.isnull():
+                #     if lcls.ret.data:
                 #         break
                 #     l.data.append(lcls.iv.last)
                 # lcls.iv.last = l

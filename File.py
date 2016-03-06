@@ -160,18 +160,16 @@ class file:
                         line[p] = fixtkns(line[p])
                     return line
 
-                if len(line) == 0:
+                if not len(line):
                     return line
 
                 if len(line) == 1: #if the line is literally a single element, usually: ([blah, blah])
-                    if len(line[0]) == 0: #if the line[0] is literally a single constant, aka: blah
-                        return line[0]
-                    else:
-                        return fixtkns(line[0])
+                    return line[0] if not len(line[0]) else fixtkns(line[0])
                 fhp = findhighest(line)
                 if __debug__:
                     assert isinstance(fhp, group), 'expected a group for fhp! (not %s)' % fhp
                     assert not len(fhp) and fhp.data, fhp
+
                 ret = group(data = fhp.data, control = self.control, parens = line.parens)
                 current = group(control = self.control)
                 while len(line):
@@ -188,7 +186,7 @@ class file:
 
                 return ret
             return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
-        # quit(repr(compresstokens(self, tokenize(self, striptext(self, rawt)))))
+        quit(repr(compresstokens(self, tokenize(self, striptext(self, rawt)))))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)
