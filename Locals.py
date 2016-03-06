@@ -65,10 +65,14 @@ class lcls(dict):
         if item in self.iv._invidict:
             return self.iv[self.iv._invidict[item]]
         return super().__getitem__(item)
+
     def __setitem__(self, item, value):
         if item in self.iv._invidict:
-            return self.iv.__setitem__(self.iv._invidict(item), value)
-        ret = super().__setitem__(item, value)
+            ret = self.iv.__setitem__(self.iv._invidict(item), value)
+            if value is self.iv.last: #so we don't accidentally set the return value twice
+                return ret
+        else:
+            ret = super().__setitem__(item, value)
         self.iv.last = value
         return ret
 

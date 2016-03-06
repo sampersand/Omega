@@ -75,19 +75,11 @@ class operobj(mthdobj):
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
         lstr = str(lcls.iv.last)
-        if sname == '':
-            if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
-                lcls[lstr] = last
-                lcls.iv.last = lcls[lstr] #is deepcopy really required?
-            else:
-                lcls.iv.last.data.updatedata(last.data, sname)
-                # lcls.iv.last = lcls.iv.last.deepcopy() #is deepcopy really required?
+
+        if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
+            lcls[lstr] = last
         else:
-            if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
-                lcls[lstr] = last
-                lcls.iv.last = lcls[lstr] #is deepcopy really required?
-            else:
-                lcls.iv.last.data.updatedata(last.data, sname)
+            lcls.iv.last.data.updatedata(last.data, sname)
 
 
 
