@@ -176,12 +176,12 @@ class control():
         return self._allquotes
     @staticmethod
     def _updateDict(mdict, d):
-        for k in d.keys():
-            e = d[k]
-            if isinstance(e, dict):
-                control._updateDict(mdict, e)
+        for k, v in d.items():
+            v
+            if isinstance(v, dict):
+                control._updateDict(mdict, v)
             else:
-                mdict[k] = e
+                mdict[k] = v
         return mdict
     @property
     def allopers(self):

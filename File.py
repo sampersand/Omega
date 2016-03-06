@@ -110,6 +110,7 @@ class file:
                     if str(ele) not in self.control.allparens:
                         ret.append(ele)
                     else:
+                        print(self.control.allparens, ele)
                         toappend = group(control = self.control)
                         parens = {str(ele):1}
                         while sum(parens.values()) > 0 and len(linegrp) != 0:
@@ -127,6 +128,7 @@ class file:
                         if __debug__:
                             assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
                         toappend.parens = (str(ele), str(toappend.pop()))
+                        print(toappend.parens)
                         toappend = compresstokens(toappend)
                         ret.append(toappend)
                 return ret

@@ -1,5 +1,5 @@
 import copy
-from Objects import nullobj, obj
+from Objects import nullobj, obj, arrayobj
 from Objects import objregexes
 class group(list):
     def __init__(self, data = None, pobj = None, control = None, args = [], parens = ('', '')):
@@ -9,6 +9,7 @@ class group(list):
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
         self.args = args
+        print(parens, self)
 
     def __repr__(self):
         ret = 'group('
@@ -61,6 +62,8 @@ class group(list):
         return isinstance(self.baseobj, nullobj) 
 
     def getobj(self):
+        if self.parens != ('', ''):
+            return arrayobj()
         if self.data == None:
             return nullobj()
         if __debug__:

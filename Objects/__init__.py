@@ -44,6 +44,16 @@ from Objects.MethodObjects.UFuncObj import ufuncobj
 #
 #####
 
+#####
+# Collection Objects
+#
+from Objects.CollectionObjects.CollectionObj import collectionobj
+
+from Objects.CollectionObjects.ArrayObj import arrayobj
+from Objects.CollectionObjects.DictObj import dictobj
+#
+#
+#####
 import re
 
 objregexes = {
