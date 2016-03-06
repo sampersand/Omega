@@ -106,7 +106,7 @@ class file:
             return ret
             # return [group(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
         def compresstokens(self, linetokens):
-            def compresstokens(linegrp): #this is non-stable
+            def comprtkns(linegrp): #this is non-stable
                 ret = group(control = self.control, parens = linegrp.parens) #universe
                 while len(linegrp) != 0:
                     ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
@@ -130,7 +130,7 @@ class file:
                         if __debug__:
                             assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
                         toappend.parens = (str(ele), str(toappend.pop()))
-                        toappend = compresstokens(toappend)
+                        toappend = comprtkns(toappend)
                         ret.append(toappend)
                 return ret
             def findhighest(linegrp):
@@ -183,10 +183,8 @@ class file:
                         current.append(e)
                 if len(current):
                     ret.append(fixtkns(current))
-
                 return ret
-            return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
-        quit(repr(compresstokens(self, tokenize(self, striptext(self, rawt)))))
+            return fixtkns(comprtkns(group(args = linetokens, control = self.control)))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)
