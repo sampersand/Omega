@@ -45,7 +45,7 @@ class lcls(dict):
                 yield k
 
     def __str__(self):
-        return '{' + ', '.join(repr(v) + ':' + str(self[v]) for v in self if not self[v].isnull()) + '}'
+        return '{' + ', '.join(repr(v) + ':' + str(k) for v, k in self.items() if not k.isnull()) + '}'
 
     def __repr__(self):
         #[:-1] is '}'
