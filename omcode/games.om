@@ -1,9 +1,9 @@
+1 -> a
 disp:(if:(a=1):'a = 1':'a != 1')
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))
 #(0 -> a -> b):copy -> c#
-1 -> a
 
 func:guess:(max):{
     (max * om:rand):round + 1 -> randnum

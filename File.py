@@ -131,6 +131,10 @@ class file:
                             assert str(toappend[-1]) in self.control.allparens, toappend #the last element should be in allparens
                         toappend.parens = (str(ele), str(toappend.pop()))
                         toappend = comprtkns(toappend)
+                        # if toappend.hasparens():
+                        #     parens = toappend.parens
+                        #     toappend.parens = toappend.defaultparens
+                        #     toappend = group(parens = parens, control = toappend.control, args = toappend)
                         ret.append(toappend)
                 return ret
             def findhighest(linegrp):
@@ -155,7 +159,7 @@ class file:
                 if __debug__:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
 
-                if isinstance(line.baseobj, arrayobj) and len(line) <= 1:
+                if isinstance(line.baseobj, arrayobj) or line.hasparens():# and len(line) <= 1:
                     for p in range(len(line)):
                         line[p] = fixtkns(line[p])
                     return line
@@ -175,9 +179,8 @@ class file:
                 while len(line):
                     e = line.pop(0) #was formerly .pop(0)
                     if e.data == ret.data:
-                        if len(current) and isinstance(current[-1].baseobj,arrayobj):
+                        if len(current) and current[-1].hasparens():#isinstance(current[-1].baseobj,arrayobj):
                             for ele in current:
-                                print(ele,e,'@')
                                 ret.append(fixtkns(current))
                         else:
                         # if current: #these used to strip out null values, but is ignored now
@@ -190,7 +193,6 @@ class file:
                     ret.append(fixtkns(current))
                 return ret
             return fixtkns(comprtkns(group(args = linetokens, control = self.control)))
-        quit(repr(compresstokens(self, tokenize(self, striptext(self, rawt)))))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)

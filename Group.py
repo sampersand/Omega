@@ -2,13 +2,16 @@ import re, copy
 from Objects import nullobj, obj, arrayobj
 from Objects import objregexes
 class group(list):
-    def __init__(self, data = None, pobj = None, control = None, args = [], parens = ('', '')):
+    defaultparens = ('', '')
+    def __init__(self, data = None, pobj = None, control = None, args = [], parens = defaultparens):
         super().__init__(args)
         self.data = data
         self.control = control
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
 
+    def hasparens(self):
+        return self.parens != self.defaultparens
     def __repr__(self):
         ret = 'group('
         if self.data != None:
@@ -17,7 +20,7 @@ class group(list):
             ret += 'pobj= {}, '.format(repr(self.baseobj))
         if len(self):
             ret += 'args= {}, '.format(super().__repr__())
-        if self.parens != ('', ''):
+        if self.hasparens():
             ret += 'parens= {}, '.format(repr(self.parens))
         return (ret != 'group(' and ret[:-2] or ret) + ')'
 
@@ -81,7 +84,7 @@ class group(list):
 
     def getobj(self):
         # print(list(self),list(self) == [])
-        if self.data == None and self.parens != ('', ''):
+        if self.data == None and self.hasparens():
             return arrayobj()
         if self.data == None:
             return nullobj()
