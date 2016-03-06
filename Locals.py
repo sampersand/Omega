@@ -13,25 +13,23 @@ class _lclsivls(dict):
 
     _invidict = {v: k for k, v in idict.items()}
 
-    def __init__(self):
+    def __init__(self, control):
+        self.control = control
         super().__init__(dict())
         for iv in self.idict:
-            self[iv] = group()
+            self[iv] = group(control = self.control)
 
     def __bool__(self):
         return any(v for v in self.values())
 
     def __getattr__(self, attr):
-        # return super().__getattr__(attr) if attr not in self.idict else self[attr]
-        if __debug__:
-            assert attr in self.idict, "Attribute '{}' doesn't exist for _lclsivls!".format(attr)
-        return self[attr]
+        return super().__getattr__(attr) if attr not in self.idict else self.__getitem__(attr)
 
     def __setattr__(self, attr, value):
-        # return super().__getattr__(attr) if attr not in self.idict else self[attr]
-        if __debug__:
-            assert attr in self.idict, "Attribute '{}' doesn't exist for _lclsivls!".format(attr)
-        return self.__setitem__(attr, value)
+        return super().__setattr__(attr, value) if attr not in self.idict else self.__setitem__(attr, value)
+
+    def __delattr__(self, attr):
+        return super().__delattr__(attr) if attr not in self.idict else self[attr].clear()
 
     def __str__(self):
         return '{' + ', '.join(repr(k) + ':' + str(v) for k, v in self.items() if v) + '}'
@@ -51,7 +49,7 @@ class lcls(dict):
         super().__init__(dict())
         self.control = control
 
-        x = _lclsivls()
+        x = _lclsivls(self.control)
         self._ivalstr = x.omp + 'ivals'
         super().__setitem__(self._ivalstr, x) #ivals
 

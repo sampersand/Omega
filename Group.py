@@ -6,6 +6,8 @@ class group(list):
     def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens):
         super().__init__(args)
         self.data = data
+        if __debug__:
+            assert control != None, 'cannot have a None control!' + str(control)
         self.control = control
         self.parens = parens
         self.baseobj = self.getobj() if baseobj == None else baseobj

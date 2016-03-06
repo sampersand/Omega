@@ -43,9 +43,14 @@ class funcobj(mthdobj):
         elif iffalse != None and not lcls.iv.last.data:
             iffalse.evalgrp(lcls)
 
-    def _skip(self, args, ldict):
+    def _skip(self, args, lcls):
         """ literally nothing happens """
         pass #keep this here.
 
 
-    
+    def _abort(self, args, lcls):
+        if len(args) == 1: #abort w/ message
+            args[0].evalgrp(lcls)
+        else:
+            del lcls.iv.last # resets
+        quit('Aborting!' + (" Message: " + str(lcls.iv.last) if lcls.iv.last else ''))
