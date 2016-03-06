@@ -165,7 +165,12 @@ class file:
                     cpy = line.deepcopy()
                     cpy.parens, cpy.baseobj = cpy.defaultparens, obj #so it wont go into this again.
                     cpy = fixtkns(cpy)
-                    line = group(control = line.control, parens = line.parens, pobj = line.baseobj,
+                    if cpy.data in line.control.delims['arraysep']:
+                        if __debug__:
+                            assert not cpy.hasparens(), 'not hard and fast, just why would it? (a:b), the a:b is cpy'
+                        cpy.parens = line.parens
+                        return cpy
+                    line = group(control = line.control, parens = line.parens, baseobj = line.baseobj,
                                  args = [cpy])
                     return line
 

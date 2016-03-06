@@ -1,4 +1,5 @@
-from Objects import mthdobj, obj
+from Objects import mthdobj, obj, arrayobj
+from Group import group
 class operobj(mthdobj):
     def __init__(self, name, priority, attrstr):
         """ name is used to print, attrstr is used to actually execute the function. """
@@ -42,7 +43,6 @@ class operobj(mthdobj):
                         break
                 return
             if self.name in ctrl.delims['arraysep']:
-                assert 0, 'todo: arraysep'
                 # l = args.newgroup(parens = args.parens)
                 # l.data = arrayobj()
                 # for ele in args:
@@ -52,6 +52,16 @@ class operobj(mthdobj):
                 #     l.data.append(lcls.iv.last)
                 # lcls.iv.last = l
                 # return
+                
+                grp = group(baseobj = arrayobj, parens = args.parens)
+                for arg in args:
+                    arg.evalgrp(lcls)
+                    if lcls.iv.ret.data:
+                        break
+                    grp.append(lcls.iv.last)
+                lcls.iv.last = grp
+                return
+                # assert 0, 'todo: arraysep'
             
         if self.name in ctrl.opers['binary']:
             if __debug__:

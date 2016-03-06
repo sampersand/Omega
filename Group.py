@@ -3,12 +3,12 @@ from Objects import nullobj, obj, arrayobj
 from Objects import objregexes
 class group(list):
     defaultparens = ('', '')
-    def __init__(self, data = None, pobj = None, control = None, args = [], parens = defaultparens):
+    def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens):
         super().__init__(args)
         self.data = data
         self.control = control
         self.parens = parens
-        self.baseobj = self.getobj() if pobj == None else pobj
+        self.baseobj = self.getobj() if baseobj == None else baseobj
 
     def hasparens(self):
         return self.parens != self.defaultparens
@@ -17,7 +17,7 @@ class group(list):
         if self.data != None:
             ret += 'data= {}, '.format(repr(self.data))
         if self.baseobj != nullobj:
-            ret += 'pobj= {}, '.format(repr(self.baseobj))
+            ret += 'baseobj= {}, '.format(repr(self.baseobj))
         if len(self):
             ret += 'args= {}, '.format(super().__repr__())
         if self.hasparens():
@@ -44,7 +44,7 @@ class group(list):
     def __getitem__(self, item):
         if isinstance(item, slice):
             return group(data = self.data,
-                         pobj = self.baseobj,
+                         baseobj = self.baseobj,
                          control = self.control,
                          args = super().__getitem__(item),
                          parens = self.parens,)
@@ -105,7 +105,7 @@ class group(list):
 
     def __deepcopy__(self, memo):
         return group(data = copy.deepcopy(self.data, memo),
-                     pobj = copy.deepcopy(self.baseobj, memo),
+                     baseobj = copy.deepcopy(self.baseobj, memo),
                      control = self.control,
                      args = copy.deepcopy(list(self), memo),
                      parens = copy.deepcopy(self.parens, memo))
@@ -126,3 +126,8 @@ class group(list):
         for k, v in control.escapechars.items():
             ret = ret.replace(k, v)
         return ret
+    def clear(self):
+        super().clear()
+        self.data = None
+        self.parens = self.defaultparens
+        self.baseobj = self.getobj()

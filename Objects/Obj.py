@@ -46,7 +46,7 @@ class obj(object):
         #             assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
         #         ldict.last = args.deepcopy()
 
-    def _topyobj(self, pobj): return pobj if self._pyobj == None else self._pyobj(pobj)
+    def _topyobj(self, objinstance): return objinstance if self._pyobj == None else self._pyobj(objinstance)
     def _func_pow(self, obj1, obj2):    return self._topyobj(obj1.data) ** self._topyobj(obj2.data)
     def _func_mul(self, obj1, obj2):    return self._topyobj(obj1.data) * self._topyobj(obj2.data)
     def _func_div(self, obj1, obj2):    return self._topyobj(obj1.data) / self._topyobj(obj2.data)
