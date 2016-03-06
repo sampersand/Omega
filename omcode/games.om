@@ -1,10 +1,7 @@
-[a]
+{[1,2]} -> a
 @eof
-1 + 2 * 3 -> a
-[a]->b
-(a,b)->b
 
-func:guess:(max,):{
+func:guess:(max):{
     (max * om:rand):round + 1 -> randnum
     whilst:True:{
         '2' -> x

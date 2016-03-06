@@ -9,7 +9,6 @@ class group(list):
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
         self.args = args
-
     def __repr__(self):
         ret = 'group('
         if self.data != None: ret += 'data={},'.format(repr(self.data))
@@ -20,6 +19,10 @@ class group(list):
         return (ret != 'group(' and ret[:-1] or ret) + ')'
 
     def __str__(self):
+        # if self.datastr in self.control.delims['arraysep']:
+        #     if __debug__:
+        #         assert len(self) == 0
+        #     return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
         if not self:
             return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
         if self.datastr in self.control.opers['binary']:
@@ -31,11 +34,9 @@ class group(list):
     def linestr(self):
         linep = []
         def _linestr(self, indent):
-            if not self:
+            if not self.data or not self:
                 return str(self)
             isendl = self.datastr in self.control.delims['endline'][0]
-            if __debug__:
-                assert self.datastr
             lines = []
             for l in self:
                 if l.isnull():
@@ -61,8 +62,10 @@ class group(list):
         return isinstance(self.baseobj, nullobj) 
 
     def getobj(self):
-        # if self.parens != ('', ''):
-        #     return arrayobj()
+        if self.parens != ('', ''):
+            if __debug__:
+                assert self, self
+            return arrayobj()
         if self.data == None:
             return nullobj()
         if __debug__:

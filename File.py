@@ -3,6 +3,7 @@ import codecs
 import copy
 from Group import group
 from Locals import lcls
+from Objects import arrayobj
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
         if control == None:
@@ -153,10 +154,16 @@ class file:
                 """ combine tokens using order of operations """
                 if __debug__:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
+
+                if isinstance(line.baseobj, arrayobj) and len(line) <= 1:
+                    for p in range(len(line)):
+                        line[p] = fixtkns(line[p])
+                    return line
+
                 if len(line) == 0:
                     return line
+
                 if len(line) == 1: #if the line is literally a single element, usually: ([blah, blah])
-                    print(repr(line))
                     if len(line[0]) == 0: #if the line[0] is literally a single constant, aka: blah
                         return line[0]
                     else:
@@ -178,8 +185,10 @@ class file:
                         current.append(e)
                 if current:
                     ret.append(fixtkns(current))
+
                 return ret
             return fixtkns(compresstokens(group(args = linetokens, control = self.control)))
+        # quit(repr(compresstokens(self, tokenize(self, striptext(self, rawt)))))
         return compresstokens(self, tokenize(self, striptext(self, rawt)))
     def eval(self):
         ldict = lcls(self.control)
