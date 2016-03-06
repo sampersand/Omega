@@ -154,7 +154,6 @@ class file:
                 """ combine tokens using order of operations """
                 if __debug__:
                     assert isinstance(line, group), 'why wouldn\'t it be?'
-
                 if isinstance(line.baseobj, arrayobj):# and len(line) <= 1:
                     for p in range(len(line)):
                         line[p] = fixtkns(line[p])
@@ -186,6 +185,7 @@ class file:
                     else:
                         current.append(e)
                 if len(current):
+                    # current.baseobj = arrayobj()
                     ret.append(fixtkns(current))
                 return ret
             return fixtkns(comprtkns(group(args = linetokens, control = self.control)))

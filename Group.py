@@ -80,7 +80,8 @@ class group(list):
         return _linestr(self, 0)
 
     def getobj(self):
-        if self.parens != ('', '') and self.data == None:
+        # print(list(self),list(self) == [])
+        if self.data == None and (self.parens != ('', '') or list(self) != list()):
             return arrayobj()
         if self.data == None:
             return nullobj()
