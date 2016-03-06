@@ -4,6 +4,9 @@ class obj(object):
         return type(self).__qualname__ + '()'
 
     def evalobj(self, args, lcls):
+        if __debug__:
+            from Group import group
+            assert isinstance(args, group), args
         # if str(args) in lcls:
             # lcls[str(args)].baseobj.evalobj(args, lcls)
         if str(args.data) in args.control.delims['applier']:

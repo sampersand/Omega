@@ -14,8 +14,10 @@ class operobj(mthdobj):
             self._speceval(args, lcls)
         else:
             args[0].evalgrp(lcls)
+            # print(repr(args), repr(args[0]))
+            print(repr(args),repr(args[1:]),sep='\n',end='\n\n')
             for arg in args[1:]:
-                last = lcls.iv.last
+                last = lcls.iv.last.deepcopy()
                 arg.evalgrp(lcls)
                 if __debug__:
                     assert last is not lcls.iv.last, type(arg.baseobj)
@@ -70,6 +72,7 @@ class operobj(mthdobj):
                   "Cant evalassign when '%s' isnt assgn oper!" % self
         last = lcls.iv.last
         args.evalgrp(lcls)
+        print(args, repr(lcls),'@')
         if __debug__:
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
@@ -77,6 +80,7 @@ class operobj(mthdobj):
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.
             lcls[lstr] = last
         else:
+            print(lcls.iv.last)
             lcls.iv.last.data.updatedata(last.data, sname)
 
 

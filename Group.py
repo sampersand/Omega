@@ -38,6 +38,15 @@ class group(list):
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """
         return not isinstance(self.baseobj, nullobj)
+    
+    def __getitem__(self, item):
+        if isinstance(item, slice):
+            return group(data = self.data,
+                         pobj = self.baseobj,
+                         control = self.control,
+                         args = super().__getitem__(item),
+                         parens = self.parens,)
+        return super().__getitem__(item)
 
     def linestr(self):
         class _int():
