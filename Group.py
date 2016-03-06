@@ -1,4 +1,4 @@
-import copy
+import re, copy
 from Objects import nullobj, obj, arrayobj
 from Objects import objregexes
 class group(list):
@@ -8,7 +8,10 @@ class group(list):
         self.control = control
         self.parens = parens
         self.baseobj = self.getobj() if pobj == None else pobj
-        self.args = args
+        if self.data and self.data[0] in self.control.allquotes:
+            if __debug__:
+                assert self.data[-1] in self.control.allquotes #can't have unmatched quotes
+            self.data = self.data[1:-1]
 
     def __repr__(self):
         ret = 'group('
@@ -88,7 +91,8 @@ class group(list):
         if __debug__:
             assert isinstance(self.data, str), "'%s' has to be of type str, not '%s'" %(self.data, type(self.data))
         for key in objregexes:
-            if key.fullmatch(self.datastr):
+            if re.fullmatch(key.format(quote = self.control.allquotes,
+                                       escape = self.control.escape), self.datastr):
                 return objregexes[key]()
         if self.data in self.control.allkws:
             return self.control.allkws[self.data]
@@ -115,4 +119,7 @@ class group(list):
         self.data = datagroup.data
 
     def scrubstr(self, control):
-        return str(self.data)
+        ret = self.datastr
+        for k, v in control.escapechars.items():
+            ret = ret.replace(k, v)
+        return ret
