@@ -1,5 +1,5 @@
 import re
-from Objects import mthdobj, boolobj, obj, arrayobj
+from Objects import mthdobj, boolobj, obj, arrayobj, umthdobj
 from Group import group
 class funcobj(mthdobj):
     def __init__(self, name):
@@ -126,6 +126,11 @@ class funcobj(mthdobj):
         #Watch out! return:a+b is {return:a} + b
         args[0].evalgrp(lcls)
         lcls.iv.ret = lcls.iv.last
+
+    def _func(self, args, lcls):
+        args[0].evalgrp(lcls)
+        name = str(lcls.iv.last)
+        lcls[name] = group(data = str(name) + str(args[1]), baseobj = umthdobj(name, args[1], args[2]), control = args.control)
 
 
 

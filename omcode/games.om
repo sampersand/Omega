@@ -1,7 +1,7 @@
-1->a
-return:a
-input:'>> ':(1,2):"tisk, tisk, {inv} is an invalid input ({val} are the valid ones)"->a
-disp:('a:',a)
+func:f:(a,b):{
+    disp:("i'm in f!",a,b)
+}
+f:(19,42)
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))

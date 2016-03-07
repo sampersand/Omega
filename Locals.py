@@ -1,5 +1,5 @@
 from Group import group
-from Objects import ufuncobj, nullobj
+from Objects import umthdobj, nullobj
 class _lclsivls(dict):
     omp = '$' #om prefix
 
@@ -70,7 +70,7 @@ class lcls(dict):
 
     def __setitem__(self, item, value):
         if item in self.iv._invidict:
-            ret = self.iv.__setitem__(self.iv._invidict(item), value)
+            ret = self.iv.__setitem__(self.iv._invidict[item], value)
             if value is self.iv.last: #so we don't accidentally set the return value twice
                 return ret
         else:
@@ -96,7 +96,7 @@ class lcls(dict):
     def onlyfuncs(self):
         ret = lcls(self.control)
         for e in self:
-            if isinstance(self[e].base, ufuncobj):
+            if isinstance(self[e].baseobj, umthdobj):
                 ret[e] = self[e]
         return ret
 
@@ -110,3 +110,8 @@ class lcls(dict):
             del self[self._ivalstr]
         return locals()
     iv = property(**iv())
+
+
+
+
+

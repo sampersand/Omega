@@ -39,9 +39,9 @@ from Objects.CollectionObjects.ArrayObj import arrayobj
 from Objects.CollectionObjects.DictObj import dictobj
 
 from Objects.MethodObjects.OperObj import operobj
+from Objects.MethodObjects.UMthdObj import umthdobj
 from Objects.MethodObjects.FuncObj import funcobj
 
-from Objects.MethodObjects.UFuncObj import ufuncobj
 
 __all__ = frozenset(['objregex']  + list(x for x in locals() if x[-3:] == 'obj'))
 
