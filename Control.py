@@ -152,9 +152,9 @@ class control():
             'escape' : funcobj('escape'),
         })
         self.delims = control._specdelimsdict({
-            'arraysep': control._spectuple((',',   operobj(',', 14, None))),
+            'arraysep': control._spectuple((',',   operobj(',', 16, None))),
             'etc'     : control._spectuple(('|',   operobj('|', 14, None))),
-            'endline' : control._spectuple((';\n', operobj(';', 16, None))),
+            'endline' : control._spectuple((';\n', operobj(';', 17, None))),
             'applier' : control._spectuple((':',   operobj(':',  0, None))),
         })
         for d in self.delims.values():
