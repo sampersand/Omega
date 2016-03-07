@@ -66,14 +66,13 @@ class funcobj(mthdobj):
         if __debug__:
             assert len(args) == 2, 'for:(init,cond,inc):(statement(s))'
             assert len(args[0]) == 3, 'for:(init,cond,inc):(statement(s))'
-        assert 0, args
-        args[0][0].eval(lcls) #initialization
+        args[0][0].evalgrp(lcls) #initialization
         while True:
-            args[0][1].eval(lcls) #evaluate the condition
-            if not lcls.last.base or lcls.escape:
+            args[0][1].evalgrp(lcls) #evaluate the condition
+            if not lcls.iv.last.data or lcls.iv.esc:
                 break
-            args[1].eval(lcls) #execute the statement(s)
-            args[0][2].eval(lcls) #increment
+            args[1].evalgrp(lcls) #execute the statement(s)
+            args[0][2].evalgrp(lcls) #increment
     
 
 
