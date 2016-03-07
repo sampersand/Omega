@@ -1,4 +1,4 @@
-from Objects import nullobj, boolobj, funcobj, operobj
+from Objects import nullobj, boolobj, funcobj, operobj, omfuncobj
 from Group import group
 class control():
 
@@ -140,7 +140,7 @@ class control():
         self.funcs = control._specdict({
             'if'     : funcobj('if'),
             'rm'     : funcobj('rm'),
-            'om'     : funcobj('om'),
+            'om'     : omfuncobj('om'),
             'for'    : funcobj('for'),
             'disp'   : funcobj('disp'),
             'skip'   : funcobj('skip'),

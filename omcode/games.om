@@ -1,3 +1,6 @@
+om:rand->a
+disp:((om:if):1:"a":"B")
+@eof
 func:sum:(x, y):{
     disp:("The sum of", x, y, "is", return:(x + y))
 }
@@ -6,7 +9,6 @@ func:mul:(x, y):{
 }
 disp:('(', (3.4 -> a), '+', (2.9 -> b), ') *', (591.2 -> c), '=', mul:(c, sum:(a, b)))
 
-@eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))
 #(0 -> a -> b):copy -> c#

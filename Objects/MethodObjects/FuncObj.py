@@ -1,4 +1,3 @@
-import re
 from Objects import mthdobj, boolobj, obj, arrayobj, umthdobj
 from Group import group
 class funcobj(mthdobj):
@@ -6,11 +5,13 @@ class funcobj(mthdobj):
         super().__init__(name)
 
     def evalobj(self, args, lcls):
-        if args.data == self.name:
-            lcls.iv.last = args
+        if super().evalobj(args, lcls) != NotImplemented:
             return
-        if __debug__:
-            assert '_' + self.name in dir(funcobj), "Inbuilt Function '{}' isn't defined yet!".format(self.name)
+        name = "_" + self.name
+        if name not in dir(self):
+            if type(self) == funcobj:
+                raise ValueError("Function '{}' isn't defined yet!".format(self.name))
+            return NotImplemented
         self.__getattribute__('_' + self.name)(args, lcls)
 
     def _disp(self, args, lcls):
