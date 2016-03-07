@@ -33,7 +33,12 @@ class obj(object):
             if fncname == 'copy':
                 lcls.iv.last = lcls.iv.last.deepcopy()
             elif fncname == 'type':
-                lcls.iv.copylast().data = lcls.iv.last.baseobj
+                from Group import group # not sure this is the best way
+                from Objects import typeobj # to be doing this...
+                lcls.iv.last = group(data = type(lcls.iv.last.baseobj),
+                                     baseobj = typeobj(lcls.iv.last),
+                                     control = args.control)
+                # lcls.iv.copylast().data = lcls.iv.last.baseobj
             else:
                 if not isobj:
                     return NotImplemented
