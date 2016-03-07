@@ -88,8 +88,9 @@ class lcls(dict):
 
     def clear(self):
         r = super().clear()
-        del self.iv
-        assert 0,' when ??' #when
+        x = _lclsivls(self.control)
+        self._ivalstr = x.omp + 'ivals'
+        super().__setitem__(self._ivalstr, x) #ivals
         return r
 
     def onlyfuncs(self):

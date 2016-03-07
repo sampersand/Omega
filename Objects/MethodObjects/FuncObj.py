@@ -1,4 +1,4 @@
-from Objects import mthdobj, boolobj
+from Objects import mthdobj, boolobj, obj
 
 class funcobj(mthdobj):
     def __init__(self, name):
@@ -71,7 +71,26 @@ class funcobj(mthdobj):
             args[1].evalgrp(lcls) #execute the statement(s)
             args[0][2].evalgrp(lcls) #increment
     def _escape(self, args, lcls):
+        lcls.iv.esc.data = True
         lcls.iv.esc.baseobj = boolobj()
+    def _rm(self, args, lcls):
+        if not len(args):
+            lcls.clear()
+        else:
+            if __debug__:
+                assert len(args) == 1, "only 1 thing after the semicolon... " + str(args)
+                assert args, 'same reason as above'
+            for arg in args[0]:
+                arg.evalgrp(lcls)
+                if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
+                    del lcls[str(lcls.iv.last)] 
+                else:
+                    del lcls.iv.last
+                    # del lcls.last.base
+
+                # lcls.last = lcls[str(arg)]
+                # del lcls[str(arg)]
+
 
     
 

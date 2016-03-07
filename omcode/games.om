@@ -1,8 +1,7 @@
-for:(0->a,a<10,a+1->a):{
-    disp:(a,a:type,a<10)
-    escape:
-}
-#whilst:(a < 10)#
+1->a
+2->b
+3->c
+rm:(a,b)
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))
