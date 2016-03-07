@@ -1,3 +1,5 @@
+1->a
+return:a
 input:'>> ':(1,2):"tisk, tisk, {inv} is an invalid input ({val} are the valid ones)"->a
 disp:('a:',a)
 @eof

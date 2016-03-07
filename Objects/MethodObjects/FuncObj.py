@@ -122,6 +122,11 @@ class funcobj(mthdobj):
                 print(err.scrubstr(args.control, inv = lcls.iv.last.data, val = str(valid)))
             else:
                 break;
+    def _return(self, args, lcls):
+        #Watch out! return:a+b is {return:a} + b
+        args[0].evalgrp(lcls)
+        lcls.iv.ret = lcls.iv.last
+
 
 
 
