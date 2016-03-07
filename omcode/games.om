@@ -1,7 +1,9 @@
-func:f:(a,b):{
+func:f:():{1}
+f:()
+#func:f:(a,b):{
     disp:("i'm in f!",a,b)
 }
-f:(19,42)
+f:(19,42)#
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))

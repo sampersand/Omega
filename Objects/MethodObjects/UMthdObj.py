@@ -17,12 +17,15 @@ class umthdobj(mthdobj):
             args = args[0]
             assert not (len(args) or len(params)) or len(args) == len(params), "Expected {} ({}), got {} ({})"\
                 .format(params, len(params), args, len(args))
+
         for argp in range(len(params)): #setting the args
             args[argp].evalgrp(lcls)
             lcls2pass[str(params[argp])] = lcls.iv.last
 
         body.deepcopy().evalgrp(lcls2pass)
-        if not lcls2pass.ret.base.isnull():
-            lcls.last = lcls2pass.ret
+        if lcls2pass.iv.ret:
+            lcls.iv.last = lcls2pass.iv.ret
+        else:
+            del lcls.iv.last
 
 
