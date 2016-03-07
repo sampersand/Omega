@@ -1,33 +1,31 @@
-#func:f:(a):{
-    disp:(a)
+func:sum:(a,b):{
+    return:(a+b)
+    disp:("The sum of",a,b,"is",(return:(a+b)))
 }
-(f:copy):(9)#
-#(f:copy):()
-f:()
-f:()
-f:()#
-func:f:(a,b):{
-    disp:("i'm in f!",a,b)
-}
-f:(19,42)
+disp:('@',sum:(19,42))
+
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))
 #(0 -> a -> b):copy -> c#
 
 func:guess:(max):{
-    (max * om:rand):round + 1 -> randnum
+    (max * om:rand):round + 1 -> rn
+    trials <- 0
     whilst:True:{
-        '2' -> x
-        om:changetype:(x, 1:type)
-        x:type <- 3;
-        escape:
-        disp:(a,)
-        abort:
-        #abort:(x,)#
-        #om:tostr:(input:('Chose a number from 1 - ' + max + ': '),) -> inp#
-        #abort:(om:type:(inp,))#
-        escape:
+        input:('Pick a number from 1-' + max) -> gues
+        gues:type <- 1:type
+        disp:('#',\
+              (trials <- trials + 1),\
+              x,\
+              (if:(x < rn):\
+                '<':\
+                (if:(x > rn):\
+                    '>':\
+                    (escape:;'=')\
+                    )\
+                )
+              )
     }
     return:x
 }

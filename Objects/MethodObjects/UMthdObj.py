@@ -23,9 +23,9 @@ class umthdobj(mthdobj):
             lcls2pass[str(params[argp])] = lcls.iv.last
 
         body.deepcopy().evalgrp(lcls2pass)
+        del lcls.iv.last
+        # print(list(str(v) + ':'+str(k)+'\n' for v, k in lcls2pass.items()))
         if lcls2pass.iv.ret:
             lcls.iv.last = lcls2pass.iv.ret
-        else:
-            del lcls.iv.last
 
 
