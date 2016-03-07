@@ -1,4 +1,6 @@
-func:f:():{1}
+func:f:():{disp:(1)}
+(f:copy):()
+(f:copy):()
 f:()
 #func:f:(a,b):{
     disp:("i'm in f!",a,b)
