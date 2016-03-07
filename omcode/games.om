@@ -1,8 +1,10 @@
-func:sum:(a,b):{
-    return:(a+b)
-    disp:("The sum of",a,b,"is",(return:(a+b)))
+func:sum:(x, y):{
+    disp:("The sum of", x, y, "is", return:(x + y))
 }
-disp:('@',sum:(19,42))
+func:mul:(x, y):{
+    disp:("The product of", x, y, "is", return:(x * y))
+}
+disp:('(', (3.4 -> a), '+', (2.9 -> b), ') *', (591.2 -> c), '=', mul:(c, sum:(a, b)))
 
 @eof
 disp:(1,2,3):' ':'\n\n'

@@ -39,7 +39,7 @@ class operobj(mthdobj):
                 for arg in args:
                     arg.evalgrp(lcls)
                     if lcls.iv.ret:
-                        del lcls.iv.ret
+                        # del lcls.iv.ret
                         break
                 return
             if self.name in ctrl.delims['arraysep']:
