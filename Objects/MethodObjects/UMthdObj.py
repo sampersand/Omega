@@ -4,7 +4,6 @@ class umthdobj(mthdobj):
         super().__init__(name)
 
     def evalobj(self, args, lcls):
-        assert 0, str(lcls)
         if super().evalobj(args, lcls) != NotImplemented:
             return
 
@@ -13,7 +12,7 @@ class umthdobj(mthdobj):
             assert args, "cannot evaluate a function with a base type of '{}'!".format(type(args))
             assert len(args) == 2, "Args needs to be in the format [params, args], not '{}'!".format(args)
         params, funcbody = args
-        assert 0, lcls.iv
+        assert 0, lcls
         for argp in range(len(args)): #setting the args
             args[argp].evalgrp(lcls)
             lcls2pass[str(args[argp])] = lcls.iv.last

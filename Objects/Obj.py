@@ -12,13 +12,17 @@ class obj(object):
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
-        if str(args.data) in lcls:
-            if type(self).evalobj != obj.evalobj: #not sure this is correct, but it seems to be working
-                return NotImplemented
-            lcls[str(args.data)].evalgrp(lcls)
-            lcls.iv.last = lcls[str(args.data)]
+        if type(args.baseobj) == obj and args.datastr in lcls:
+            lcls[args.datastr].evalgrp(lcls)
+            lcls.iv.last = lcls[args.datastr]
             return
-        if str(args.data) in args.control.delims['applier']:
+        # if args.datastr in lcls:
+        #     if type(self).evalobj != obj.evalobj: #not sure this is correct, but it seems to be working
+        #         return NotImplemented
+        #     lcls[args.datastr].evalgrp(lcls)
+        #     lcls.iv.last = lcls[args.datastr]
+        #     return
+        if args.datastr in args.control.delims['applier']:
             if __debug__:
                 assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
             # objname = str(lcls.iv.last.data)
@@ -35,25 +39,6 @@ class obj(object):
                 lcls.iv.last = args.deepcopy()
             else:
                 return NotImplemented
-        # if str(args.base)
-        # if str(self) in ldict:
-        #     #this is ignoring the parens...
-        #     ldict[str(self)].base.eval(args, ldict)
-        # else:
-        #     if str(args.base) in args.control.delims['applier']:
-        #         if __debug__:
-        #             assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
-        #         name = str(args[0])
-        #         if name == 'copy':
-        #             ldict.last = ldict.last.deepcopy()
-        #         if name == 'type':
-        #             ldict.last.base = ldict.last.base.objtype
-        #         else:
-        #             raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
-        #     else:
-        #         if __debug__:
-        #             assert args.base is self, "The argument's base ({}) isn't this base ({}) !".format(args.base, self.base)
-        #         ldict.last = args.deepcopy()
 
     def _topyobj(self, objinstance): return objinstance if self._pyobj == None else self._pyobj(objinstance)
     def _func_pow(self, obj1, obj2):    return self._topyobj(obj1.data) ** self._topyobj(obj2.data)
