@@ -1,3 +1,4 @@
+import re
 from Objects import mthdobj, boolobj, obj, arrayobj
 from Group import group
 class funcobj(mthdobj):
@@ -91,9 +92,10 @@ class funcobj(mthdobj):
                 # lcls.iv.last = lcls[str(arg)]
                 # del lcls[str(arg)]
     def _input(self, args, lcls):
+        """ nput:[question,[valid results (regex) [, error messg]]]"""
         from Objects import strobj #this could be moved to the top
         msg, valid, err = group(data = "'> '", control = args.control), None,\
-                          group(data = "'Invalid input!'", control = args.control)
+                          group(data = "\"'{inv}' is an invalid input! Valid: '{val}'", control = args.control)
         if len(args) > 0:
             args[0].evalgrp(lcls)
             msg = lcls.iv.last
@@ -117,7 +119,7 @@ class funcobj(mthdobj):
                 assert isinstance(valid.baseobj, arrayobj),\
                     'Only accepts array of valid results!, not ' + str(type(valid.baseobj))
             if lcls.iv.last.data not in valid:
-                print(err.data.scrubstr(args.control))
+                print(err.scrubstr(args.control))
             else:
                 break;
 
