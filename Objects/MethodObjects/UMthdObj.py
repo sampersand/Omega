@@ -4,23 +4,21 @@ class umthdobj(mthdobj):
         super().__init__(name)
 
     def evalobj(self, args, lcls):
-        assert 0, list(args[0])
+        assert 0, str(lcls)
         if super().evalobj(args, lcls) != NotImplemented:
-            return
-        if __debug__:
-            assert args.datastr in args.control.delims['applier'][0], repr(args) #f :(args) <-- needs the ':'
-        if not args:
-            lcls.last = args
             return
 
         lcls2pass = lcls.onlyfuncs()
-        if args:
-            args = args[0]
-            for elep in range(len(self.args)):
-                args[elep].eval(lcls)
-                lcls2pass[str(self.args[elep])] = lcls.last
+        if __debug__:
+            assert args, "cannot evaluate a function with a base type of '{}'!".format(type(args))
+            assert len(args) == 2, "Args needs to be in the format [params, args], not '{}'!".format(args)
+        params, funcbody = args
+        assert 0, lcls.iv
+        for argp in range(len(args)): #setting the args
+            args[argp].evalgrp(lcls)
+            lcls2pass[str(args[argp])] = lcls.iv.last
 
-        self.func.deepcopy().eval(lcls2pass)
+        args[0] .deepcopy().eval(lcls2pass)
         if not lcls2pass.ret.base.isnull():
             lcls.last = lcls2pass.ret
 

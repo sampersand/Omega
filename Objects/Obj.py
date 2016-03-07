@@ -13,6 +13,8 @@ class obj(object):
             from Group import group
             assert isinstance(args, group), args
         if str(args.data) in lcls:
+            if type(self).evalobj != obj.evalobj: #not sure this is correct, but it seems to be working
+                return NotImplemented
             lcls[str(args.data)].evalgrp(lcls)
             lcls.iv.last = lcls[str(args.data)]
             return
