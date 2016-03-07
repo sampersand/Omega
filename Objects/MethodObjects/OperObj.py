@@ -43,7 +43,7 @@ class operobj(mthdobj):
                         break
                 return
             if self.name in ctrl.delims['arraysep']:
-                grp = group(baseobj = arrayobj, parens = args.parens, control = args.control)
+                grp = group(baseobj = arrayobj(), parens = args.parens, control = args.control)
                 for arg in args:
                     arg.evalgrp(lcls)
                     if lcls.iv.ret.data:

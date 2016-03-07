@@ -163,7 +163,7 @@ class file:
                     if __debug__:
                         assert line.data == None, 'when would this happen??'
                     cpy = line.deepcopy()
-                    cpy.parens, cpy.baseobj = cpy.defaultparens, obj #so it wont go into this again.
+                    cpy.parens, cpy.baseobj = cpy.defaultparens, obj() #so it wont go into this again.
                     cpy = fixtkns(cpy)
                     if cpy.data in line.control.delims['arraysep']:
                         if __debug__:

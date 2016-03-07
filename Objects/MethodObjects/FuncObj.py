@@ -106,9 +106,9 @@ class funcobj(mthdobj):
                     if __debug__:
                         assert len(args) < 3, 'input:[question,[valid results (array) [, error messg]]]'
         lcls.iv.last = group(baseobj = strobj(), control = args.control)
-        if valid != None:
-            assert 0, 'what is convstr??'
-            valid.data = valid.data.convstr()
+        # if valid != None:
+        #     assert 0, 'what is convstr??' + repr(valid)
+        #     valid.data = str(valid.data.convstr())
         while True:
             lcls.iv.last = group(data = str(input(msg.scrubstr(args.control))), control = args.control)
             if valid == None:
