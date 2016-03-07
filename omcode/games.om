@@ -1,3 +1,6 @@
+'1' -> a
+
+disp:(a:type)
 @eof
 func:sum:(x, y):{
     disp:("The sum of", x, y, "is", return:(x + y))

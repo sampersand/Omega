@@ -13,6 +13,7 @@ from Objects.Obj import obj
 from Objects.NullObj import nullobj
 objregexes[r'[nN](?:ull|il|one)'] = nullobj
 
+from Objects.TypeObj import typeobj
 from Objects.StrObj import strobj
 objregexes[r'(?P<quote>[{quote}]).*(?!\{escape})(?P=quote)'] = strobj
 
