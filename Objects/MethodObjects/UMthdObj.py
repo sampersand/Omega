@@ -4,9 +4,12 @@ class umthdobj(mthdobj):
         super().__init__(name)
         self.params = params
         self.body = body
+
     def __repr__(self):
         return super().__repr__().replace(')', ', %r, %r)' % (self.params, self.body))
+
     def evalobj(self, args, lcls):
+        assert 0, repr(list(lcls['f']))
         if super().evalobj(args, lcls) != NotImplemented:
             return
         if __debug__:
