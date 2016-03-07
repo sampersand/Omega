@@ -128,11 +128,11 @@ class funcobj(mthdobj):
         lcls.iv.ret = lcls.iv.last
 
     def _func(self, args, lcls):
-        args[0].evalgrp(lcls)
-        name = str(lcls.iv.last)
-        lcls[name] = group(data = str(name),
-                           baseobj = umthdobj(name),
-                           args = [args[1], args[2]],
+        if __debug__:
+            assert len(args) == 3, 'func:name:params:body'
+        lcls[str(args[0])] = group(data = args.datastr,
+                           baseobj = umthdobj(str(args[0])),
+                           args = list(args),
                            control = args.control)
 
 

@@ -12,8 +12,11 @@ class obj(object):
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
-        if type(args.baseobj) == obj and args.datastr in lcls:
-            lcls[args.datastr].evalgrp(lcls)
+        isobj = type(self).evalobj is obj.evalobj
+        if isobj and args.datastr in lcls:
+            if __debug__:
+                assert isobj and not len(args) #should effectively be only 'group(data = __, baseobj=obj)'
+            # lcls[args.datastr].evalgrp(lcls)
             lcls.iv.last = lcls[args.datastr]
             return
         # if args.datastr in lcls:
@@ -32,13 +35,14 @@ class obj(object):
             elif fncname == 'type':
                 lcls.iv.copylast().data = lcls.iv.last.baseobj
             else:
+                if not isobj:
+                    return NotImplemented
                 raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             
         else:
-            if type(self).evalobj is obj.evalobj:
-                lcls.iv.last = args.deepcopy()
-            else:
+            if not isobj:
                 return NotImplemented
+            lcls.iv.last = args.deepcopy()
 
     def _topyobj(self, objinstance): return objinstance if self._pyobj == None else self._pyobj(objinstance)
     def _func_pow(self, obj1, obj2):    return self._topyobj(obj1.data) ** self._topyobj(obj2.data)
