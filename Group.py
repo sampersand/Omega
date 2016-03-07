@@ -52,6 +52,14 @@ class group(list):
                          parens = self.parens,)
         return super().__getitem__(item)
 
+    def __contains__(self, other):
+        """ checks to see if the other's data is one of this group's arg's data"""
+        if isinstance(other, group):
+            other = other.data
+        for arg in self:
+            if arg.data == other:
+                return True
+        return False
     def linestr(self):
         class _int():
             def __init__(self):
@@ -119,8 +127,8 @@ class group(list):
     def updatedata(self, datagroup, funcname):
         self.data = datagroup.data
 
-    def scrubstr(self, control):
-        ret = self.datastr
+    def scrubstr(self, control, **kwargs):
+        ret = self.datastr.format(**kwargs)
         if ret and ret[0] in self.control.allquotes:
             if __debug__:
                 assert ret[-1] in self.control.allquotes #can't have unmatched quotes

@@ -95,7 +95,7 @@ class funcobj(mthdobj):
         """ nput:[question,[valid results (regex) [, error messg]]]"""
         from Objects import strobj #this could be moved to the top
         msg, valid, err = group(data = "'> '", control = args.control), None,\
-                          group(data = "\"'{inv}' is an invalid input! Valid: '{val}'", control = args.control)
+                          group(data = "\"'{inv}' is an invalid input! Valid: '{val}'\"", control = args.control)
         if len(args) > 0:
             args[0].evalgrp(lcls)
             msg = lcls.iv.last
@@ -106,7 +106,7 @@ class funcobj(mthdobj):
                     args[2].evalgrp(lcls)
                     err = lcls.iv.last
                     if __debug__:
-                        assert len(args) < 3, 'input:[question,[valid results (array) [, error messg]]]'
+                        assert len(args) <= 3, 'input:[question,[valid results (array) [, error messg]]]'
         lcls.iv.last = group(baseobj = strobj(), control = args.control)
         # if valid != None:
         #     assert 0, 'what is convstr??' + repr(valid)
@@ -118,8 +118,8 @@ class funcobj(mthdobj):
             if __debug__:
                 assert isinstance(valid.baseobj, arrayobj),\
                     'Only accepts array of valid results!, not ' + str(type(valid.baseobj))
-            if lcls.iv.last.data not in valid:
-                print(err.scrubstr(args.control))
+            if lcls.iv.last not in valid:
+                print(err.scrubstr(args.control, inv = lcls.iv.last.data, val = str(valid)))
             else:
                 break;
 

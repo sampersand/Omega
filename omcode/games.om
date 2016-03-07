@@ -1,4 +1,4 @@
-input:'>> ':(1,2)->a
+input:'>> ':(1,2):"tisk, tisk, {inv} is an invalid input ({val} are the valid ones)"->a
 disp:('a:',a)
 @eof
 disp:(1,2,3):' ':'\n\n'
