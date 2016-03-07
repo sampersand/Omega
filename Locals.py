@@ -32,10 +32,10 @@ class _lclsivls(dict):
         return super().__delattr__(attr) if attr not in self.idict else self[attr].clear()
 
     def __str__(self):
-        return '{' + ', '.join(repr(k) + ':' + str(v) for k, v in self.items() if v) + '}'
+        return '{' + ', '.join(repr(k) + ': ' + str(v) for k, v in self.items() if v) + '}'
 
     def __repr__(self):
-        return '{' + ', '.join(repr(k) + ':' + repr(v) for k, v in self.items() if v) + '}'
+        return '{' + ', '.join(repr(k) + ': ' + repr(v) for k, v in self.items() if v) + '}'
 
     def copylast(self):
         self.last = self.last.deepcopy()
@@ -84,7 +84,7 @@ class lcls(dict):
         return super().__delitem__(item)
 
     def __str__(self):
-        return '{' + ', '.join(repr(k) + ':' + str(self[k]) for k in self if bool(self[k])) + '}'
+        return '{' + ', '.join(repr(k) + ': ' + str(self[k]) for k in self if bool(self[k])) + '}'
 
     def clear(self):
         r = super().clear()

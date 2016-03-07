@@ -1,5 +1,5 @@
-from Objects import mthdobj, boolobj, obj
-
+from Objects import mthdobj, boolobj, obj, arrayobj
+from Group import group
 class funcobj(mthdobj):
     def __init__(self, name):
         super().__init__(name)
@@ -86,10 +86,41 @@ class funcobj(mthdobj):
                     del lcls[str(lcls.iv.last)] 
                 else:
                     del lcls.iv.last
-                    # del lcls.last.base
+                    # del lcls.iv.last.base
 
-                # lcls.last = lcls[str(arg)]
+                # lcls.iv.last = lcls[str(arg)]
                 # del lcls[str(arg)]
+    def _input(self, args, lcls):
+        from Objects import strobj #this could be moved to the top
+        msg, valid, err = group(data = "'> '", control = args.control), None,\
+                          group(data = "'Invalid input!'", control = args.control)
+        if len(args) > 0:
+            args[0].evalgrp(lcls)
+            msg = lcls.iv.last
+            if len(args) > 1:
+                args[1].evalgrp(lcls)
+                valid = lcls.iv.last
+                if len(args) > 2:
+                    args[2].evalgrp(lcls)
+                    err = lcls.iv.last
+                    if __debug__:
+                        assert len(args) < 3, 'input:[question,[valid results (array) [, error messg]]]'
+        lcls.iv.last = group(baseobj = strobj(), control = args.control)
+        if valid != None:
+            assert 0, 'what is convstr??'
+            valid.data = valid.data.convstr()
+        while True:
+            lcls.iv.last = group(data = str(input(msg.scrubstr(args.control))), control = args.control)
+            if valid == None:
+                break
+            if __debug__:
+                assert isinstance(valid.baseobj, arrayobj),\
+                    'Only accepts array of valid results!, not ' + str(type(valid.baseobj))
+            if lcls.iv.last.data not in valid:
+                print(err.data.scrubstr(args.control))
+            else:
+                break;
+
 
 
     

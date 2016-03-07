@@ -2,6 +2,8 @@
 2->b
 3->c
 rm:(a,b)
+#(input:)->a#
+input:('gimmie an input') -> d
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))
