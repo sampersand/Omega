@@ -25,7 +25,10 @@ class obj(object):
                 raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             
         else:
-            lcls.iv.last = args.deepcopy()
+            if type(self) == obj or type(self).evalobj is obj.evalobj:
+                lcls.iv.last = args.deepcopy()
+            else:
+                return NotImplemented
         # if str(args.base)
         # if str(self) in ldict:
         #     #this is ignoring the parens...

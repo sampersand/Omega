@@ -8,7 +8,7 @@ class funcobj(mthdobj):
             lcls.iv.last = args
             return
         if __debug__:
-            assert '_' + self.name in dir(funcobj)
+            assert '_' + self.name in dir(funcobj), "Inbuilt Function '{}' isn't defined yet!".format(self.name)
         self.__getattribute__('_' + self.name)(args, lcls)
 
     def _disp(self, args, lcls):
@@ -54,3 +54,31 @@ class funcobj(mthdobj):
         else:
             del lcls.iv.last # resets
         quit('Aborting!' + (" Message: " + str(lcls.iv.last) if lcls.iv.last else ''))
+    def _whilst(self, args, lcls):
+        if __debug__:
+            assert len(args) == 2, 'whilst:(cond):(statement(s))'
+        while True:
+            args[0].evalgrp(lcls) #evaluate the condition
+            if not lcls.iv.last or lcls.iv.esc:
+                break
+            args[1].evalgrp(lcls) #execute the statement(s)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

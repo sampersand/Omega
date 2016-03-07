@@ -1,5 +1,9 @@
-'1'->a
-abort:(1,'a')
+1->a
+whilst:(a<10):{
+    disp:(a,a:type,a<10)
+    a + 1 -> a
+}
+#whilst:(a < 10)#
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))
