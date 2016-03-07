@@ -1,5 +1,6 @@
 for:(0->a,a<10,a+1->a):{
     disp:(a,a:type,a<10)
+    escape:
 }
 #whilst:(a < 10)#
 @eof

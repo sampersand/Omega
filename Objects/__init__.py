@@ -20,41 +20,28 @@ from Objects.NumberObjects.NumObj import numobj
 
 from Objects.CollectionObjects.CollectionObj import collectionobj
 from Objects.MethodObjects.MthdObj import mthdobj
-#
-#
-#####
 
-#####
-# Level 2
-#
 from Objects.NumberObjects.IntObj import intobj
 objregexes[r'(?:0[bBoOxXdD])?\d+[nN]?'] = intobj
 
 from Objects.NumberObjects.FloatObj import floatobj
 objregexes[r'\d*(\.)?\d+([eE][nNpP]?\d+)?(?(1)[fF]?|[fF])'] = floatobj
 
-from Objects.CollectionObjects.ArrayObj import arrayobj
-from Objects.CollectionObjects.DictObj import dictobj
-
-from Objects.MethodObjects.OperObj import operobj
-from Objects.MethodObjects.FuncObj import funcobj
-#
-#
-#####
-
-#####
-# Level 3
-#
 from Objects.NumberObjects.BoolObj import boolobj
 objregexes[r'[tT]rue|[fF]alse'] = boolobj
 
 from Objects.NumberObjects.ComplexObj import complexobj
 objregexes[r'\d*\.?\d+([eE][nNpP]?\d+)?[iIjJ]'] = complexobj
 
+
+
+from Objects.CollectionObjects.ArrayObj import arrayobj
+from Objects.CollectionObjects.DictObj import dictobj
+
+from Objects.MethodObjects.OperObj import operobj
+from Objects.MethodObjects.FuncObj import funcobj
+
 from Objects.MethodObjects.UFuncObj import ufuncobj
-#
-#
-#####
 
 __all__ = frozenset(['objregex']  + list(x for x in locals() if x[-3:] == 'obj'))
 

@@ -1,4 +1,5 @@
-from Objects import mthdobj
+from Objects import mthdobj, boolobj
+
 class funcobj(mthdobj):
     def __init__(self, name):
         super().__init__(name)
@@ -27,7 +28,6 @@ class funcobj(mthdobj):
                     if args[2]:
                         end = args[2].scrubstr(args.control)
         print(*dispargs, sep = sep, end = end)
-
     def _if(self, args, lcls):
         cond, iftrue, iffalse = args[0], None, None
         if len(args) > 1:
@@ -42,12 +42,9 @@ class funcobj(mthdobj):
             iftrue.evalgrp(lcls)
         elif iffalse != None and not lcls.iv.last.data:
             iffalse.evalgrp(lcls)
-
     def _skip(self, args, lcls):
         """ literally nothing happens """
         pass #keep this here.
-
-
     def _abort(self, args, lcls):
         if len(args) == 1: #abort w/ message
             args[0].evalgrp(lcls)
@@ -73,6 +70,9 @@ class funcobj(mthdobj):
                 break
             args[1].evalgrp(lcls) #execute the statement(s)
             args[0][2].evalgrp(lcls) #increment
+    def _escape(self, args, lcls):
+        lcls.iv.esc.baseobj = boolobj()
+
     
 
 
