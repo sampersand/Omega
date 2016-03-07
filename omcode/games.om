@@ -1,4 +1,4 @@
-1->a
+0->a
 whilst:(a<10):{
     disp:(a,a:type,a<10)
     a + 1 -> a

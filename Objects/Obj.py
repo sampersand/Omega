@@ -5,6 +5,10 @@ class obj(object):
         return type(self).__qualname__ + '()'
 
     def evalobj(self, args, lcls):
+        """ the funcitons every object has. if an object doesn't have it's own defined evalobj,
+            and there are no other valid methods, it will copy itself.
+            If the object does have it's own defiend evalobj, and there are no other valid methods,
+            it will return NotImplemented instead."""
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
@@ -25,7 +29,7 @@ class obj(object):
                 raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
             
         else:
-            if type(self) == obj or type(self).evalobj is obj.evalobj:
+            if type(self).evalobj is obj.evalobj:
                 lcls.iv.last = args.deepcopy()
             else:
                 return NotImplemented
