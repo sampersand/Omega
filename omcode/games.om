@@ -1,6 +1,10 @@
 '1' -> a
+'2' -> b
+a+b -> c
 
+a:type <- 1:type
 disp:(a:type)
+
 @eof
 func:sum:(x, y):{
     disp:("The sum of", x, y, "is", return:(x + y))
