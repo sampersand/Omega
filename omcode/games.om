@@ -1,11 +1,15 @@
-func:f:():{disp:(1)}
-(f:copy):()
-(f:copy):()
+#func:f:(a):{
+    disp:(a)
+}
+(f:copy):(9)#
+#(f:copy):()
 f:()
-#func:f:(a,b):{
+f:()
+f:()#
+func:f:(a,b):{
     disp:("i'm in f!",a,b)
 }
-f:(19,42)#
+f:(19,42)
 @eof
 disp:(1,2,3):' ':'\n\n'
 f:(g:(h))

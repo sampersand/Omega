@@ -23,13 +23,16 @@ class _lclsivls(dict):
         return any(v for v in self.values())
 
     def __getattr__(self, attr):
-        return super().__getattr__(attr) if attr not in self.idict else self.__getitem__(attr)
+        return super().__getattr__(attr) if attr not in self.idict\
+            else self.__getitem__(attr)
 
     def __setattr__(self, attr, value):
-        return super().__setattr__(attr, value) if attr not in self.idict else self.__setitem__(attr, value)
+        return super().__setattr__(attr, value) if attr not in self.idict\
+            else self.__setitem__(attr, value)
 
     def __delattr__(self, attr):
-        return super().__delattr__(attr) if attr not in self.idict else self[attr].clear()
+        return super().__delattr__(attr) if attr not in self.idict\
+            else self.__setitem__(attr, group(control = self.control))
 
     def __str__(self):
         return '{' + ', '.join(repr(k) + ': ' + str(v) for k, v in self.items() if v) + '}'
