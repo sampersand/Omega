@@ -1,15 +1,10 @@
 from Objects import mthdobj
 class umthdobj(mthdobj):
-    def __init__(self, name, params, body):
+    def __init__(self, name):
         super().__init__(name)
-        self.params = params
-        self.body = body
-
-    def __repr__(self):
-        return super().__repr__().replace(')', ', %r, %r)' % (self.params, self.body))
 
     def evalobj(self, args, lcls):
-        assert 0, repr(list(lcls['f']))
+        assert 0, list(args[0])
         if super().evalobj(args, lcls) != NotImplemented:
             return
         if __debug__:

@@ -130,7 +130,10 @@ class funcobj(mthdobj):
     def _func(self, args, lcls):
         args[0].evalgrp(lcls)
         name = str(lcls.iv.last)
-        lcls[name] = group(data = str(name) + str(args[1]), baseobj = umthdobj(name, args[1], args[2]), control = args.control)
+        lcls[name] = group(data = str(name),
+                           baseobj = umthdobj(name),
+                           args = [args[1], args[2]],
+                           control = args.control)
 
 
 
