@@ -1,4 +1,4 @@
-from Objects import mthdobj, obj, arrayobj
+from Objects import mthdobj, obj, arrayobj, typeobj
 from Group import group
 class operobj(mthdobj):
     def __init__(self, name, priority, attrstr):
@@ -77,6 +77,9 @@ class operobj(mthdobj):
         if __debug__:
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
+        if isinstance(last.baseobj, typeobj) and isinstance(lcls.iv.last.baseobj, typeobj):
+            lcls.iv.last.baseobj.baseclass.baseobj = last.baseobj.baseclass.baseobj
+            return
         # lstr = str(lcls.iv.last)
         lstr = lcls.iv.last.data
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.

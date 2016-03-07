@@ -1,9 +1,10 @@
 '1' -> a
 '2' -> b
 a+b -> c
-
-a:type <- 1:type
-disp:(a:type)
+a:type <- 9:type
+b:type <- 9:type
+a+b -> d
+disp:(a,b,c,d)
 
 @eof
 func:sum:(x, y):{
