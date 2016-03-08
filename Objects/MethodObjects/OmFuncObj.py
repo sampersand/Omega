@@ -7,6 +7,9 @@ class omfuncobj(funcobj):
 
     def _evalargs(self, args, lcls):
         #exact same code as funcobj, except name is args.data
+        ret = super()._evalargs(args, lcls)
+        if ret != NotImplemented:
+            return ret
         if __debug__:
             assert len(args) == 1, "'Only can have length of 1 currently, not '{}'".format(args)
         name = "_" + args[0].data

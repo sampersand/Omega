@@ -5,6 +5,9 @@ class funcobj(mthdobj):
         super().__init__(name)
 
     def _evalargs(self, args, lcls):
+        ret = super()._evalargs(args, lcls)
+        if ret != NotImplemented:
+            return ret
         name = "_" + self.name
         if name not in dir(self):
             if type(self) == funcobj:

@@ -4,6 +4,9 @@ class umthdobj(mthdobj):
         super().__init__(name)
 
     def _evalargs(self, args, lcls):
+        ret = super()._evalargs(args, lcls)
+        if ret != NotImplemented:
+            return ret
         lcls2pass = lcls.onlyfuncs()
         name, params, body = lcls.iv.last.deepcopy()
         if __debug__:

@@ -12,9 +12,9 @@ class obj(object):
             from Group import group
             assert isinstance(args, group), args
 
-        if args.datastr in args.control.delims['applier']:
+        if args.datastr in args.control.delims['applier'] and args.datastr:
             return self._evalargs(args, lcls)
-        if args.datastr in lcls:
+        if args.datastr in lcls and args.datastr:
             lcls.iv.last = lcls[args.datastr]
         else:
             lcls.iv.last = args.deepcopy()
