@@ -14,9 +14,8 @@ class omfuncobj(funcobj):
             assert len(args) == 1, "'Only can have length of 1 currently, not '{}'".format(args)
         name = "_" + args[0].data
         if name not in dir(self):
-            if type(self) == funcobj:
-                raise ValueError("Function '{}' isn't defined yet!".format(name))
-            return 0
+            # if type(self) == funcobj:
+            raise ValueError("Function '{}' isn't defined yet!".format(name))
         self.__getattribute__(name)(args, lcls)
     # def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
     #     #exact same code as funcobj, except name is args.data

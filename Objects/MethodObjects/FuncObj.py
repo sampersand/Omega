@@ -12,7 +12,7 @@ class funcobj(mthdobj):
         if name not in dir(self):
             if type(self) == funcobj:
                 raise ValueError("Function '{}' isn't defined yet!".format(self.name))
-            return 0
+            return NotImplemented
         self.__getattribute__('_' + self.name)(args, lcls)
 
     # def evalobj(self, args, lcls):
