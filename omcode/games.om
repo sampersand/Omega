@@ -1,43 +1,15 @@
-'1' -> a
-'2' -> b
-a+b -> c
-a:type <- 9:type
-b:type <- 9:type
-a+b -> d
-disp:(a,b,c,d)
-
-@eof
-func:sum:(x, y):{
-    disp:("The sum of", x, y, "is", return:(x + y))
-}
-func:mul:(x, y):{
-    disp:("The product of", x, y, "is", return:(x * y))
-}
-disp:('(', (3.4 -> a), '+', (2.9 -> b), ') *', (591.2 -> c), '=', mul:(c, sum:(a, b)))
-
-disp:(1,2,3):' ':'\n\n'
-f:(g:(h))
-#(0 -> a -> b):copy -> c#
-
-func:guess:(max):{
-    (max * om:rand):round + 1 -> rn
+#func:guess:(max):{
+    max:type <- 1F:type
+    (om:rand * max):round + 1 -> rn
     trials <- 0
     whilst:True:{
-        input:('Pick a number from 1-' + max) -> gues
-        gues:type <- 1:type
-        disp:('#',\
-              (trials <- trials + 1),\
-              x,\
-              (if:(x < rn):\
-                '<':\
-                (if:(x > rn):\
-                    '>':\
-                    (escape:;'=')\
-                    )\
-                )
-              )
+        input:('Pick a number from 1-' + max) -> guess
+        guess:type <- 1.0:type
+        disp:('num', (trials <- trials + 1), x, (if:(x < rn): '<': (if:(x > rn): '>': (escape:;'=') ) ) )
     }
     return:x
 }
-'2' -> x
-x:type <- 1:type
+guess:(100)
+#
+100 -> max
+max:type <- 1F:type
