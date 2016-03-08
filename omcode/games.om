@@ -1,4 +1,6 @@
-#func:guess:(max):{
+1.0:clone -> a
+@eof
+func:guess:(max):{
     max:type <- 1F:type
     (om:rand * max):round + 1 -> rn
     trials <- 0
@@ -10,6 +12,3 @@
     return:x
 }
 guess:(100)
-#
-100 -> max
-max:type <- 1F:type

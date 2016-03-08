@@ -78,10 +78,9 @@ class operobj(mthdobj):
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
         if isinstance(last.baseobj, typeobj) and isinstance(lcls.iv.last.baseobj, typeobj):
-            if __debug__:
-                assert last.baseobj is not lcls.iv.last.baseobj
+            assert 0, repr(last)
+            assert 0, repr(lcls.iv.last.baseobj)
             lcls.iv.last.baseobj.baseclass.baseobj = last.baseobj.baseclass.baseobj
-            assert 0, lcls.iv.last.baseobj
             return
         # lstr = str(lcls.iv.last)
         lstr = lcls.iv.last.data
