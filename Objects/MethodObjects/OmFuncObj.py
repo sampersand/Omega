@@ -5,9 +5,9 @@ class omfuncobj(funcobj):
     def __init__(self, name):
         super().__init__(name)
 
-    def evalobj(self, args, lcls):
+    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
         #exact same code as funcobj, except name is args.data
-        if super().evalobj(args, lcls) == None:
+        if super().evalobj(args, lcls, throwfunc = False) == None:
             return
         if __debug__:
             assert len(args) == 1, "'Only can have length of 1 currently, not '{}'".format(args)

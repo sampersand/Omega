@@ -4,17 +4,17 @@ class obj(object):
     def __repr__(self):
         return type(self).__qualname__ + '()'
 
-    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfuncs = True):
+    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
         """ The functions every object has. 
             Currently, they are only `copy` and `type`.
 
             If `iflcls` is true, and `args.datastr in lcls`, then it will set `lcls.iv.last` to `lcls[args.datastr]`.
             If `docopy` is true, and there is no other viable way to evaluate it (i.e. `iflcls` is false / didn't work),
             it will just set `lcls.iv.last` to `args.deepcopy()`.
-            if `throwfuncs` is true, and args contains a function (`args.datastr in args.control.delims['applier']`),
+            if `throwfunc` is true, and args contains a function (`args.datastr in args.control.delims['applier']`),
             but the function isn't recognized, it will throw a syntax error.
 
-            If throwfuncs is false, and there is an unknown function, it will return 0.
+            If throwfunc is false, and there is an unknown function, it will return 0.
             If docopy if false, and there is no other viable way toe valuate it, it will return 1
             """
         if __debug__:
@@ -30,15 +30,26 @@ class obj(object):
             fncname = str(args[0])
             if fncname in {'clone', 'copy'}:
                 lcls.iv.last = lcls.iv.last.deepcopy()
+            elif fncname == 'updtype':
+                if __debug__:
+                    from Objects import arrayobj
+                    assert isinstance(args[1].baseobj, arrayobj), str(args) + " should be obj:updtype:(type)"
+                    assert len(args[1]) == 1, str(args) + " should be obj:updtype:(type)"
+                last = lcls.iv.last
+                args[1][0].evalgrp(lcls)
+                if __debug__:
+                    from Objects import typeobj
+                    assert isinstance(lcls.iv.last.baseobj, typeobj), "should be obj:updtype:(type)"
+                last.baseobj = lcls.iv.last.baseobj.baseclass.baseobj
             elif fncname == 'type':
                 from Group import group # not sure this is the best way
                 from Objects import typeobj # to be doing this...
-                lcls.iv.last = group(data = type(lcls.iv.last.baseobj),
+                lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__,
                                      baseobj = typeobj(lcls.iv.last),
                                      control = args.control)
                 # lcls.iv.copylast().data = lcls.iv.last.baseobj
             else:
-                if not throwfuncs:
+                if not throwfunc:
                     return 0
                 raise SyntaxError("No known '{}' function '{}'!".format(type(self).__qualname__, fncname))
             

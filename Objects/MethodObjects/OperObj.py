@@ -10,7 +10,7 @@ class operobj(mthdobj):
     def __repr__(self):
         return super().__repr__().replace(')', ', %r, %r)' % (self.priority, self.attrstr))
 
-    def evalobj(self, args, lcls):
+    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
         if __debug__:
             assert args.datastr in args.control.opers, "'{}' should be in opers!".format(self)
         if self.attrstr == None:
@@ -77,11 +77,6 @@ class operobj(mthdobj):
         if __debug__:
             assert last is not lcls.iv.last, type(args.baseobj)
         sname = self.name[1:-1]
-        if isinstance(last.baseobj, typeobj) and isinstance(lcls.iv.last.baseobj, typeobj):
-            assert 0, repr(last)
-            assert 0, repr(lcls.iv.last.baseobj)
-            lcls.iv.last.baseobj.baseclass.baseobj = last.baseobj.baseclass.baseobj
-            return
         # lstr = str(lcls.iv.last)
         lstr = lcls.iv.last.data
         if type(lcls.iv.last.baseobj) == obj: #aka, if it isn't a special object.

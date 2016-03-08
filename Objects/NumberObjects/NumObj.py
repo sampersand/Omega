@@ -1,6 +1,6 @@
 from Objects import obj
 class numobj(obj):
-    def evalobj(self, args, lcls):
-        if super().evalobj(args, lcls) == None:
+    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
+        if super().evalobj(args, lcls, throwfunc = False) == None:
             return
-        assert 0, repr(args)
+        return 0.5 #which one?

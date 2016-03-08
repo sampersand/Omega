@@ -1,14 +1,10 @@
-1.0->a
-1.0f->b
-1f->c
-@eof
 func:guess:(max):{
-    max:type <- 1F:type
+    max:updtype:(1f:type)
     (om:rand * max):round + 1 -> rn
     trials <- 0
     whilst:True:{
-        input:('Pick a number from 1-' + max) -> guess
-        guess:type <- 1.0:type
+        input:('Pick a number from 1-' + max + ': ') -> gs
+        gs:type <- 1.0:type
         disp:('num', (trials <- trials + 1), x, (if:(x < rn): '<': (if:(x > rn): '>': (escape:;'=') ) ) )
     }
     return:x
