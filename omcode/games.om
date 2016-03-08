@@ -1,4 +1,6 @@
-1.0:clone -> a
+1.0->a
+1.0f->b
+1f->c
 @eof
 func:guess:(max):{
     max:type <- 1F:type

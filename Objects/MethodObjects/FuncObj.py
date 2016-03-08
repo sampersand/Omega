@@ -5,13 +5,13 @@ class funcobj(mthdobj):
         super().__init__(name)
 
     def evalobj(self, args, lcls):
-        if super().evalobj(args, lcls) != NotImplemented:
+        if super().evalobj(args, lcls) == None:
             return
         name = "_" + self.name
         if name not in dir(self):
             if type(self) == funcobj:
                 raise ValueError("Function '{}' isn't defined yet!".format(self.name))
-            return NotImplemented
+            return 0
         self.__getattribute__('_' + self.name)(args, lcls)
 
     def _disp(self, args, lcls):

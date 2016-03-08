@@ -7,7 +7,7 @@ class omfuncobj(funcobj):
 
     def evalobj(self, args, lcls):
         #exact same code as funcobj, except name is args.data
-        if super().evalobj(args, lcls) != NotImplemented:
+        if super().evalobj(args, lcls) == None:
             return
         if __debug__:
             assert len(args) == 1, "'Only can have length of 1 currently, not '{}'".format(args)
@@ -15,7 +15,7 @@ class omfuncobj(funcobj):
         if name not in dir(self):
             if type(self) == funcobj:
                 raise ValueError("Function '{}' isn't defined yet!".format(name))
-            return NotImplemented
+            return 0
         self.__getattribute__(name)(args, lcls)
 
     def _rand(self, args, lcls):

@@ -4,7 +4,7 @@ class umthdobj(mthdobj):
         super().__init__(name)
 
     def evalobj(self, args, lcls):
-        if super().evalobj(args, lcls) != NotImplemented:
+        if super().evalobj(args, lcls) == None:
             return
 
         lcls2pass = lcls.onlyfuncs()

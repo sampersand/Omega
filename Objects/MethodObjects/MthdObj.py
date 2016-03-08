@@ -7,12 +7,12 @@ class mthdobj(obj):
         return super().__repr__().replace(')', '%r)' % self.name)
 
     def evalobj(self, args, lcls):
-        if super().evalobj(args, lcls) != NotImplemented:
+        if super().evalobj(args, lcls) == None:
             return
         if args.data == self.name:
             lcls.iv.last = args
             return
-        return NotImplemented
+        return 0.5 #is it 0 or 1?
 
 
 

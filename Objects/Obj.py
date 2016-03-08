@@ -4,33 +4,31 @@ class obj(object):
     def __repr__(self):
         return type(self).__qualname__ + '()'
 
-    def evalobj(self, args, lcls):
-        """ the funcitons every object has. if an object doesn't have it's own defined evalobj,
-            and there are no other valid methods, it will copy itself.
-            If the object does have it's own defiend evalobj, and there are no other valid methods,
-            it will return NotImplemented instead."""
+    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfuncs = True):
+        """ The functions every object has. 
+            Currently, they are only `copy` and `type`.
+
+            If `iflcls` is true, and `args.datastr in lcls`, then it will set `lcls.iv.last` to `lcls[args.datastr]`.
+            If `docopy` is true, and there is no other viable way to evaluate it (i.e. `iflcls` is false / didn't work),
+            it will just set `lcls.iv.last` to `args.deepcopy()`.
+            if `throwfuncs` is true, and args contains a function (`args.datastr in args.control.delims['applier']`),
+            but the function isn't recognized, it will throw a syntax error.
+
+            If throwfuncs is false, and there is an unknown function, it will return 0.
+            If docopy if false, and there is no other viable way toe valuate it, it will return 1
+            """
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
-        isobj = type(self).evalobj is obj.evalobj
-        if isobj and args.datastr in lcls:
-            if __debug__:
-                assert isobj and not len(args) #should effectively be only 'group(data = __, baseobj=obj)'
-            # lcls[args.datastr].evalgrp(lcls)
+        if iflcls and args.datastr in lcls:
             lcls.iv.last = lcls[args.datastr]
             return
-        # if args.datastr in lcls:
-        #     if type(self).evalobj != obj.evalobj: #not sure this is correct, but it seems to be working
-        #         return NotImplemented
-        #     lcls[args.datastr].evalgrp(lcls)
-        #     lcls.iv.last = lcls[args.datastr]
-        #     return
         if args.datastr in args.control.delims['applier']:
             if __debug__:
                 assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
             # objname = str(lcls.iv.last.data)
             fncname = str(args[0])
-            if fncname == 'copy':
+            if fncname in {'clone', 'copy'}:
                 lcls.iv.last = lcls.iv.last.deepcopy()
             elif fncname == 'type':
                 from Group import group # not sure this is the best way
@@ -40,13 +38,13 @@ class obj(object):
                                      control = args.control)
                 # lcls.iv.copylast().data = lcls.iv.last.baseobj
             else:
-                if not isobj:
-                    return NotImplemented
-                raise SyntaxError("No known Obj function '{}' for Obj '{}'!".format(args, self))
+                if not throwfuncs:
+                    return 0
+                raise SyntaxError("No known '{}' function '{}'!".format(type(self).__qualname__, fncname))
             
         else:
-            if not isobj:
-                return NotImplemented
+            if not docopy:
+                return 1
             lcls.iv.last = args.deepcopy()
 
     def _topyobj(self, objinstance): return objinstance if self._pyobj == None else self._pyobj(objinstance)

@@ -26,7 +26,7 @@ from Objects.NumberObjects.IntObj import intobj
 objregexes[r'(?:0[bBoOxXdD])?\d+[nN]?'] = intobj
 
 from Objects.NumberObjects.FloatObj import floatobj
-objregexes[r'\d*(\.)?\d+([eE][nNpP]?\d+)?(?(1)[fF]?|[fF])'] = floatobj
+objregexes[r'(\d*(\.)?\d+([eE][nNpP]?\d+)?)(?(2)[fF]?|[fF])'] = floatobj
 
 from Objects.NumberObjects.BoolObj import boolobj
 objregexes[r'[tT]rue|[fF]alse'] = boolobj
