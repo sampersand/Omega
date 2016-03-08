@@ -4,15 +4,16 @@ class funcobj(mthdobj):
     def __init__(self, name):
         super().__init__(name)
 
-    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
-        if super().evalobj(args, lcls, throwfunc = False) == None:
-            return
-        name = "_" + self.name
-        if name not in dir(self):
-            if type(self) == funcobj:
-                raise ValueError("Function '{}' isn't defined yet!".format(self.name))
-            return 0
-        self.__getattribute__('_' + self.name)(args, lcls)
+    def evalobj(self, args, lcls):
+        try:
+            super().evalobj(args, lcls):
+        except SyntaxError:
+            name = "_" + self.name
+            if name not in dir(self):
+                if type(self) == funcobj:
+                    raise ValueError("Function '{}' isn't defined yet!".format(self.name))
+                return 0
+            self.__getattribute__('_' + self.name)(args, lcls)
 
     def _disp(self, args, lcls):
         dispargs, sep, end = [''], ' ', '\n'

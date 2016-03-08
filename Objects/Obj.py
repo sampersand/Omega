@@ -4,7 +4,7 @@ class obj(object):
     def __repr__(self):
         return type(self).__qualname__ + '()'
 
-    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
+    def evalobj(self, args, lcls):
         """ The functions every object has. 
             Currently, they are only `copy` and `type`.
 
@@ -20,6 +20,9 @@ class obj(object):
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
+        iflcls = True
+        docopy = True
+        throwfunc = True
         if iflcls and args.datastr in lcls:
             lcls.iv.last = lcls[args.datastr]
             return
@@ -58,12 +61,16 @@ class obj(object):
                 return 1
             lcls.iv.last = args.deepcopy()
 
-    def _topyobj(self, objinstance): return objinstance if self._pyobj == None else self._pyobj(objinstance)
+    def _topyobj(self, objinstance):    return objinstance if self._pyobj == None else self._pyobj(objinstance)
     def _func_pow(self, obj1, obj2):    return self._topyobj(obj1.data) ** self._topyobj(obj2.data)
     def _func_mul(self, obj1, obj2):    return self._topyobj(obj1.data) * self._topyobj(obj2.data)
     def _func_div(self, obj1, obj2):    return self._topyobj(obj1.data) / self._topyobj(obj2.data)
     def _func_mod(self, obj1, obj2):    return self._topyobj(obj1.data) % self._topyobj(obj2.data)
-    def _func_add(self, obj1, obj2):    return self._topyobj(obj1.data) + self._topyobj(obj2.data)
+    # def _func_add(self, obj1, obj2):    return self._topyobj(obj1.data) + self._topyobj(obj2.data)
+    def _func_add(self, obj1, obj2):#thrown together...
+        if type(obj1.baseobj)._pyobj == str or type(obj2.baseobj)._pyobj == str:
+            return str(obj1.data) + str(obj2.data)
+        return self._topyobj(obj1.data) + self._topyobj(obj2.data)
     def _func_sub(self, obj1, obj2):    return self._topyobj(obj1.data) - self._topyobj(obj2.data)
     def _func_rshift(self, obj1, obj2): return self._topyobj(obj1.data) >> self._topyobj(obj2.data)
     def _func_lshift(self, obj1, obj2): return self._topyobj(obj1.data) << self._topyobj(obj2.data)

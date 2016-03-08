@@ -5,9 +5,9 @@ func:guess:(max):{
     whilst:True:{
         input:('Pick a number from 1-' + max + ': ') -> gs
         gs:updtype:(1f:type)
-        disp:('\#', (trials <- trials + 1), gs,(if:(gs < rn):{'<'}:(if:(gs > rn):{'>'}: (escape:;'='))))
-        disp:(rn)
+        disp:('#')
+        #disp:('num', (trials <- trials + 1), x, (if:(x < rn): '<': (if:(x > rn): '>': (escape:;'=') ) ) )#
     }
-    return:trials
+    return:x
 }
 guess:(100)

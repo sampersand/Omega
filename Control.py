@@ -39,6 +39,7 @@ class control():
                        '\\`': '`',
                        '\\"': '\"',
                        '\\\\':'\\',
+                       '\\#':'#',
                        }
 
         self.parens = control._specdict({

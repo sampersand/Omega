@@ -21,28 +21,19 @@ class file:
         def striptext(self, rawt):
             """ remove comments and blank lines"""
             ret = ''
-            data = 0b00 # 0b10 = escaped, 0b01 = commented
-            for char in rawt:
-                if data & 0b10:
-                    ret += '\\' + char
-                    data &= 0b01
-                elif char in self.control.escape  and not data & 0b10:
-                    data ^= 0b10
-                elif char in self.control.comment and not data & 0b10:
-                    data ^= 0b01
+            iscomm = False
+            it = iter(rawt)
+            for char in it:
+                if char in self.control.escape and not iscomm:
+                    ret += char + next(it)
+                elif char in self.control.comment:
+                    iscomm ^= iscomm
                 elif char in self.control.linebreak:
-                    if char in self.control.delims['endline'][0] and\
-                         not (data & 0b10) and ret and \
+                    if char in self.control.delims['endline'][0] and ret and \
                          ret[-1] not in self.control.delims['endline'][0]:
                         ret += self.control.delims['endline'][0][0]
-                    # if not data & 0b10 and (not ret or ret[-1] not in self.control.linebreak): #so no duplicate \ns
-                        # ret += char
-                    # data &= 0b10 #remove comments
                 else:
-                    # if data & 0b10:
-                    #     ret += self.control.escape
-                    data &= 0b01
-                    if not data & 0b01:
+                    if not iscomm:
                         ret += char
             if '@eof' in ret:
                 ret = ret[0:ret.find('@eof')]
@@ -55,14 +46,10 @@ class file:
                 for oper in self.control.sortedopers:
                     if oper in rawt:
                         par = rawt.partition(oper)
-                        if rawt[rawt.index(oper) - 1] in self.control.escape:
-                            return [par[0] + par[1]] + createtokens(par[2])
                         return createtokens(par[0]) + [par[1]] + createtokens(par[2])
                 for punc in self.control.punctuation:
                     if punc in rawt:
                         par = rawt.partition(punc)
-                        if rawt[rawt.index(punc) - 1] in self.control.escape:
-                            return [par[0] + par[1]] + createtokens(par[2])
                         return createtokens(par[0]) + [par[1]] + createtokens(par[2])
                 return [rawt]
             tokens = [token for token in createtokens(rawt) if token]
