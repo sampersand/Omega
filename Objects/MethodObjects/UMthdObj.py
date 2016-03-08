@@ -3,10 +3,7 @@ class umthdobj(mthdobj):
     def __init__(self, name):
         super().__init__(name)
 
-    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
-        if super().evalobj(args, lcls, throwfunc = False) == None:
-            return
-
+    def _evalargs(self, args, lcls):
         lcls2pass = lcls.onlyfuncs()
         name, params, body = lcls.iv.last.deepcopy()
         if __debug__:

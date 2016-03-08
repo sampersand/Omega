@@ -10,7 +10,8 @@ class operobj(mthdobj):
     def __repr__(self):
         return super().__repr__().replace(')', ', %r, %r)' % (self.priority, self.attrstr))
 
-    def evalobj(self, args, lcls, iflcls = True, docopy = True, throwfunc = True):
+    def evalobj(self, args, lcls):
+        #todo: this
         if __debug__:
             assert args.datastr in args.control.opers, "'{}' should be in opers!".format(self)
         if self.attrstr == None:

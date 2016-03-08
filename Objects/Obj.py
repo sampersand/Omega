@@ -14,7 +14,7 @@ class obj(object):
 
         if args.datastr in args.control.delims['applier']:
             return self._evalargs(args, lcls)
-        if iflcls and args.datastr in lcls:
+        if args.datastr in lcls:
             lcls.iv.last = lcls[args.datastr]
         else:
             lcls.iv.last = args.deepcopy()
@@ -40,12 +40,12 @@ class obj(object):
         elif fncname == 'type':
             from Group import group # not sure this is the best way
             from Objects import typeobj # to be doing this...
-            lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__,
-                                 baseobj = typeobj(lcls.iv.last),
+            lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__, baseobj = typeobj(lcls.iv.last),
                                  control = args.control)
-            # lcls.iv.copylast().data = lcls.iv.last.baseobj
         else:
-            raise SyntaxError("No known '{}' function '{}'!".format(type(self).__qualname__, fncname))
+            if type(self)._evalargs == obj._evalargs:
+                raise SyntaxError("No known '{}' function '{}'!".format(type(self).__qualname__, fncname))
+            return NotImplemented
         return lcls.iv.last
 
     def _topyobj(self, objinstance):    return objinstance if self._pyobj == None else self._pyobj(objinstance)
