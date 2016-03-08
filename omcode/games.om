@@ -1,4 +1,7 @@
-1->a#1#
+f <- ('f',(a),{disp:('f::',a)})
+func:q::{}
+f:updtype:(q:type)
+f:(1)
 @eof
 #func:guess:(max):{
     max:updtype:(1f:type)
