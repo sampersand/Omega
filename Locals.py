@@ -43,8 +43,10 @@ class _lclsivls(dict):
     def copylast(self):
         self.last = self.last.deepcopy()
         return self.last
+
 class lcls(dict):
     """ The keeper of all the variables that are being used. """
+
     def __new__(self, control):
         return super().__new__(self)
 
@@ -70,6 +72,9 @@ class lcls(dict):
         if item in self.iv._invidict:
             return self.iv[self.iv._invidict[item]]
         return super().__getitem__(item)
+
+    def __contains__(self, item):
+        return item in iter(self)
 
     def __setitem__(self, item, value):
         if item in self.iv._invidict:

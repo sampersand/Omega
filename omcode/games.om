@@ -1,15 +1,22 @@
-func:guess:(max):{
+1;
+$
+@eof
+func:guessuser::{
+    min = ;if:(input:('Minimum (defaults to 0): ')):$:0
+}
+guessuser:()
+@eof
+func:guesscomp:(max):{
     max:updtype:(1f:type)
     (om:rand * max):round + 1 -> rn
     trials <- 0
     whilst:True:{
-        input:('Pick a number from 1-' + max + ': ') -> gs
+        input:('Pick a number from 1 - ' + max + ': ') -> gs
         gs:updtype:(1f:type);
+        trials <- trials + 1
         if:(gs = rn):{escape:()}
-        disp:('\#', (trials <- trials + 1), gs,(if:(gs < rn):{'<'}:(if:(gs > rn):{'>'}: (escape:();'='))))
-        disp:(rn)
+        disp:('Guess \#' + trials + ': ' + gs + ' is too ' + if:(gs < rn):'small':'big')
     }
-    disp:
+    disp:('You win! It took you',trials,'times!')
     return:trials
 }
-guess:(100)
