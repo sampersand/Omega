@@ -1,5 +1,7 @@
 [1]
 [9.2, 34.5, 70] -> a
-disp:(a:get:(0))
-a:get:(0) <- 9
-disp:(a)
+#disp:(a:get:(0))#
+#a:get:(0) <- 9#
+#disp:(a, a:len)#
+a:len -> b
+disp:(b)

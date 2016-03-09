@@ -1,4 +1,4 @@
-from Objects import collectionobj
+from Objects import collectionobj, intobj
 class arrayobj(collectionobj):
     _pyobj = list
     # def evalobj(self, args, lcls):
@@ -26,10 +26,14 @@ class arrayobj(collectionobj):
         self.__getattribute__(name)(args[1:], lcls)
     def _get(self, args, lcls):
         if __debug__:
-            assert len(args) == 1, 'can only get a single position!'
-            assert len(args[0]) == 1, 'can only get a single position!'
+            assert len(args) == 1, 'arr:get:(pos)'
+            assert len(args[0]) == 1, 'arr:get:(pos)'
             assert isinstance(args[0].baseobj, arrayobj), 'have to pass an array as a parameter!'
         last = lcls.iv.last
         args[0][0].evalgrp(lcls)
-        from Group import group
         lcls.iv.last = last[int(lcls.iv.last.data)]
+    def _len(self, args, lcls):
+        if __debug__:
+            assert len(args) == 0, 'arr:len'
+        from Group import group
+        lcls.iv.last = group(data = str(len(lcls.iv.last)), baseobj = intobj(), control = args.control)
