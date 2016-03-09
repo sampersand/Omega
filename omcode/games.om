@@ -1,12 +1,15 @@
-(100f + 1f) / 2f -> g
-abort:(g)
 func:guessuser::{
-    min <- if:(input:('Minimum (defaults to 1): ')):$:1
-    max <- if:(input:('Maximum (defaults to 100): ')):$:100
-    min:updtype:(1f:type); max:updtype:(1f:type)
-    func:query:(num):{return:(input:(num + ' = ? '):('g','l','e'))}
-    guess <- (min + max) / 2.0
-    abort:(guess)
+    func:query:(num):{
+        return:(input:(num + ' = ? '):('g','l','e'))
+    }
+    min <- if:(input:('Minimum (defaults to 1): ')):$:1; min:updtype:(1f:type)
+    max <- if:(input:('Maximum (defaults to 100): ')):$:100; max:updtype:(1f:type)
+    abort:(1f:type)
+    cguess <- (min + max) / 2.0
+    abort:(cguess:round)
+    whilst:({query:(cguess) -> response} != 'e'):{
+        disp:('oh, darn')
+    }
 }
 disp:(guessuser:())
 @eof
