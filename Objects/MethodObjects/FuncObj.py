@@ -13,20 +13,7 @@ class funcobj(mthdobj):
             if type(self) == funcobj:
                 raise ValueError("Function '{}' isn't defined yet!".format(self.name))
             return NotImplemented
-        self.__getattribute__('_' + self.name)(args, lcls)
-
-    # def evalobj(self, args, lcls):
-    #     ret = super().evalobj(args, lcls)
-    #     if ret == NotImplemented
-    #     try:
-    #         super().evalobj(args, lcls)
-    #     except SyntaxError:
-    #         name = "_" + self.name
-    #         if name not in dir(self):
-    #             if type(self) == funcobj:
-    #                 raise ValueError("Function '{}' isn't defined yet!".format(self.name))
-    #             return 0
-    #         self.__getattribute__('_' + self.name)(args, lcls)
+        self.__getattribute__(name)(args, lcls)
 
     def _disp(self, args, lcls):
         dispargs, sep, end = [''], ' ', '\n'

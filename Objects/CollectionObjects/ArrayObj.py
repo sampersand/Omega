@@ -18,10 +18,18 @@ class arrayobj(collectionobj):
         ret = super()._evalargs(args, lcls)
         if ret != NotImplemented:
             return ret
-        name = "_" + self.name
+        name = "_" + str(args[0])
         if name not in dir(self):
-            if type(self) == funcobj:
-                raise ValueError("Function '{}' isn't defined yet!".format(self.name))
+            if type(self) == arrayobj:
+                raise ValueError("Function '{}' isn't defined yet!".format(str(args[0])))
             return NotImplemented
-        self.__getattribute__('_' + self.name)(args, lcls)
-        
+        self.__getattribute__(name)(args[1:], lcls)
+    def _get(self, args, lcls):
+        if __debug__:
+            assert len(args) == 1, 'can only get a single position!'
+            assert len(args[0]) == 1, 'can only get a single position!'
+            assert isinstance(args[0].baseobj, arrayobj), 'have to pass an array as a parameter!'
+        last = lcls.iv.last
+        args[0][0].evalgrp(lcls)
+        from Group import group
+        lcls.iv.last = last[int(lcls.iv.last.data)]
