@@ -10,6 +10,7 @@ class floatobj(numobj):
         fncname = str(args[0])
         if fncname == 'round':
             lcls.iv.last.baseobj = intobj()
+            lcls.iv.last.data = int(lcls.iv.last.data)
         else:
             raise SyntaxError("No known '{}' function '{}'!".format(type(self).__qualname__, fncname))
 
