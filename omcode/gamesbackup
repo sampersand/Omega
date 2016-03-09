@@ -1,27 +1,20 @@
 func:guessuser::{
+
     func:query:(num):{
-        # return:{if:(num%2 == 0):'l':'s'}#
         return:(input:('The guess ' + num + ' is too '):('s','l','e'))
+        #return:(input:('The guess ' + num + ' is too '):('s','l','e'))#
     }
-    #min <- if:(input:('Minimum (defaults to 0): ')):$:0; min:updtype:(1F:type)#
-    #max <- if:(input:('Maximum (defaults to 100): ')):$:100; max:updtype:(1F:type)#
-    min <- 1f; max <- 100f
+    min <- if:(input:('Minimum (defaults to 0): ')):$:0; min:updtype:(1F:type)
+    max <- if:(input:('Maximum (defaults to 100): ')):$:100; max:updtype:(1F:type)
     attempts <- 0
     whilst:({response <- query:(lguess <- ((min + max) / 2.0):round)} != 'e'):{
-        if:(attempts >= 10):{escape:()}
-        disp:("Oh, darn. Let's try again.",response)
         if:(response == 's'):min:max <- lguess
-
-        disp:('min:', min, 'max:', max)
-        if:(min >= max):{
-            abort:("Uh oh! You didn't pick a valid number")
-        }
+        if:(min >= max):{abort:("Uh oh! You didn't pick a valid number")}
+        rm:(response)
         attempts <- attempts + 1
     }
-    disp:("It took me", attempts, "attempts to guess your secret number of",lguess)
+    disp:("It took me", attempts, "attempts to guess your secret number of",lguess + '!')
 }
-guessuser:()
-@eof
 func:guesscomp:(max):{
     max:updtype:(1f:type)
     (om:rand * max):round + 1 -> rn
@@ -34,5 +27,7 @@ func:guesscomp:(max):{
         disp:('Guess \#' + trials + ': ' + gs + ' is too ' + if:(gs < rn):'small':'big')
     }
     disp:('You win! It took you',trials,'times!')
-    return:trials
+    return:rn
 }
+guesscomp:(100)
+guessuser:()

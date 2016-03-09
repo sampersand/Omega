@@ -4,7 +4,7 @@ class obj(object):
     def __repr__(self):
         return type(self).__qualname__ + '()'
 
-    def evalobj(self, args, lcls):
+    def evalobj(self, args, lcls, docopy = True):
         """ The functions every object has. 
             Currently, they are only `copy` and `type`.
             """
@@ -18,7 +18,10 @@ class obj(object):
         if args.datastr in lcls and args.datastr: # and type(self) == obj
             lcls.iv.last = lcls[args.datastr]
         else:
-            lcls.iv.last = args.deepcopy()
+            if docopy:
+                lcls.iv.last = args.deepcopy()
+            else:
+                return 0
 
         return lcls.iv.last
     def _evalargs(self, args, lcls):
