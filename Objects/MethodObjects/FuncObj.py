@@ -72,7 +72,6 @@ class funcobj(mthdobj):
             assert len(args) == 2, 'whilst:(cond):(statement(s))'
         while True:
             args[0].evalgrp(lcls) #evaluate the condition
-            print(args[0],lcls)
             if not lcls.iv.last.data or lcls.iv.esc:
                 break
             args[1].evalgrp(lcls) #execute the statement(s)
@@ -133,7 +132,6 @@ class funcobj(mthdobj):
                 print(err.scrubstr(args.control, inv = lcls.iv.last.data, val = str(valid)))
             else:
                 break;
-        print('lcls',lcls)
     def _return(self, args, lcls):
         #Watch out! return:a+b is {return:a} + b
         args[0].evalgrp(lcls)

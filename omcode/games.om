@@ -1,6 +1,3 @@
-1->a
-rm:(a)
-@eof
 func:guessuser::{
 
     func:query:(num):{
@@ -12,18 +9,12 @@ func:guessuser::{
     min <- 1f; max <- 100f
     attempts <- 0
     # whilst:({response <- query:(lguess <- ((min + max) / 2.0):round)} != 'e'):{#
-    whilst:({
-            query:(
-                   lguess <- {((min + max) / 2.0):round}
-                   ) -> response
-            } != 'e'):{
-        disp:("Oh, darn. Let's try again.",response)
+    whilst:({query:({((min + max) / 2.0):round} -> lguess) -> response} != 'e'):{
+        # disp:("Oh, darn. Let's try again.",response)#
         if:(response == 's'):min:max <- lguess
 
-        disp:('min:', min, 'max:', max)
-        if:(min >= max):{
-            abort:("Uh oh! You didn't pick a valid number")
-        }
+        if:(min >= max):{abort:("Uh oh! You didn't pick a valid number")}
+        rm:(response)
         attempts <- attempts + 1
     }
     disp:("It took me", attempts, "attempts to guess your secret number of",lguess)
