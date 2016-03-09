@@ -2,9 +2,9 @@ func:guessuser::{
     func:query:(num):{
         return:(input:(num + ' = ? '):('g','l','e'))
     }
-    min <- if:(input:('Minimum (defaults to 1): ')):$:1; min:updtype:(1f:type)
-    max <- if:(input:('Maximum (defaults to 100): ')):$:100; max:updtype:(1f:type)
-    abort:(1f:type)
+    min <- if:(input:('Minimum (defaults to 1): ')):$:1; min:updtype:(1.0:type)
+    max <- if:(input:('Maximum (defaults to 100): ')):$:100; max:updtype:(1.0:type)
+    abort:(1.0:type)
     cguess <- (min + max) / 2.0
     abort:(cguess:round)
     whilst:({query:(cguess) -> response} != 'e'):{
