@@ -11,11 +11,11 @@ from Objects.Obj import obj
 # Level 1
 #
 from Objects.NullObj import nullobj
-objregexes[r'([nN]ull|il|one)'] = nullobj
+objregexes[r'[nN](?:ull|il|one)'] = nullobj
 
 from Objects.TypeObj import typeobj
 from Objects.StrObj import strobj
-objregexes[r'(?P<quote>[{quote}])(.*)(?!\{escape})(?P=quote)'] = strobj
+objregexes[r'(?P<quote>[{quote}]).*(?!\{escape})(?P=quote)'] = strobj
 
 from Objects.NumberObjects.NumObj import numobj
 
@@ -23,7 +23,7 @@ from Objects.CollectionObjects.CollectionObj import collectionobj
 from Objects.MethodObjects.MthdObj import mthdobj
 
 from Objects.NumberObjects.IntObj import intobj
-objregexes[r'(?:0[dD])?((?:0[bBoOxX])?\d+)[nN]?'] = intobj
+objregexes[r'(?:0[bBoOxXdD])?\d+[nN]?'] = intobj
 
 from Objects.NumberObjects.FloatObj import floatobj
 objregexes[r'(\d*(\.)?\d+([eE][nNpP]?\d+)?)(?(2)[fF]?|[fF])'] = floatobj

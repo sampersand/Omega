@@ -102,9 +102,7 @@ class group(list):
         for key in objregexes:
             if re.fullmatch(key.format(quote = self.control.allquotes,
                                        escape = self.control.escape), self.datastr):
-                from Objects import strobj
-                print(re.findall(key, self.data), ''.join(str(x) for x in re.findall(key, self.data)))
-                self.data = ''.join(re.findall(key, self.data))
+                self.data = ''.join(x[0] for x in re.findall(key, self.data))
                 return objregexes[key]()
         if self.data in self.control.allkws:
             return self.control.allkws[self.data]
