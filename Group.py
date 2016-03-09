@@ -41,13 +41,7 @@ class group(list):
             if __debug__:
                 assert len(self.parens) == 2, repr(self)
             return self.parens[0] + (' ' + self.datastr +' ').join(str(e) for e in self) + str(self.parens[1])
-        return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self._evaliter()), str(self.parens[1])))
-    def _evaliter(self):
-        for g in self:
-            from Locals import lcls
-            x = lcls(self.control)
-            g.evalgrp(x)
-            yield str(x)
+        return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """
         return not isinstance(self.baseobj, nullobj)

@@ -1,4 +1,4 @@
-func:guessuser::{
+func:guessuser:():{
 
     func:query:(num):{
         return:(input:('The guess ' + num + ' is too '):('s','l','e'))
@@ -15,6 +15,7 @@ func:guessuser::{
     }
     disp:("It took me", attempts, "attempts to guess your secret number of",lguess + '!')
 }
+@eof
 func:guesscomp:(max):{
     max:updtype:(1f:type)
     (om:rand * max):round + 1 -> rn
