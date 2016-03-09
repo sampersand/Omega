@@ -26,5 +26,3 @@ class umthdobj(mthdobj):
         del lcls.iv.last
         if lcls2pass.iv.ret:
             lcls.iv.last = lcls2pass.iv.ret
-
-

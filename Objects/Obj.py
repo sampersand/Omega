@@ -14,10 +14,12 @@ class obj(object):
 
         if args.datastr in args.control.delims['applier'] and args.datastr:
             return self._evalargs(args, lcls)
-        if args.datastr in lcls and args.datastr:
+
+        if args.datastr in lcls and args.datastr: # and type(self) == obj
             lcls.iv.last = lcls[args.datastr]
         else:
             lcls.iv.last = args.deepcopy()
+
         return lcls.iv.last
     def _evalargs(self, args, lcls):
         if __debug__:

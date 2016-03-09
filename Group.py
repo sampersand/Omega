@@ -27,6 +27,10 @@ class group(list):
         return (ret != 'group(' and ret[:-2] or ret) + ')'
 
     def __str__(self):
+        if __debug__:
+            from Objects import umthdobj
+            if isinstance(self.baseobj, umthdobj) and len(self) == 3:
+                return str(self[0:1])
         # if self.datastr in self.control.delims['arraysep']:
         #     if __debug__:
         #         assert len(self) == 0
