@@ -103,11 +103,8 @@ class group(list):
             if re.fullmatch(key.format(quote = self.control.allquotes,
                                        escape = self.control.escape), self.datastr):
                 from Objects import strobj
-                if objregexes[key] == strobj:
-                    if __debug__:
-                        assert self.data[0] in self.control.allquotes
-                        assert self.data[0] == self.data[-1]
-                    self.data = self.data[1:-1]
+                print(re.findall(key, self.data), ''.join(str(x) for x in re.findall(key, self.data)))
+                self.data = ''.join(re.findall(key, self.data))
                 return objregexes[key]()
         if self.data in self.control.allkws:
             return self.control.allkws[self.data]

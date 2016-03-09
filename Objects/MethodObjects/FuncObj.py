@@ -110,7 +110,7 @@ class funcobj(mthdobj):
         """ nput:[question,[valid results (regex) [, error messg]]]"""
         from Objects import strobj #this could be moved to the top
         msg, valid, err = group(data = "'> '", control = args.control), None,\
-                          group(data = "\"'{inv}' is an invalid input! Valid: '{val}'\"", control = args.control)
+                          group(data = "\"\0'{inv}' is an invalid input! Valid: '{val}'.\"", control = args.control)
         if len(args) > 0:
             args[0].evalgrp(lcls)
             msg = lcls.iv.last

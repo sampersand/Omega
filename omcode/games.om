@@ -1,10 +1,14 @@
-1;
-$
-@eof
+(100f + 1f) / 2f -> g
+abort:(g)
 func:guessuser::{
-    min = ;if:(input:('Minimum (defaults to 0): ')):$:0
+    min <- if:(input:('Minimum (defaults to 1): ')):$:1
+    max <- if:(input:('Maximum (defaults to 100): ')):$:100
+    min:updtype:(1f:type); max:updtype:(1f:type)
+    func:query:(num):{return:(input:(num + ' = ? '):('g','l','e'))}
+    guess <- (min + max) / 2.0
+    abort:(guess)
 }
-guessuser:()
+disp:(guessuser:())
 @eof
 func:guesscomp:(max):{
     max:updtype:(1f:type)
