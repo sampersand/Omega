@@ -15,7 +15,7 @@ objregexes[r'[nN](?:ull|il|one)'] = nullobj
 
 from Objects.TypeObj import typeobj
 from Objects.StrObj import strobj
-objregexes[r'(?P<quote>[{quote}]).*(?!\{escape})(?P=quote)'] = strobj
+objregexes[r'(?P<quote>[{quote}])(?P<keep>.*)(?!\{escape})(?P=quote)'] = strobj
 
 from Objects.NumberObjects.NumObj import numobj
 
@@ -23,17 +23,17 @@ from Objects.CollectionObjects.CollectionObj import collectionobj
 from Objects.MethodObjects.MthdObj import mthdobj
 
 from Objects.NumberObjects.IntObj import intobj
-objregexes[r'(?:0[bBoOxXdD])?\d+[nN]?'] = intobj
+objregexes[r'(?:0[dD])?(?P<keep>(?:0[bBoOxXdD])?\d+)[nN]?'] = intobj
 
 from Objects.NumberObjects.FloatObj import floatobj
-objregexes[r'(\d*(\.)?\d+([eE][nNpP]?\d+)?)(?(2)[fF]?|[fF])'] = floatobj
+objregexes[r'(?P<keep>\d*(?P<period>\.)?\d+(?:[eE][nNpP]?\d+)?)(?(period)[fF]?|[fF])'] = floatobj
+# objregexes[r'(\d*(\.)?\d+([eE][nNpP]?\d+)?)(?(2)[fF]?|[fF])'] = floatobj
 
 from Objects.NumberObjects.BoolObj import boolobj
-objregexes[r'[tT]rue|[fF]alse'] = boolobj
+objregexes[r'(?P<keep>[tT]rue|[fF]alse)'] = boolobj
 
 from Objects.NumberObjects.ComplexObj import complexobj
-objregexes[r'\d*\.?\d+([eE][nNpP]?\d+)?[iIjJ]'] = complexobj
-
+objregexes[r'(?P<keep>\d*(?P<period>\.)?\d+(?:[eE][nNpP]?\d+)?[iIjJ])'] = floatobj
 
 
 from Objects.CollectionObjects.ArrayObj import arrayobj

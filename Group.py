@@ -100,9 +100,9 @@ class group(list):
         if __debug__:
             assert isinstance(self.data, str), "'%s' has to be of type str, not '%s'" %(self.data, type(self.data))
         for key in objregexes:
-            if re.fullmatch(key.format(quote = self.control.allquotes,
-                                       escape = self.control.escape), self.datastr):
-                self.data = ''.join(x[0] for x in re.findall(key, self.data))
+            m = re.match(key.format(quote = self.control.allquotes, escape = self.control.escape), self.datastr)
+            if m:
+                self.data = m.groupdict()['keep']
                 return objregexes[key]()
         if self.data in self.control.allkws:
             return self.control.allkws[self.data]
