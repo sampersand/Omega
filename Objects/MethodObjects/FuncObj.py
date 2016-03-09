@@ -98,15 +98,10 @@ class funcobj(mthdobj):
                 assert len(args) == 1, "only 1 thing after the semicolon... " + str(args)
                 assert args, 'same reason as above'
             for arg in args[0]:
-                arg.evalgrp(lcls)
-                if type(lcls.iv.last.data) == obj: #aka, if it isn't a special object.
-                    del lcls[str(lcls.iv.last)] 
+                if type(arg.baseobj) == obj: #aka, if it isn't a special object.
+                    del lcls[str(arg)] 
                 else:
                     del lcls.iv.last
-                    # del lcls.iv.last.base
-
-                # lcls.iv.last = lcls[str(arg)]
-                # del lcls[str(arg)]
     def _input(self, args, lcls):
         """ nput:[question,[valid results (regex) [, error messg]]]"""
         from Objects import strobj #this could be moved to the top
