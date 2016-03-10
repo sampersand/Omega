@@ -182,8 +182,12 @@ class group(list):
     def updatedata(self, datagroup, funcname):
         self.data = datagroup.data
 
-    def scrubstr(self, control, **kwargs):
-        ret = str(self).format(**kwargs)
+    def scrubstr(self, control):
+    # def scrubstr(self, control, **kwargs):
+        # print(str(self), kwargs, sep = '\t|\t')
+
+        ret = str(self)
+        # ret = str(self).format(**kwargs)
         if ret and ret[0] in self.control.allquotes:
             if __debug__:
                 assert ret[-1] in self.control.allquotes #can't have unmatched quotes
