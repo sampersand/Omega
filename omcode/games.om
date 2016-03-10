@@ -1,11 +1,8 @@
-f <- ('g', (a, b), disp:(a))
-x <- {func:::()}:type
-f:updtype:(x)
-#abort:(f)#
-@eof
-a:updtype:(1:type)
-f:updtype:((func:::()):type)
-f:a1:(1,2)#
+f <- ('g', (a, b), {disp:(a,b)})
+func:q:[]:{disp:('a')}
+f:updtype:(q:type)
+f:(1,2)
+q:()
 @eof
 func:guessuser:(m):{
 

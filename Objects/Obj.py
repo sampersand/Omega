@@ -37,13 +37,12 @@ class obj(object):
                 assert isinstance(args[1].baseobj, arrayobj), str(args) + " should be obj:updtype:(type)"
                 assert len(args[1]) == 1, str(args) + " should be obj:updtype:(type)"
             last = lcls.iv.last
-            assert 0
             args[1][0].evalgrp(lcls)
             if __debug__:
                 from Objects import typeobj
                 assert isinstance(lcls.iv.last.baseobj, typeobj), "should be obj:updtype:(type)"
             last.baseobj = lcls.iv.last.baseobj.baseclass.baseobj
-        elif fncname == 'typ':
+        elif fncname == 'type':
             from Group import group # not sure this is the best way
             from Objects import typeobj # to be doing this...
             lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__, baseobj = typeobj(lcls.iv.last),
