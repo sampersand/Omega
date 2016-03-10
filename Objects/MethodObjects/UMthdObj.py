@@ -8,7 +8,7 @@ class umthdobj(mthdobj):
         if ret != NotImplemented:
             return ret
         lcls2pass = lcls.onlyfuncs()
-        name, params, body = lcls.iv.last.deepcopy()
+        name, params, body = list(lcls.iv.last.deepcopy())
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, umthdobj),\
                 "evalobj of a umthdobj uses the last value as the function to execute!"

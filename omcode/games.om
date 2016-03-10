@@ -1,10 +1,11 @@
-f <- ('g', (a, b), a:clone)
-f:type
-f:updtype:((func:::()):type,1)
-f:(1,2)
-f:(2,3)
-abort:([func:::()]:type ,f:type,1)
-disp:(f:type)
+f <- ('g', (a, b), disp:(a))
+x <- {func:::()}:type
+f:updtype:(x)
+#abort:(f)#
+@eof
+a:updtype:(1:type)
+f:updtype:((func:::()):type)
+f:a1:(1,2)#
 @eof
 func:guessuser:(m):{
 
