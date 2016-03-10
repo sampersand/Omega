@@ -1,3 +1,9 @@
+func:a:():{
+    b <- 2
+    disp:("hello!")
+}
+a:()
+@eof
 f <- ('g', (a, b), {disp:(a,b)})
 func:q:[]:{disp:('a')}
 f:updtype:(q:type)

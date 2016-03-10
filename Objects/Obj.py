@@ -22,7 +22,6 @@ class obj(object):
                 lcls.iv.last = args.deepcopy()
             else:
                 return 0
-
         return lcls.iv.last
     def _evalargs(self, args, lcls):
         if __debug__:
