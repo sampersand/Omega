@@ -18,6 +18,7 @@ class file:
         ret += lines
         return ret + '\n==[ end ]=='
     def _genlines(self, rawt):
+        
         def striptext(self, rawt):
             """ remove comments and blank lines"""
             ret = ''

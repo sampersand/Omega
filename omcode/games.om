@@ -1,4 +1,4 @@
-f <- ('f', (a, b), r'{disp:(a, b)}')
+f <- ('f', (a, b), '{disp:(a, b)}')
 f:updtype:(om:types:umthdobj)
 disp:f:(1,2)
 #f:(1,2)
