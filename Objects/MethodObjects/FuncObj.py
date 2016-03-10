@@ -1,7 +1,7 @@
 from Objects import mthdobj, boolobj, obj, arrayobj, umthdobj
 from Group import group
 class funcobj(mthdobj):
-    def __init__(self, name):
+    def __init__(self, name = ''):
         super().__init__(name)
 
     def _evalargs(self, args, lcls):
@@ -23,13 +23,16 @@ class funcobj(mthdobj):
                     disparg.evalgrp(lcls)
                     yield lcls.iv.last.scrubstr(args.control)
                     # yield lcls.iv.last.data.scrubstr(args.control)
-            dispargs = [x for x in scrub(args[0], lcls)]
+            # dispargs = [x for x in scrub(args[0], lcls)]
+            dispargs = scrub(args[0], lcls)
             if len(args) > 1:
                 if args[1]:
-                    sep = args[1].scrubstr(args.control)
+                    args[1].evalgrp(lcls)
+                    sep = lcls.iv.last.scrubstr(args.control)
                 if len(args) > 2:
                     if args[2]:
-                        end = args[2].scrubstr(args.control)
+                        args[2].evalgrp(lcls)
+                        end = lcls.iv.last.scrubstr(args.control)
         print(*dispargs, sep = sep, end = end)
     def _if(self, args, lcls):
         cond, iftrue, iffalse = args[0], None, None

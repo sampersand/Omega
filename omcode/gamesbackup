@@ -1,11 +1,10 @@
-func:guessuser::{
+func:guessuser:():{
 
     func:query:(num):{
-        return:(input:('The guess ' + num + ' is too '):('s','l','e'))
-        #return:(input:('The guess ' + num + ' is too '):('s','l','e'))#
+        return:(input:('The guess ' + num + ' is too '):('s', 'l', 'e'))
     }
     min <- if:(input:('Minimum (defaults to 0): ')):$:0; min:updtype:(1F:type)
-    max <- if:(input:('Maximum (defaults to 100): ')):$:100; max:updtype:(1F:type)
+    max <- if:(input:('Maximum (defaults to 1000): ')):$:1000; max:updtype:(1F:type)
     attempts <- 0
     whilst:({response <- query:(lguess <- ((min + max) / 2.0):round)} != 'e'):{
         if:(response == 's'):min:max <- lguess
@@ -13,21 +12,29 @@ func:guessuser::{
         rm:(response)
         attempts <- attempts + 1
     }
-    disp:("It took me", attempts, "attempts to guess your secret number of",lguess + '!')
+    disp:("It took me", attempts, "attempts to guess your secret number of", lguess + '!')
 }
 func:guesscomp:(max):{
     max:updtype:(1f:type)
     (om:rand * max):round + 1 -> rn
     trials <- 0
     whilst:True:{
-        input:('Pick a number from 1 - ' + max + ': ') -> gs
+        input:('Guess a number from 1 - ' + max + ': ') -> gs
         gs:updtype:(1f:type);
         trials <- trials + 1
         if:(gs = rn):{escape:()}
-        disp:('Guess \#' + trials + ': ' + gs + ' is too ' + if:(gs < rn):'small':'big')
+        disp:('Guess num ' + trials + ': ' + gs + ' is too ' + if:(gs < rn):'small':'big')
     }
-    disp:('You win! It took you',trials,'times!')
+    disp:('You win! It took you', trials, 'times!')
     return:rn
 }
-guesscomp:(100)
+guesscomp:(if:(input:('1 - ? (defaults to 1000): ')):$:1000)
 guessuser:()
+
+
+
+
+
+
+
+

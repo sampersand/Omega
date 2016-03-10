@@ -40,7 +40,7 @@ class group(list):
         if self.datastr in self.control.opers['binary']:
             if __debug__:
                 assert len(self.parens) == 2, repr(self)
-            return self.parens[0] + (' ' + self.datastr +' ').join(str(e) for e in self) + str(self.parens[1])
+            return self.parens[0] + (' ' + self.datastr +' ').join(list(str(e) for e in self)) + str(self.parens[1])
         return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """
@@ -63,6 +63,7 @@ class group(list):
             if arg.data == other:
                 return True
         return False
+
     # def linestr(self):
     #     class _int():
     #         def __init__(self):
@@ -115,6 +116,7 @@ class group(list):
      #        l = lines[line]
      #        ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
      #    return ret
+
     def linestr(self):
         linep = []
         def _linestr(self, indent):
@@ -143,6 +145,7 @@ class group(list):
         #     retu += self.parens[1]
         #     return retu
         return _linestr(self, 0)
+
     def getobj(self):
         if self.data == None and self.hasparens():
             return arrayobj()
@@ -188,6 +191,7 @@ class group(list):
         for k, v in control.escapechars.items():
             ret = ret.replace(k, v)
         return ret
+
     def clear(self):
         super().clear()
         self.data = None

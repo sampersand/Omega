@@ -1,6 +1,6 @@
 from Objects import obj
 class mthdobj(obj):
-    def __init__(self, name):
+    def __init__(self, name = ''):
         self.name = name
 
     def __repr__(self):
