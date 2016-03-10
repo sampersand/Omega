@@ -4,5 +4,5 @@ f:(1,2)
 
 func:g:(q,w):{disp:('q + w =', q + w)}
 g:updtype:(om:types:arrayobj)
-disp:(g:get:(1)):'\#':'&&&&&&&\n@@@@@@@@@'
+disp:(g)
 $dnd <- 1

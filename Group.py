@@ -183,7 +183,7 @@ class group(list):
         self.data = datagroup.data
 
     def scrubstr(self, control, **kwargs):
-        ret = self.datastr.format(**kwargs)
+        ret = str(self).format(**kwargs)
         if ret and ret[0] in self.control.allquotes:
             if __debug__:
                 assert ret[-1] in self.control.allquotes #can't have unmatched quotes
