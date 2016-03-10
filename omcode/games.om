@@ -1,8 +1,8 @@
-f <- ('f', (a, b), {disp:(a, b)})
+f <- 'f', (a, b), {disp:(a, b)}
 f:updtype:(om:types:umthdobj)
-f:(1,2)
+disp:(f)
+#f:(1,2)
 
 func:g:(q,w):{disp:('q + w =', q + w)}
 g:updtype:(om:types:arrayobj)
-disp:(g)
-$dnd <- 1
+$dnd <- 1#
