@@ -29,7 +29,8 @@ class obj(object):
             assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
         # objname = str(lcls.iv.last.data)
         fncname = str(args[0])
-        if fncname in {'clone', 'copy'}:
+        print(args,'@')
+        if fncname == 'clone' or fncname == 'copy':
             lcls.iv.last = lcls.iv.last.deepcopy()
         elif fncname == 'updtype':
             if __debug__:

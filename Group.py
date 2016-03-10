@@ -63,38 +63,86 @@ class group(list):
             if arg.data == other:
                 return True
         return False
-    def linestr(self):
-        class _int():
-            def __init__(self):
-                self.pos = 0
-            def __iadd__(self, other):
-                self.pos += other
-            def __int__(self):
-                return self.pos
-        linep = _int()
-        def _linestr(self, indent):
-            if not self.data or not len(self):
-                return str(self)
-            isendl = self.datastr in self.control.delims['endline'][0]
-            lines = []
-            for l in self:
-                if not l:
-                    continue
-                if isendl:
-                    linep.__iadd__(1)
-                ls = _linestr(l, indent + 1)
-                if isendl:
-                    lines.append('\n{:^3}|  {}{}'.format(int(linep), '\t' * (indent), ls))
-                else:
-                    lines.append(ls)
-            ret = self.parens[0] + ('' if isendl else ' ' + self.datastr + ' ').join(lines)
-            if isendl and self.parens[1]:
-                linep.__iadd__(1)
-                ret += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
-            ret += self.parens[1]
-            return ret
-        return _linestr(self, 0)
+    # def linestr(self):
+    #     class _int():
+    #         def __init__(self):
+    #             self.pos = 0
+    #         def __iadd__(self, other):
+    #             self.pos += other
+    #         def __int__(self):
+    #             return self.pos
+    #     linep = _int()
+    #     def _linestr(self, indent):
+    #         if not self.data or not len(self):
+    #             return str(self)
+    #         isendl = self.datastr in self.control.delims['endline'][0]
+    #         lines = []
+    #         for l in self:
+    #             if not l:
+    #                 continue
+    #             if isendl:
+    #                 linep.__iadd__(1)
+    #             ls = _linestr(l, indent + 1)
+    #             if isendl:
+    #                 lines.append('\n{:^3}|  {}{}'.format(int(linep), '\t' * (indent), ls))
+    #             else:
+    #                 lines.append(ls)
+    #         ret = self.parens[0] + ('' if isendl else ' ' + self.datastr + ' ').join(lines)
+    #         if isendl and self.parens[1]:
+    #             linep.__iadd__(1)
+    #             ret += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
+    #         ret += self.parens[1]
+    #         return ret
+    #     return _linestr(self, 0)
 
+     # def linestr(self):
+     #    def _linestr(self, ret, indent):
+     #        if not self:
+     #            # ret.append((str(self), indent))
+     #            return (str(self), indent)
+     #        isendl = self.datastr in self.control.delims['endline'][0]
+     #        q = []
+     #        for l in self:
+     #            if l.isnull():
+     #                continue
+     #            x = _linestr(l, [], indent + isendl)
+     #            q.append(x)
+     #        ret.__iadd__(q)
+     #        return ret
+     #    lines = _linestr(self, [], 0)
+     #    ret = '\n'
+     #    for line in range(len(lines)):
+     #        l = lines[line]
+     #        ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
+     #    return ret
+    def linestr(self):
+        linep = []
+        def _linestr(self, indent):
+            return ''
+        #     if not self:
+        #         return str(self)
+        #     isendl = self.datastr in self.control.delims['endline'][0]
+        #     if __debug__:
+        #         assert self.datastr
+        #     ret = []
+        #     for l in self:
+        #         if not l:
+        #             continue
+        #         if isendl:
+        #             linep.append([])
+        #         linel = len(linep) 
+        #         ls = _linestr(l, indent + 1)
+        #         if isendl:
+        #             ret.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
+        #         else:
+        #             ret.append(ls)
+        #     retu = self.parens[0] + ('' if isendl else ' ' + self.datastr + ' ').join(ret)
+        #     if isendl and self.parens[1]:
+        #         linep.append([])
+        #         retu += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
+        #     retu += self.parens[1]
+        #     return retu
+        return _linestr(self, 0)
     def getobj(self):
         if self.data == None and self.hasparens():
             return arrayobj()
