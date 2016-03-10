@@ -1,6 +1,6 @@
-f <- 'f', (a, b), {disp:(a, b)}
+f <- {'f', (a, b), {disp:(a, b)}}
+disp:(f:get:(2))
 f:updtype:(om:types:umthdobj)
-disp:(f)
 #f:(1,2)
 
 func:g:(q,w):{disp:('q + w =', q + w)}
