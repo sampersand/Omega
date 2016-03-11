@@ -20,11 +20,10 @@ class uclassobj(collectionobj):
             for line in uclassobj._classiter(lcls.iv.last):
                 if line[0].datastr == '$init':
                     topass = lclsdict(args.control)
-                    topass.iv.this = group(control = args.control, baseobj = uclassobj(),
-                                           attrs = {'this' : 1})
-                    delim = args.control.delims['applier']
                     topass.iv.last = line
-                    print(topass.iv.last)
+                    topass.iv.this = group(control = args.control, baseobj = uclassobj(),
+                                           attrs = {'this' : lcls.iv.last})
+                    delim = args.control.delims['applier']
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                        control = args.control, args = args), topass)
                     lcls.iv.last = topass.iv.this
@@ -33,18 +32,32 @@ class uclassobj(collectionobj):
         funcname = str(args[0])
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, uclassobj), 'Cannot apply class functions to a non-class object!'
-        for line in lcls.iv.last:
-            if isinstance(line.baseobj, mthdobj):
-
-                lcls.iv.last = line
+        if __debug__:
+            assert isinstance(lcls.iv.last.attrs['this'].baseobj, uclassobj), lcls.iv.last.attrs['this'].baseobj
+        for line in lcls.iv.last.attrs['this']:
+            if isinstance(line.baseobj, mthdobj) and line[0].datastr == funcname:
+                topass = lclsdict(args.control)
+                topass.iv.last = line
+                topass.iv.this = group(control = args.control, baseobj = uclassobj(),
+                                       attrs = {'this' : lcls.iv.last})
                 delim = args.control.delims['applier']
-                r = group(data = delim[0], baseobj = delim[1], control = args.control, args = args[1:])
-                quit('todo!')
-                quit(repr(lcls.iv.last))
-                r.evalgrp(lcls)
-                # print(repr(r),"@aoihefoiahwef")
-                # print(lcls)
-                return 
-                # quit(lcls)
-                # return line.evalgrp(lcls)
+                topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
+                                                   control = args.control, args = args[1:]), topass)
+                lcls.iv.last = topass.iv.last
+                return lcls.iv.last
         raise ValueError("Function '{}' isn't defined for {} '{}'".format(funcname, type(self).__qualname__, args))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

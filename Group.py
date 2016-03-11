@@ -39,7 +39,8 @@ class group(list):
         return {x:self.attrs[x] for x in self.attrs if x != self._attrsdict['data']}
 
     def __str__(self):
-        return self.__str1__() + (len(self.attrs.keys()) != 1 and str(self.attrsnodata) or '')
+        return self.__str1__() + \
+            (len(self.attrs.keys()) != 1 and str({x:str(self.attrs[x]) for x in self.attrsnodata}) or '')
 
     def __str1__(self):
         if __debug__:

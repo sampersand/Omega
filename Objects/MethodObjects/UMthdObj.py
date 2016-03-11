@@ -17,8 +17,8 @@ class umthdobj(mthdobj):
             assert args, "cannot evaluate a function with a base type of '{}'!".format(type(args))
             assert len(args) == 1, "Args needs to be an array!, not '{}' [ {}] ".format(args, args.baseobj)
             args = args[0]
-            assert not (len(args) or len(params)) or len(args) == len(params), "Expected '{}' ({}), got '{}' ({})"\
-                .format(params, len(params), args, len(args))
+            assert not (len(args) or len(params)) or len(args) == len(params), "'{}' Expected '{}' ({}), got '{}' ({})"\
+                .format(name, params, len(params), args, len(args))
 
         for argp in range(len(params)): #setting the args
             args[argp].evalgrp(lcls)
