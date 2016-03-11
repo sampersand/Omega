@@ -1,13 +1,15 @@
 class:foo:():{
     func:$init:():{
-        disp:('>>', '<<'):''
+        $this:setattr:('a',1)
     }
     func:sum:(a, b):{
+        disp:($this:getattr:('a'))
         return:(a + b)
     }
 }
 x <- foo:()
 disp:(x:sum:(1,2))
+$dnd <- 1
 @eof
 func:f:(a):{
     abort:(a)

@@ -54,6 +54,16 @@ class obj(object):
             name = lcls.iv.last
             args[1][1].evalgrp(lcls)
             last.attrs[name.datastr] = lcls.iv.last
+        elif fncname == 'getattr':
+            if __debug__:
+                assert len(args) == 2, "obj:getattr:(name), not '{}'".format(str(args))
+                assert len(args[1]) == 1, "obj:getattr:(name), not '{}'".format(str(args[0]))
+            last = lcls.iv.last
+            args[1][0].evalgrp(lcls)
+            lcls.iv.last = last.attrs[lcls.iv.last.datastr]
+            # args[1][0].evalgrp(lcls)
+            # lcls.iv.last = last.attrs[lcls.iv.last.datastr]
+
         else:
             if type(self)._evalargs == obj._evalargs:
                 raise SyntaxError("No known function '{}' for {} '{}'.".\
