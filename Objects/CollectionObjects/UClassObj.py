@@ -21,8 +21,9 @@ class uclassobj(collectionobj):
                 if line[0].datastr == '$init':
                     topass = lclsdict(args.control)
                     topass.iv.last = line
-                    topass.iv.this = group(control = args.control, baseobj = uclassobj(),
-                                           attrs = {'this' : lcls.iv.last})
+                    topass.iv.this = lcls.iv.last
+                    # topass.iv.this = group(control = args.control, baseobj = uclassobj(),
+                    #                        attrs = {'this' : lcls.iv.last})
                     delim = args.control.delims['applier']
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                        control = args.control, args = args), topass)
@@ -32,14 +33,15 @@ class uclassobj(collectionobj):
         funcname = str(args[0])
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, uclassobj), 'Cannot apply class functions to a non-class object!'
-        if __debug__:
-            assert isinstance(lcls.iv.last.attrs['this'].baseobj, uclassobj), lcls.iv.last.attrs['this'].baseobj
-        for line in lcls.iv.last.attrs['this']:
+            assert isinstance(lcls.iv.last.baseobj, uclassobj), lcls.iv.last.baseobj
+            # assert isinstance(lcls.iv.last.attrs['this'].baseobj, uclassobj), lcls.iv.last.attrs['this'].baseobj
+        for line in lcls.iv.last:
             if isinstance(line.baseobj, mthdobj) and line[0].datastr == funcname:
                 topass = lclsdict(args.control)
                 topass.iv.last = line
-                topass.iv.this = group(control = args.control, baseobj = uclassobj(),
-                                       attrs = {'this' : lcls.iv.last})
+                topass.iv.this = lcls.iv.last
+                # topass.iv.this = group(control = args.control, baseobj = uclassobj(),
+                #                        attrs = {'this' : lcls.iv.last})
                 delim = args.control.delims['applier']
                 topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                    control = args.control, args = args[1:]), topass)

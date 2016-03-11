@@ -1,40 +1,13 @@
 class:foo:():{
-    func:$init:():{
-        $this:setattr:('a',1)
-    }
-    func:sum:(a, b):{
-        disp:($this:getattr:('a'))
-        return:(a + b)
-    }
-}
-x <- foo:()
-disp:(x:sum:(1,2))
-$dnd <- 1
-@eof
-func:f:(a):{
-    abort:(a)
-}
-class:foo:():{
     func:$init:(initval):{
-        abort:($this)
+        $this:setattr:('val',initval)
     }
-    1 -> b
-    func:F:(A):{
-        abort:(A)
-    }
-}
-x = foo:(1)
-@eof
-func:f:(a):{
-    disp:('hey')
-}
-f:(1)
-class:foo:():{
-    func:$init:(a):{
-        disp:(a,'@@@@@@@@@@')
-    }
-    func:sayhi:(a):{
-        disp:('hello!')
+    func:sum:(a):{
+        $this:setattr:('val', $this:getattr:('val') + a)
+        disp:($this)
+        return:{$this:getattr:('val')}
     }
 }
-x = foo:$init:(1)
+x <- foo:(3)
+disp:(x:sum:(4),x)
+$dnd <- 1
