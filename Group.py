@@ -64,7 +64,7 @@ class group(list):
 
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """
-        return not isinstance(self.baseobj, nullobj)
+        return not isinstance(self.baseobj, nullobj) or self.baseobj.isuser
 
     def __getitem__(self, item):
         if isinstance(item, slice):
@@ -150,6 +150,8 @@ class group(list):
             m = re.fullmatch(key.format(quote = self.control.allquotes, escape = self.control.escape), self.datastr)
             if m:
                 self.data = m.groupdict()['keep']
+                if objregexes[key] == nullobj:
+                    return objregexes[key](isuser = True)
                 return objregexes[key]()
         if self.data in self.control.allkws:
             return self.control.allkws[self.data]

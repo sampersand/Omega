@@ -1,0 +1,17 @@
+1->nil
+@eof
+class:_llobj:():{
+    func:$init:(data, next):{
+        $this:setattr:('data', data)
+        $this:setattr:('next', next)
+    }
+}
+class:linklist:():{
+    func:$init:():{
+        $this:setattr:('head', nil)
+    }
+    #func:add:(data):{
+        $this:setattr:('head', _llobj:(data, $this:getattr:('head')))
+    }#
+}
+#l = linklist:()#

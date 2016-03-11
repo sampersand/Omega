@@ -11,7 +11,7 @@ from Objects.Obj import obj
 # Level 1
 #
 from Objects.NullObj import nullobj
-objregexes[r'[nN](?:ull|il|one)'] = nullobj
+objregexes[r'(?P<keep>[nN](?:ull|il|one))'] = nullobj
 
 from Objects.TypeObj import typeobj
 from Objects.StrObj import strobj
