@@ -2,8 +2,12 @@ class:foo:():{
     func:$init:():{
         disp:('>>', $this, '<<'):''
     }
+    func:sum:(a, b):{
+        return:(a + b)
+    }
 }
 x <- foo:()
+disp:(x:sum:(1,2))
 @eof
 func:f:(a):{
     abort:(a)

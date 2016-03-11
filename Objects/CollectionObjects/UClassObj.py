@@ -29,7 +29,6 @@ class uclassobj(collectionobj):
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                        control = args.control, args = args), topass)
                     lcls.iv.last = topass.iv.this
-                    quit()
                     return 
 
         funcname = str(args[0])
