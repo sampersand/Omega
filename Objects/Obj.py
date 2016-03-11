@@ -59,8 +59,8 @@ class obj(object):
                 assert len(args) == 2, "obj:getattr:(name), not '{}'".format(str(args))
                 assert len(args[1]) == 1, "obj:getattr:(name), not '{}'".format(str(args[0]))
             last = lcls.iv.last
-            args[1][0].evalgrp(lcls)
-            lcls.iv.last = last.attrs[lcls.iv.last.datastr]
+            # args[1][0].evalgrp(lcls)
+            lcls.iv.last = last.attrs['this'].attrs[args[1][0].datastr]
             # args[1][0].evalgrp(lcls)
             # lcls.iv.last = last.attrs[lcls.iv.last.datastr]
 
