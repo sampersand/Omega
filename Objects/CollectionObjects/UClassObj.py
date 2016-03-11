@@ -14,7 +14,6 @@ class uclassobj(collectionobj, userobj):
 
         if ret != NotImplemented:
             return ret
-
         # if len(args) == 1 and isinstance(args.baseobj, arrayobj):
         #     for line in uclassobj._classiter(lcls.iv.last):
         #         if line[0].datastr == '$init':
@@ -32,7 +31,7 @@ class uclassobj(collectionobj, userobj):
         funcname = str(args[0])
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, uclassobj), 'Cannot apply class functions to a non-class object!'
-        for line in lcls.iv.last:
+        for line in (lcls.iv.last if lcls.iv.last.attrsnodata else uclassobj._classiter(lcls.iv.last)):
             if isinstance(line.baseobj, mthdobj) and line[0].datastr == funcname:
                 topass = lcls.onlyuobjs()
                 # topass = lclsdict(args.control)
