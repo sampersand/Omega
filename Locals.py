@@ -105,7 +105,7 @@ class lcls(dict):
     def onlyfuncs(self):
         ret = lcls(self.control)
         for e in self:
-            if isinstance(self[e].baseobj, umthdobj):
+            if isinstance(self[e].baseobj, umthdobj) or e == self.iv.idict['this']:
                 ret[e] = self[e]
         return ret
 

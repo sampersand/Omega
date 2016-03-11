@@ -2,7 +2,7 @@ from Objects import mthdobj, arrayobj
 class umthdobj(mthdobj):
     def __init__(self, name = ''):
         super().__init__(name)
-
+    
     def _evalargs(self, args, lcls):
         # quit(repr(args))
         ret = super()._evalargs(args, lcls)

@@ -19,7 +19,6 @@ class uclassobj(collectionobj):
         if len(args) == 1:
             for line in uclassobj._classiter(lcls.iv.last):
                 if line[0].datastr == '$init':
-                    
                     topass = lclsdict(args.control)
                     topass.iv.this = group(data = 'WHAT TO DO?', control = args.control, baseobj = uclassobj(),
                                            args = [group(data = '$lcls list', baseobj = dictobj(),
@@ -30,7 +29,8 @@ class uclassobj(collectionobj):
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                        control = args.control, args = args), topass)
                     lcls.iv.last = topass.iv.this
-            return 
+                    quit()
+                    return 
 
         funcname = str(args[0])
         if __debug__:

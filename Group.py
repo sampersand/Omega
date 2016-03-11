@@ -3,7 +3,9 @@ from Objects import nullobj, obj, arrayobj
 from Objects import objregexes
 class group(list):
     defaultparens = ('', '')
+
     _attrsdict = {'data' : 'data', 'lcls' : 'lcls'}
+
     def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens,
                  attrs = None):
         super().__init__(args)
@@ -31,12 +33,14 @@ class group(list):
         if len(self.attrs.keys()) != 1:
             ret += 'attrs= {}, '.format(repr(self.attrsnodata))
         return (ret != 'group(' and ret[:-2] or ret) + ')'
+
     @property
     def attrsnodata(self):
         return {x:self.attrs[x] for x in self.attrs if x != self._attrsdict['data']}
-    
+
     def __str__(self):
         return self.__str1__() + (len(self.attrs.keys()) != 1 and str(self.attrsnodata) or '')
+
     def __str1__(self):
         if __debug__:
             from Objects import umthdobj
@@ -53,10 +57,11 @@ class group(list):
                 assert len(self.parens) == 2, repr(self)
             return self.parens[0] + (' ' + self.datastr +' ').join(list(str(e) for e in self)) + str(self.parens[1])
         return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """
         return not isinstance(self.baseobj, nullobj)
-    
+
     def __getitem__(self, item):
         if isinstance(item, slice):
             return group(data = self.data,
@@ -129,43 +134,6 @@ class group(list):
      #        l = lines[line]
      #        ret += '{:^3}|  {}{}\n'.format(line, '\t'*l[1], str(l[0]))
      #    return ret
-
-    # def linestr(self):
-    #     class _int():
-    #         def __init__(self):
-    #             self.pos = 0
-    #         def __iadd__(self, other):
-    #             self.pos += other
-    #         def __int__(self):
-    #             return self.pos
-    #     linep = _int()
-
-        # def _linestr(self, indent):
-            # return ''
-        #     if not self:
-        #         return str(self)
-        #     isendl = self.datastr in self.control.delims['endline'][0]
-        #     if __debug__:
-        #         assert self.datastr
-        #     ret = []
-        #     for l in self:
-        #         if not l:
-        #             continue
-        #         if isendl:
-        #             linep.append([])
-        #         linel = len(linep) 
-        #         ls = _linestr(l, indent + 1)
-        #         if isendl:
-        #             ret.append('\n{:^3}|  {}{}'.format(linel, '\t' * (indent), ls))
-        #         else:
-        #             ret.append(ls)
-        #     retu = self.parens[0] + ('' if isendl else ' ' + self.datastr + ' ').join(ret)
-        #     if isendl and self.parens[1]:
-        #         linep.append([])
-        #         retu += '\n{:^3}|  {}'.format(len(linep), '\t' * (indent-2))
-        #     retu += self.parens[1]
-        #     return retu
-        return _linestr(self, 0)
 
     def getobj(self):
         if self.data == None and self.hasparens():
