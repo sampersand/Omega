@@ -38,12 +38,13 @@ objregexes[r'(?P<keep>\d*(?P<period>\.)?\d+(?:[eE][nNpP]?\d+)?[iIjJ])'] = floato
 
 from Objects.CollectionObjects.ArrayObj import arrayobj
 from Objects.CollectionObjects.DictObj import dictobj
-from Objects.CollectionObjects.UClassObj import uclassobj
 from Objects.MethodObjects.OperObj import operobj
+
 from Objects.MethodObjects.UMthdObj import umthdobj
+from Objects.CollectionObjects.UClassObj import uclassobj
+
 from Objects.MethodObjects.FuncObj import funcobj
 from Objects.MethodObjects.OmFuncObj import omfuncobj
-
 
 __all__ = frozenset(['objregex']  + list(x for x in locals() if x[-3:] == 'obj'))
 

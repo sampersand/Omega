@@ -1,5 +1,6 @@
-from Objects import collectionobj, mthdobj, obj
+from Objects import collectionobj, mthdobj, obj, dictobj
 from Group import group
+from Locals import lcls as lclsdict
 class uclassobj(collectionobj):
 
     @staticmethod
@@ -18,10 +19,18 @@ class uclassobj(collectionobj):
         if len(args) == 1:
             for line in uclassobj._classiter(lcls.iv.last):
                 if line[0].datastr == '$init':
-                    lcls.iv.last = line
+                    
+                    topass = lclsdict(args.control)
+                    topass.iv.this = group(data = 'WHAT TO DO?', control = args.control, baseobj = uclassobj(),
+                                           args = {})#[group(data = '$lcls list', baseobj = dictobj(),
+                                                      #   control = args.control,
+                                                       #  args = 
+                                                        # )])
+                    topass.iv.last = line
                     delim = args.control.delims['applier']
-                    r = group(data = delim[0], baseobj = delim[1], control = args.control, args = args)
-                    lcls.iv.last.baseobj.evalobj(r, lcls)
+                    topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
+                                                       control = args.control, args = args), topass)
+                    lcls.iv.last = topass.iv.this
             return 
 
         funcname = str(args[0])

@@ -6,9 +6,10 @@ class _lclsivls(dict):
     idict = {
         # the key is what will be used internally
         # the value is what the user would use to access it.
-        'last' : omp,
-        'ret'  : omp + 'ret',
-        'esc'  : omp + 'esc',
+        'last' : omp, #using for storing the last value
+        'ret'  : omp + 'ret', #used for storing the return value
+        'esc'  : omp + 'esc', #used for escaping out of loops
+        'this' : omp + 'this', #used for inside classes
     }
 
     _invidict = {v: k for k, v in idict.items()}

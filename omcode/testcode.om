@@ -1,9 +1,16 @@
+class:foo:():{
+    func:$init:():{
+        disp:('@',$this,'&'):''
+    }
+}
+x <- foo:()
+@eof
 func:f:(a):{
     abort:(a)
 }
 class:foo:():{
     func:$init:(initval):{
-        abort:(initval)
+        abort:($this)
     }
     1 -> b
     func:F:(A):{
