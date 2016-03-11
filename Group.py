@@ -5,7 +5,7 @@ class group(list):
     defaultparens = ('', '')
     def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens):
         super().__init__(args)
-        self.data = data
+        self.attributes = [data]
         if __debug__:
             assert control != None, 'cannot have a None control!' + str(control)
         self.control = control
