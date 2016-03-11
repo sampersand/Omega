@@ -90,6 +90,7 @@ class file:
                 if not ret or not e or e not in self.control.delims['endline']\
                     or str(ret[-1].data) not in self.control.delims['endline']:
                     ret.append(group(e, control = self.control))
+            # quit(list(str(x) for x in ret))
             return ret
             # return [group(e, control = self.control) for e in (e.strip(self.control.nbwhitespace) for e in ret2) if e]
         def compresstokens(self, linetokens):
@@ -97,7 +98,7 @@ class file:
                 ret = group(control = self.control, parens = linegrp.parens) #universe
                 while len(linegrp) != 0:
                     ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
-                    if str(ele) not in self.control.allparens:
+                    if str(ele) not in self.control.allparens or not str(ele):
                         ret.append(ele)
                     else:
                         toappend = group(control = self.control)

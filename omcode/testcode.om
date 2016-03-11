@@ -1,6 +1,6 @@
 class:foo:():{
     func:$init:():{
-        disp:('@',$this,'&'):''
+        disp:('@',$this,'&'):'':''
     }
 }
 x <- foo:()
