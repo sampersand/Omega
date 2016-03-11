@@ -53,10 +53,18 @@ class funcobj(mthdobj):
         """ literally nothing happens """
         pass #keep this here.
     def _abort(self, args, lcls):
-        if len(args) == 1: #abort w/ message
-            args[0].evalgrp(lcls)
+        if __debug__:
+            assert len(args) == 1,' abort:()'
+        if len(args[0]) == 1: #abort w/ message
+            args[0][0].evalgrp(lcls)
         else:
             del lcls.iv.last # resets
+            if __debug__:
+                from Objects import dictobj
+                lcls.iv.last = group(data = str(lcls),
+                                     control = args.control,
+                                     baseobj = dictobj(),
+                                     )
         quit('Aborting!' + (" Message: " + str(lcls.iv.last) if lcls.iv.last else ''))
     def _whilst(self, args, lcls):
         if __debug__:

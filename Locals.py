@@ -1,5 +1,5 @@
 from Group import group
-from Objects import umthdobj, nullobj
+from Objects import userobj, nullobj
 class _lclsivls(dict):
     omp = '$' #om prefix
 
@@ -36,7 +36,7 @@ class _lclsivls(dict):
             else self.__setitem__(attr, group(control = self.control))
 
     def __str__(self):
-        return '{' + ', '.join(repr(k) + ': ' + str(v) for k, v in self.items() if v) + '}'
+        return '{' + ', '.join(repr(k) + ': `' + str(v) + '`' for k, v in self.items() if v) + '}'
 
     def __repr__(self):
         return '{' + ', '.join(repr(k) + ': ' + repr(v) for k, v in self.items() if v) + '}'
@@ -93,7 +93,7 @@ class lcls(dict):
         return super().__delitem__(item)
 
     def __str__(self):
-        return '{' + ', '.join(repr(k) + ': ' + str(self[k]) for k in self if bool(self[k])) + '}'
+        return '{' + ', '.join(repr(k) + ': `' + str(self[k]) + '`' for k in self if bool(self[k])) + '}'
 
     def clear(self):
         r = super().clear()
@@ -102,10 +102,10 @@ class lcls(dict):
         super().__setitem__(self._ivalstr, x) #ivals
         return r
 
-    def onlyfuncs(self):
+    def onlyuobjs(self):
         ret = lcls(self.control)
         for e in self:
-            if isinstance(self[e].baseobj, umthdobj) or e == self.iv.idict['this']:
+            if isinstance(self[e].baseobj, userobj) or e == self.iv.idict['this']:
                 ret[e] = self[e]
         return ret
 

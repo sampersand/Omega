@@ -61,9 +61,6 @@ class obj(object):
             last = lcls.iv.last
             # args[1][0].evalgrp(lcls)
             lcls.iv.last = last.attrs[args[1][0].datastr]
-            # args[1][0].evalgrp(lcls)
-            # lcls.iv.last = last.attrs[lcls.iv.last.datastr]
-
         else:
             if type(self)._evalargs == obj._evalargs:
                 raise SyntaxError("No known function '{}' for {} '{}'.".\

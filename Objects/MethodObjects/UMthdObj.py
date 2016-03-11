@@ -1,5 +1,5 @@
-from Objects import mthdobj, arrayobj
-class umthdobj(mthdobj):
+from Objects import mthdobj, arrayobj, userobj
+class umthdobj(mthdobj, userobj):
     def __init__(self, name = ''):
         super().__init__(name)
     
@@ -10,7 +10,7 @@ class umthdobj(mthdobj):
             return ret
         # if not isinstance(args, lcls)
         name, params, body = list(lcls.iv.last.deepcopy())
-        lcls2pass = lcls.onlyfuncs()
+        lcls2pass = lcls.onlyuobjs()
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, umthdobj),\
                 "evalobj of a umthdobj uses the last value as the function to execute!"

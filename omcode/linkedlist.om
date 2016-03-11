@@ -1,5 +1,4 @@
-1->nil
-@eof
+->$dnd
 class:_llobj:():{
     func:$init:(data, next):{
         $this:setattr:('data', data)
@@ -9,9 +8,17 @@ class:_llobj:():{
 class:linklist:():{
     func:$init:():{
         $this:setattr:('head', nil)
+        $this:setattr:('head', _llobj:(data, 1))
     }
-    #func:add:(data):{
+    func:add:(data):{
         $this:setattr:('head', _llobj:(data, $this:getattr:('head')))
-    }#
+    }
+    func:$str:():{
+        '' -> ret
+        next <- $this:getattr:('head')
+        ret <- ret + next:$str
+        return:ret
+    }
 }
-#l = linklist:()#
+l <- linklist:$init:()
+disp:(l:$str:(1))

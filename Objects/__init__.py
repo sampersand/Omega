@@ -10,6 +10,7 @@ from Objects.Obj import obj
 #####
 # Level 1
 #
+from Objects.UserObj import userobj
 from Objects.NullObj import nullobj
 objregexes[r'(?P<keep>[nN](?:ull|il|one))'] = nullobj
 
