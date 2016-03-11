@@ -1,27 +1,17 @@
 ->$dnd
-class:ll:():{
-    func:$init:(arg):{
-        disp:('in init!')
-        $this:setattr:('a', arg)
-        return:$this
-    }
-    func:$str:():{
-        return:('$STR::'+$this:getattr:('a'))
-    }
-}
-a <- ll:$init:(90.3)
-disp:(a:$str:())
-@eof
 class:_llobj:():{
     func:$init:(data, next):{
         $this:setattr:('data', data)
         $this:setattr:('next', next)
+        return:$this
+    }
+    func:$str:():{
+        return:($this:getattr:('data'))
     }
 }
 class:ll:():{
     func:$init:():{
-        $this:setattr:('head', nil)
-        $this:setattr:('head', _llobj:$init:(data, 1))
+        $this:setattr:('head', _llobj:$init:(data, nil))
         return:$this
     }
     func:add:(data):{
@@ -29,10 +19,10 @@ class:ll:():{
     }
     func:$str:():{
         '' -> ret
-        next <- $this:getattr:('head')
+        $this:getattr:('head') -> next
         ret <- ret + next:$str
         return:ret
     }
 }
 l <- ll:$init:()
-l:$str
+disp:(l:$str:())
