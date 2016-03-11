@@ -21,6 +21,7 @@ class umthdobj(mthdobj):
                 .format(name, params, len(params), args, len(args))
 
         for argp in range(len(params)): #setting the args
+            # print(lcls2pass, lcls,sep='\t\t|\t\t')
             args[argp].evalgrp(lcls)
             lcls2pass[str(params[argp])] = lcls.iv.last
         body.deepcopy().evalgrp(lcls2pass)

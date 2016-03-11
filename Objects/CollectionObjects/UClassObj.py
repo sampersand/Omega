@@ -27,25 +27,21 @@ class uclassobj(collectionobj):
                     delim = args.control.delims['applier']
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                        control = args.control, args = args), topass)
-                    lcls.iv.last = topass.iv.this
+                    lcls.iv.last = topass.iv.this.deepcopy()
                     return lcls.iv.last
 
         funcname = str(args[0])
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, uclassobj), 'Cannot apply class functions to a non-class object!'
-            assert isinstance(lcls.iv.last.baseobj, uclassobj), lcls.iv.last.baseobj
-            # assert isinstance(lcls.iv.last.attrs['this'].baseobj, uclassobj), lcls.iv.last.attrs['this'].baseobj
         for line in lcls.iv.last:
             if isinstance(line.baseobj, mthdobj) and line[0].datastr == funcname:
                 topass = lclsdict(args.control)
                 topass.iv.last = line
                 topass.iv.this = lcls.iv.last
-                # topass.iv.this = group(control = args.control, baseobj = uclassobj(),
-                #                        attrs = {'this' : lcls.iv.last})
                 delim = args.control.delims['applier']
                 topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                    control = args.control, args = args[1:]), topass)
-                lcls.iv.last = topass.iv.last
+                lcls.iv.last = topass.iv.last.deepcopy()
                 return lcls.iv.last
         raise ValueError("Function '{}' isn't defined for {} '{}'".format(funcname, type(self).__qualname__, args))
 

@@ -7,7 +7,7 @@ func:guessuser:():{
     max <- if:(input:('Maximum (defaults to 1000): ')):$:1000; max:updtype:(1F:type)
     attempts <- 0
     whilst:({response <- query:(lguess <- ((min + max) / 2.0):round)} != 'e'):{
-        if:(response == 's'):min:max <- lguess
+        if:(response = 's'):min:max <- lguess
         if:(min >= max):{abort:("Uh oh! You didn't pick a valid number")}
         rm:(response)
         attempts <- attempts + 1
@@ -28,7 +28,7 @@ func:guesscomp:(max):{
     disp:('You win! It took you', trials, 'times!')
     return:rn
 }
-guesscomp:(if:(input:('1 - ? (defaults to 1000): ')):$:1000)
+# guesscomp:(if:(input:('1 - ? (defaults to 1000): ')):$:1000)#
 guessuser:()
 
 

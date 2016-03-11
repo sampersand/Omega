@@ -2,12 +2,16 @@ class:foo:():{
     func:$init:(initval):{
         $this:setattr:('val',initval)
     }
-    func:sum:(a):{
+    func:add:(a):{
         $this:setattr:('val', $this:getattr:('val') + a)
-        disp:($this)
         return:{$this:getattr:('val')}
     }
 }
-x <- foo:(3)
-disp:(x:sum:(4),x)
+x <- foo:(3f)
+x:add:(91.2)
+x:add:(91.2)
+x:add:(91.2)
+disp:(x:getattr:('val'))
 $dnd <- 1
+
+
