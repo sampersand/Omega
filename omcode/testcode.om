@@ -1,4 +1,18 @@
 func:f:(a):{
+    abort:(a)
+}
+class:foo:():{
+    func:$init:(initval):{
+        abort:(initval)
+    }
+    1 -> b
+    func:F:(A):{
+        abort:(A)
+    }
+}
+x = foo:(1)
+@eof
+func:f:(a):{
     disp:('hey')
 }
 f:(1)
