@@ -38,6 +38,8 @@ class uclassobj(collectionobj, userobj):
                 topass.iv.last = line
                 topass.iv.this = lcls.iv.last
                 delim = args.control.delims['applier']
+                print(topass,group(data = delim[0], baseobj = delim[1], 
+                                                   control = args.control, args = args[1:]))
                 topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                    control = args.control, args = args[1:]), topass)
                 lcls.iv.last = topass.iv.last.deepcopy()

@@ -48,8 +48,9 @@ class group(list):
             if isinstance(self.baseobj, umthdobj) and len(self) == 3:
                 return str(self[0:2])
             from Objects import uclassobj
-            if isinstance(self.baseobj, umthdobj) and len(self) == 3:
-                return str(self[0:2])
+            if isinstance(self.baseobj, uclassobj) and len(self) == 3:
+                assert 0, (self.attrs)
+                return str(self.attrs['name'])
         # if self.datastr in self.control.delims['arraysep']:
         #     if __debug__:
         #         assert len(self) == 0

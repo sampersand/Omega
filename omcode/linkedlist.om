@@ -25,4 +25,5 @@ class:ll:():{
     }
 }
 l <- ll:$init:()
-disp:(l:$str:())
+l:$str:()
+#disp:(l:$str:())#
