@@ -4,6 +4,7 @@ class umthdobj(mthdobj):
         super().__init__(name)
 
     def _evalargs(self, args, lcls):
+        # quit(repr(args))
         ret = super()._evalargs(args, lcls)
         if ret != NotImplemented:
             return ret
@@ -14,7 +15,7 @@ class umthdobj(mthdobj):
             assert isinstance(lcls.iv.last.baseobj, umthdobj),\
                 "evalobj of a umthdobj uses the last value as the function to execute!"
             assert args, "cannot evaluate a function with a base type of '{}'!".format(type(args))
-            assert len(args) == 1, "Args needs to be an array!".format(args)
+            assert len(args) == 1, "Args needs to be an array!, not '{}' [ {}] ".format(args, args.baseobj)
             args = args[0]
             assert not (len(args) or len(params)) or len(args) == len(params), "Expected '{}' ({}), got '{}' ({})"\
                 .format(params, len(params), args, len(args))

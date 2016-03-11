@@ -146,6 +146,7 @@ class control():
             'disp'   : funcobj('disp'),
             'skip'   : funcobj('skip'),
             'func'   : funcobj('func'),
+            'class'  : funcobj('class'),
             'abort'  : funcobj('abort'),
             'input'  : funcobj('input'),
             'whilst' : funcobj('whilst'),

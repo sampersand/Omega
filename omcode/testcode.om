@@ -1,5 +1,13 @@
-f <- ('f', (a, b), '{disp:(a, b)}')
-func:sum:(num1, num2):{return:(num1+num2)}
-f:updtype:(om:types:umthdobj)
-disp:{f:(1,2)}
-func:query:(num):{return:(input:('The guess ' + num + ' is too '):('s', 'l', 'e')) }
+func:f:(a):{
+    disp:('hey')
+}
+f:(1)
+class:foo:():{
+    func:$init:(a):{
+        disp:(a,'@@@@@@@@@@')
+    }
+    func:sayhi:(a):{
+        disp:('hello!')
+    }
+}
+x = foo:$init:(1)

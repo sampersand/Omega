@@ -14,7 +14,6 @@ class obj(object):
 
         if args.datastr in args.control.delims['applier'] and args.datastr:
             return self._evalargs(args, lcls)
-
         if args.datastr in lcls and args.datastr: # and type(self) == obj
             lcls.iv.last = lcls[args.datastr]
         else:
@@ -25,7 +24,7 @@ class obj(object):
         return lcls.iv.last
     def _evalargs(self, args, lcls):
         if __debug__:
-            assert len(args) > 0, "No known Obj function '{}' for Obj '{}'!".format(args, self)
+            assert len(args) > 0, "No known Obj function '' for Obj '{}'!".format(args)
         # objname = str(lcls.iv.last.data)
         fncname = str(args[0])
         if fncname == 'clone' or fncname == 'copy':
@@ -48,7 +47,8 @@ class obj(object):
                                  control = args.control)
         else:
             if type(self)._evalargs == obj._evalargs:
-                raise SyntaxError("No known '{}' function '{}'!".format(type(self).__qualname__, fncname))
+                raise SyntaxError("No known function '{}' for {} '{}'.".\
+                                  format(fncname, type(self).__qualname__, lcls.iv.last))
             return NotImplemented
         return lcls.iv.last
 

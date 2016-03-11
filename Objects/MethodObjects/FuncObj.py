@@ -1,5 +1,6 @@
-from Objects import mthdobj, boolobj, obj, arrayobj, umthdobj
+from Objects import mthdobj, boolobj, obj, arrayobj, umthdobj, uclassobj
 from Group import group
+from Locals import lcls as localsdict
 class funcobj(mthdobj):
     def __init__(self, name = ''):
         super().__init__(name)
@@ -131,13 +132,26 @@ class funcobj(mthdobj):
         if __debug__:
             assert len(args) == 3, 'func:name:params:body'
         lcls[str(args[0])] = group(data = args.datastr,
-                           baseobj = umthdobj(str(args[0])),
-                           args = list(args),
-                           control = args.control)
+                               baseobj = umthdobj(str(args[0])),
+                               args = list(args),
+                               control = args.control)
+
+    def _class(self, args, lcls):
+        if __debug__:
+            assert len(args) == 3, 'class:name:[(parent)]:(body)'
 
 
-
-
+        lcls2pass = localsdict(args.control)
+        args2pass = []
+        if __debug__:
+            assert len(args[2]) == 1, 'body should be :{body}, not' + str(args[2])
+        for arg in args[2][0]:
+            arg.evalgrp(lcls2pass)
+            args2pass.append(lcls2pass.iv.last.deepcopy())
+        lcls[str(args[0])] = group(data = args.datastr, 
+                                baseobj = uclassobj(),
+                                args = args2pass, 
+                                control = args.control)
     
 
 

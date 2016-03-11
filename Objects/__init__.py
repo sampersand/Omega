@@ -38,7 +38,7 @@ objregexes[r'(?P<keep>\d*(?P<period>\.)?\d+(?:[eE][nNpP]?\d+)?[iIjJ])'] = floato
 
 from Objects.CollectionObjects.ArrayObj import arrayobj
 from Objects.CollectionObjects.DictObj import dictobj
-
+from Objects.CollectionObjects.UClassObj import uclassobj
 from Objects.MethodObjects.OperObj import operobj
 from Objects.MethodObjects.UMthdObj import umthdobj
 from Objects.MethodObjects.FuncObj import funcobj

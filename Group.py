@@ -30,7 +30,7 @@ class group(list):
         if __debug__:
             from Objects import umthdobj
             if isinstance(self.baseobj, umthdobj) and len(self) == 3:
-                return str(self[0:1])
+                return str(self[0:2])
         # if self.datastr in self.control.delims['arraysep']:
         #     if __debug__:
         #         assert len(self) == 0
@@ -75,7 +75,7 @@ class group(list):
         linep = _int()
         def _linestr(self, indent):
             if not len(self):# or self.data and len(self):
-                print(self.data)
+                # print(self.data)
             # if not self.data or not len(self):
                 return str(self)
             isendl = self.datastr in self.control.delims['endline'][0]

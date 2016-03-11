@@ -43,7 +43,8 @@ class omfuncobj(funcobj):
         topassobj = getattr(__import__('Objects'), base)
         lcls.iv.last = group(data = str(topassobj), baseobj = typeobj(\
             baseclass = group(baseobj = topassobj(), control = args.control)), control = args.control)
-
+    def _lcls(Self, args, lcls):
+        print('LCLS::', lcls)
 
 
 
