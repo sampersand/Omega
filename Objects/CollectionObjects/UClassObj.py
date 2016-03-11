@@ -22,10 +22,10 @@ class uclassobj(collectionobj):
                     
                     topass = lclsdict(args.control)
                     topass.iv.this = group(data = 'WHAT TO DO?', control = args.control, baseobj = uclassobj(),
-                                           args = {})#[group(data = '$lcls list', baseobj = dictobj(),
-                                                      #   control = args.control,
-                                                       #  args = 
-                                                        # )])
+                                           args = [group(data = '$lcls list', baseobj = dictobj(),
+                                                        control = args.control,
+                                                        args = dict([[1,2],[3,4]])
+                                                        )])
                     topass.iv.last = line
                     delim = args.control.delims['applier']
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
