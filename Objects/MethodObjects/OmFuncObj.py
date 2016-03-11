@@ -40,7 +40,7 @@ class omfuncobj(funcobj):
         from Objects import __all__ as allobj
         if __debug__:
             assert base in allobj, "No such type of '{}'!".format(base)
-        topassobj = __import__('Objects').__getattribute__(base)
+        topassobj = getattr(__import__('Objects'), base)
         lcls.iv.last = group(data = str(topassobj), baseobj = typeobj(\
             baseclass = group(baseobj = topassobj(), control = args.control)), control = args.control)
 
