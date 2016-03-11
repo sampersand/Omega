@@ -23,7 +23,8 @@ class uclassobj(collectionobj):
                     topass.iv.this = group(control = args.control, baseobj = uclassobj(),
                                            attrs = {'this' : 1})
                     delim = args.control.delims['applier']
-
+                    topass.iv.last = line
+                    print(topass.iv.last)
                     topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
                                                        control = args.control, args = args), topass)
                     lcls.iv.last = topass.iv.this
