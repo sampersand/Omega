@@ -7,6 +7,7 @@ class:foo:():{
     }
 }
 x <- foo:()
+disp:(x,1)
 disp:(x:sum:(1,2))
 @eof
 func:f:(a):{

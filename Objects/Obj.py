@@ -45,6 +45,15 @@ class obj(object):
             from Objects import typeobj # to be doing this...
             lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__, baseobj = typeobj(lcls.iv.last),
                                  control = args.control)
+        elif fncname == 'setattr':
+            if __debug__:
+                assert len(args) == 2, "obj:setattr:(name, value), not '{}'".format(str(args))
+                assert len(args[1]) == 2, "obj:setattr:(name, value), not '{}'".format(str(args[0]))
+            last = lcls.iv.last
+            args[1][0].evalgrp(lcls)
+            name = lcls.iv.last
+            args[1][1].evalgrp(lcls)
+            last.attrs[name.datastr] = lcls.iv.last
         else:
             if type(self)._evalargs == obj._evalargs:
                 raise SyntaxError("No known function '{}' for {} '{}'.".\
