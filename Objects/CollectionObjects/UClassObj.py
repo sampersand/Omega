@@ -9,19 +9,27 @@ class uclassobj(collectionobj):
                 yield line
 
     def _evalargs(self, args, lcls):
+
         ret = super()._evalargs(args, lcls)
-        if len(args) == 1:
-            itr = uclassobj._classiter(lcls.iv.last)
-            assert 0, list(str(x) for x in itr)
-            return
+
         if ret != NotImplemented:
             return ret
+
+        if len(args) == 1:
+            for line in uclassobj._classiter(lcls.iv.last):
+                if line[0].datastr == '$init':
+                    lcls.iv.last = line
+                    delim = args.control.delims['applier']
+                    r = group(data = delim[0], baseobj = delim[1], control = args.control, args = args)
+                    lcls.iv.last.baseobj.evalobj(r, lcls)
+            return 
+
         funcname = str(args[0])
         if __debug__:
             assert isinstance(lcls.iv.last.baseobj, uclassobj), 'Cannot apply class functions to a non-class object!'
         for line in lcls.iv.last:
             if isinstance(line.baseobj, mthdobj):
-                
+
                 lcls.iv.last = line
                 delim = args.control.delims['applier']
                 r = group(data = delim[0], baseobj = delim[1], control = args.control, args = args[1:])
