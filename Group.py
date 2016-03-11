@@ -3,9 +3,12 @@ from Objects import nullobj, obj, arrayobj
 from Objects import objregexes
 class group(list):
     defaultparens = ('', '')
-    def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens):
+    _attrsdict = {'data' : 'data', 'lcls' : 'lcls'}
+    def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens,
+                 attrs = None):
         super().__init__(args)
-        self.attributes = [data]
+        self.attrs = {} if attrs == None else attrs
+        self.attrs[self._attrsdict['data']] = data
         if __debug__:
             assert control != None, 'cannot have a None control!' + str(control)
         self.control = control
@@ -14,6 +17,7 @@ class group(list):
 
     def hasparens(self):
         return self.parens != self.defaultparens
+
     def __repr__(self):
         ret = 'group('
         if self.data != None:
@@ -24,9 +28,16 @@ class group(list):
             ret += 'args= {}, '.format(super().__repr__())
         if self.hasparens():
             ret += 'parens= {}, '.format(repr(self.parens))
+        if len(self.attrs.keys()) != 1:
+            ret += 'attrs= {}, '.format(repr(self.attrsnodata))
         return (ret != 'group(' and ret[:-2] or ret) + ')'
-
+    @property
+    def attrsnodata(self):
+        return {x:self.attrs[x] for x in self.attrs if x != self._attrsdict['data']}
+    
     def __str__(self):
+        return self.__str1__() + (len(self.attrs.keys()) != 1 and str(self.attrsnodata) or '')
+    def __str1__(self):
         if __debug__:
             from Objects import umthdobj
             if isinstance(self.baseobj, umthdobj) and len(self) == 3:
@@ -183,6 +194,7 @@ class group(list):
                      baseobj = copy.deepcopy(self.baseobj, memo),
                      control = self.control,
                      args = copy.deepcopy(list(self), memo),
+                     attrs = copy.deepcopy(self.attrs, memo),
                      parens = copy.deepcopy(self.parens, memo))
 
     @property
@@ -211,3 +223,12 @@ class group(list):
         self.data = None
         self.parens = self.defaultparens
         self.baseobj = self.getobj()
+
+    def data():
+        doc = "The data that this group contains"
+        def fget(self):
+            return self.attrs[self._attrsdict['data']]
+        def fset(self, value):
+            self.attrs[self._attrsdict['data']] = value
+        return locals()
+    data = property(**data())
