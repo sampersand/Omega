@@ -159,7 +159,8 @@ class funcobj(mthdobj):
         lcls[str(args[0])] = group(data = args.datastr, 
                                 baseobj = uclassobj(),
                                 args = args2pass, 
-                                control = args.control)
+                                control = args.control,
+                                attrs = {'$__name':str(args[0])})
     
 
 

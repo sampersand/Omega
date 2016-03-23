@@ -4,7 +4,7 @@ from Objects import objregexes
 class group(list):
     defaultparens = ('', '')
 
-    _attrsdict = {'data' : 'data', 'lcls' : 'lcls'}
+    _attrsdict = {'data' : '$__data', 'lcls' : '$__lcls', 'name' : '$__name'}
 
     def __init__(self, data = None, baseobj = None, control = None, args = [], parens = defaultparens,
                  attrs = None):
@@ -38,19 +38,18 @@ class group(list):
     def attrsnodata(self):
         return {x:self.attrs[x] for x in self.attrs if x != self._attrsdict['data']}
 
-    def __str__(self):
+    def __str1__(self):
         return self.__str1__() + \
             (len(self.attrs.keys()) != 1 and str({x:str(self.attrs[x]) for x in self.attrsnodata}) or '')
 
-    def __str1__(self):
+    def __str__(self):
         if __debug__:
             from Objects import umthdobj
             if isinstance(self.baseobj, umthdobj) and len(self) == 3:
                 return str(self[0:2])
             from Objects import uclassobj
             if isinstance(self.baseobj, uclassobj) and len(self) == 3:
-                assert 0, (self.attrs)
-                return str(self.attrs['name'])
+                return '<class ' + str(self.attrs[self._attrsdict['name']]) + '>'
         # if self.datastr in self.control.delims['arraysep']:
         #     if __debug__:
         #         assert len(self) == 0

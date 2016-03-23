@@ -1,5 +1,6 @@
-->$dnd
-class:_llobj:():{
+
+
+class:_llobj:(test):{
     func:$init:(data, next):{
         $this:setattr:('data', data)
         $this:setattr:('next', next)
@@ -25,5 +26,6 @@ class:ll:():{
     }
 }
 l <- ll:$init:()
-l:$str:()
+
 #disp:(l:$str:())#
+# ->$dnd
