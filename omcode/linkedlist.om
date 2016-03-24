@@ -1,3 +1,9 @@
+->$dnd
+func:f:(data):{
+    disp:(data,'data')
+}
+f:(1)
+@eof
 class:_node:():{
     func:$init:(data, next):{
         $this:$sa:('data', data)
@@ -11,12 +17,8 @@ class:stack:():{
         return:$this
     }
     func:add:(data):{
-        head <- $this:$ga:('head')
-        disp:(a == $this,'@')
-        i <- _node:$init:(data, head)
-        $this:$sa:('head', i)
-        disp:($this:$attrs,'@,')
-        disp:($this:$ga:('head'))
+        $this:$sa:('head', _node:$init:(data, $this:$ga:('head')))
+        disp:($this:$attrs)#, $this:$ga:('head'))
     }
     func:$str:():{
         ret <- '['

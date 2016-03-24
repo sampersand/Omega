@@ -43,24 +43,7 @@ class group(list):
             (len(self.attrs.keys()) != 1 and str({x:str(self.attrs[x]) for x in self.attrsnodata}) or '')
 
     def __str__(self):
-        if __debug__:
-            from Objects import umthdobj
-            if isinstance(self.baseobj, umthdobj) and len(self) == 3:
-                return str(self[0:2])
-            from Objects import uclassobj
-            if isinstance(self.baseobj, uclassobj) and len(self) == 3:
-                return '<class ' + str(self.attrs[self._attrsdict['name']]) + '>'
-        # if self.datastr in self.control.delims['arraysep']:
-        #     if __debug__:
-        #         assert len(self) == 0
-        #     return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
-        if not len(self):
-            return ''.join((str(self.parens[0]), self.datastr, str(self.parens[1])))
-        if self.datastr in self.control.opers['binary']:
-            if __debug__:
-                assert len(self.parens) == 2, repr(self)
-            return self.parens[0] + (' ' + self.datastr +' ').join(list(str(e) for e in self)) + str(self.parens[1])
-        return ''.join((self.datastr, str(self.parens[0]), ', '.join(str(x) for x in self), str(self.parens[1])))
+        return self.baseobj.groupstr(self)
 
     def __bool__(self):
         """ False if this thing's baseobj is a nullobj. """

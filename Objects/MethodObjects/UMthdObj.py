@@ -27,3 +27,6 @@ class umthdobj(mthdobj, userobj):
         del lcls.iv.last
         if lcls2pass.iv.ret:
             lcls.iv.last = lcls2pass.iv.ret
+
+    def groupstr(self, grp) -> str:
+        return super().groupstr(grp) if len(grp) != 3 else str(grp[0:2])

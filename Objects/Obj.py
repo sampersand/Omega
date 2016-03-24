@@ -64,7 +64,7 @@ class obj(object):
             args[1][0].evalgrp(lcls)
             name = lcls.iv.last
             args[1][1].evalgrp(lcls)
-            print(name.datastr in last.attrs,name.datastr, last.attrs.keys(), last.attrs)
+            print(name.datastr in last.attrs,name.datastr, last.attrs.keys(), sep = '\t|\t')
             last.attrs[name.datastr] = lcls.iv.last
         elif fncname in {'$getattr', '$ga'} and fncname not in ignore:
             if __debug__:
@@ -89,27 +89,25 @@ class obj(object):
         return lcls.iv.last
 
     def _topyobj(self, objinstance):    return objinstance if self._pyobj == None else self._pyobj(objinstance)
-    def _func_pow(self, obj1, obj2):    return self._topyobj(obj1.data) ** self._topyobj(obj2.data)
-    def _func_mul(self, obj1, obj2):    return self._topyobj(obj1.data) * self._topyobj(obj2.data)
-    def _func_div(self, obj1, obj2):    return self._topyobj(obj1.data) / self._topyobj(obj2.data)
-    def _func_mod(self, obj1, obj2):    return self._topyobj(obj1.data) % self._topyobj(obj2.data)
-    # def _func_add(self, obj1, obj2):    return self._topyobj(obj1.data) + self._topyobj(obj2.data)
-    def _func_add(self, obj1, obj2):#thrown together...
-        if type(obj1.baseobj)._pyobj == str or type(obj2.baseobj)._pyobj == str:
-            return str(obj1.data) + str(obj2.data)
-        return self._topyobj(obj1.data) + self._topyobj(obj2.data)
-    def _func_sub(self, obj1, obj2):    return self._topyobj(obj1.data) - self._topyobj(obj2.data)
-    def _func_rshift(self, obj1, obj2): return self._topyobj(obj1.data) >> self._topyobj(obj2.data)
-    def _func_lshift(self, obj1, obj2): return self._topyobj(obj1.data) << self._topyobj(obj2.data)
-    def _func_and(self, obj1, obj2):    return self._topyobj(obj1.data) & self._topyobj(obj2.data)
-    def _func_xor(self, obj1, obj2):    return self._topyobj(obj1.data) ^ self._topyobj(obj2.data)
-    def _func_or(self, obj1, obj2):     return self._topyobj(obj1.data) | self._topyobj(obj2.data)
-    def _func_lt(self, obj1, obj2):     return self._topyobj(obj1.data) < self._topyobj(obj2.data)
-    def _func_gt(self, obj1, obj2):     return self._topyobj(obj1.data) > self._topyobj(obj2.data)
-    def _func_le(self, obj1, obj2):     return self._topyobj(obj1.data) <= self._topyobj(obj2.data)
-    def _func_ge(self, obj1, obj2):     return self._topyobj(obj1.data) >= self._topyobj(obj2.data)
-    def _func_eq(self, obj1, obj2):     return self._topyobj(obj1.data) == self._topyobj(obj2.data)
-    def _func_ne(self, obj1, obj2):     return self._topyobj(obj1.data) != self._topyobj(obj2.data)
+    def _dofunc(self, obj1, obj2, attr): return getattr(self._topyobj(obj1.data), attr)(self._topyobj(obj2.data))
+    def _func_pow(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__pow__')
+    def _func_mul(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__mul__')
+    def _func_div(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__div__')
+    def _func_mod(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__mod__')
+    def _func_add(self, obj1, obj2):
+        return str(obj1.data)+str(obj2.data)if type(obj2.baseobj)._pyobj == str else self._dofunc(obj1, obj2, '__add__')
+    def _func_sub(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__sub__')
+    def _func_rshift(self, obj1, obj2): return self._dofunc(obj1, obj2, '__rshift__')
+    def _func_lshift(self, obj1, obj2): return self._dofunc(obj1, obj2, '__lshift__')
+    def _func_and(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__and__')
+    def _func_xor(self, obj1, obj2):    return self._dofunc(obj1, obj2, '__xor__')
+    def _func_or(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__or__')
+    def _func_lt(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__lt__')
+    def _func_gt(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__gt__')
+    def _func_le(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__le__')
+    def _func_ge(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__ge__')
+    def _func_eq(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__eq__')
+    def _func_ne(self, obj1, obj2):     return self._dofunc(obj1, obj2, '__ne__')
 
     def _ifunc_pow(self, obj1, obj2):  obj1.data = self._func_pow(obj1, obj2)
     def _ifunc_mul(self, obj1, obj2):  obj1.data = self._func_mul(obj1, obj2)
@@ -123,6 +121,14 @@ class obj(object):
     def _ifunc_xor(self, obj1, obj2):  obj1.data = self._func_xor(obj1, obj2)
     def _ifunc_or(self, obj1, obj2):  obj1.dat = selfa._func_or(obj1, obj2)
 
+    def groupstr(self, grp) -> str:
+        if not len(grp):
+            return ''.join((str(grp.parens[0]), grp.datastr, str(grp.parens[1])))
+        if grp.datastr in grp.control.opers['binary']:
+            if __debug__:
+                assert len(grp.parens) == 2, repr(grp)
+            return grp.parens[0] + (' ' + grp.datastr +' ').join(list(str(e) for e in grp)) + str(grp.parens[1])
+        return ''.join((grp.datastr, str(grp.parens[0]), ', '.join(str(x) for x in grp), str(grp.parens[1])))
 
 
 

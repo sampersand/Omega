@@ -39,7 +39,8 @@ class uclassobj(collectionobj, userobj):
             return ret
         raise ValueError("Function '{}' isn't defined for {} '{}'".format(funcname, type(self).__qualname__, args))
 
-
+    def groupstr(self, grp):
+        return super().groupstr(grp) if len(grp) != 3 else '<class ' + str(grp.attrs[grp._attrsdict['name']]) + '>'
 
 
 
