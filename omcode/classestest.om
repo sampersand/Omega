@@ -1,17 +1,15 @@
-
-class:foo:():{
-    func:$init:(initval):{
-        $this:setattr:('val', initval)
+->$dnd
+class:cl:():{
+    func:$init:():{
+        return:$this
     }
-    func:add:[a]:{
-        $this:setattr:('val',  $this:getattr:('val') + a)
-        return:{$this:getattr:('val')}
+    func:$str:():{
+        return:('this is a string!')
     }
 }
-x <- [foo:$init:(3f)]
-disp:(x:tostr:())
-#x:add:(91.2)
-#x:add:(91.2)
-#x:add:(91.2)
-#disp:(x:getattr:('val'))
-1->$dnd
+cl <- cl:$init:()
+funcs <- cl:funcs
+for:(0->i, i < funcs:len, i <- i + 1):{
+    disp:(cl:funcs:[i])
+}
+# disp:(cl:$str:(),'<--')

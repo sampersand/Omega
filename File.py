@@ -27,7 +27,8 @@ class file:
                 if char in self.control.escape and not iscomm:
                     ret += char + next(it)
                 elif char in self.control.comment:
-                    iscomm = not iscomm
+                    iscomm = True
+                    # iscomm = not iscomm
                 elif char in self.control.linebreak:
                     if char in self.control.delims['endline'][0] and ret and \
                          ret[-1] not in self.control.delims['endline'][0]:

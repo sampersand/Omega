@@ -13,7 +13,7 @@ class obj(object):
             assert isinstance(args, group), args
 
         if args.datastr in args.control.delims['applier'] and args.datastr:
-            return self._evalargs(args, lcls)
+            return self._evalargs(args, lcls, {})
         if args.datastr in lcls and args.datastr: # and type(self) == obj
             lcls.iv.last = lcls[args.datastr]
         else:
@@ -22,14 +22,14 @@ class obj(object):
             else:
                 return 0
         return lcls.iv.last
-    def _evalargs(self, args, lcls):
+    def _evalargs(self, args, lcls, ignore):
         if __debug__:
             assert len(args) > 0, "No known Obj function '' for Obj '{}'!".format(args)
         # objname = str(lcls.iv.last.data)
         fncname = str(args[0])
-        if fncname == 'clone' or fncname == 'copy':
+        if fncname == 'clone' or fncname == 'copy' and fncname not in ignore:
             lcls.iv.last = lcls.iv.last.deepcopy()
-        elif fncname == 'updtype':
+        elif fncname == 'updtype' and fncname not in ignore:
             if __debug__:
                 from Objects import arrayobj
                 assert isinstance(args[1].baseobj, arrayobj), str(args) + " should be obj:updtype:(type)"
@@ -40,12 +40,17 @@ class obj(object):
                 from Objects import typeobj
                 assert isinstance(lcls.iv.last.baseobj, typeobj), "should be obj:updtype:(type)"
             last.baseobj = lcls.iv.last.baseobj.baseclass.baseobj
-        elif fncname == 'type':
+        elif fncname == 'type' and fncname not in ignore:
             from Group import group # not sure this is the best way
             from Objects import typeobj # to be doing this...
             lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__, baseobj = typeobj(lcls.iv.last),
                                  control = args.control)
-        elif fncname == 'setattr':
+        elif fncname == '$str' and fncname not in ignore:
+            from Group import group # not sure this is the best way
+            from Objects import strobj # to be doing this...
+            lcls.iv.last = group(data = lcls.iv.last.data, baseobj = strobj(),
+                                 control = args.control)
+        elif fncname == 'setattr' and fncname not in ignore:
             if __debug__:
                 assert len(args) == 2, "obj:setattr:(name, value), not '{}'".format(str(args))
                 assert len(args[1]) == 2, "obj:setattr:(name, value), not '{}'".format(str(args[0]))
@@ -54,7 +59,7 @@ class obj(object):
             name = lcls.iv.last
             args[1][1].evalgrp(lcls)
             last.attrs[name.datastr] = lcls.iv.last
-        elif fncname == 'getattr':
+        elif fncname == 'getattr' and fncname not in ignore:
             if __debug__:
                 assert len(args) == 2, "obj:getattr:(name), not '{}'".format(str(args))
                 assert len(args[1]) == 1, "obj:getattr:(name), not '{}'".format(str(args[0]))

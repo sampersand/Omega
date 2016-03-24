@@ -16,8 +16,8 @@ class arrayobj(collectionobj):
         if ret == NotImplemented: #this calls super()._evalargs twice. once here, once in self._evalargs
             self._evalargs(args, lcls)
         return ret
-    def _evalargs(self, args, lcls):
-        ret = super()._evalargs(args, lcls)
+    def _evalargs(self, args, lcls, ignore):
+        ret = super()._evalargs(args, lcls, ignore)
         if ret != NotImplemented:
             return ret
         name = "_" + str(args[0])

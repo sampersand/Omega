@@ -3,9 +3,8 @@ class umthdobj(mthdobj, userobj):
     def __init__(self, name = ''):
         super().__init__(name)
     
-    def _evalargs(self, args, lcls):
-        # quit(repr(args))
-        ret = super()._evalargs(args, lcls)
+    def _evalargs(self, args, lcls, ignore):
+        ret = super()._evalargs(args, lcls, ignore)
         if ret != NotImplemented:
             return ret
         # if not isinstance(args, lcls)

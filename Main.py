@@ -4,7 +4,6 @@ if __name__ == '__main__':
         start = clock()
     from File import file
     f = file('/Users/westerhack/code/python/Omega/omcode/classestest.om') #hardcode ftws
-    # f = file('/Users/westerhack/code/python/Omega/omcode/linkedlist.om') #hardcode ftws
     # f = file('/Users/westerhack/code/python/Omega/omcode/gamesbackup.om') #hardcode ftws
     print(f)
     print('--')

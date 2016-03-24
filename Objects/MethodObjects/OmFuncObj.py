@@ -5,9 +5,9 @@ class omfuncobj(funcobj):
     def __init__(self, name = ''):
         super().__init__(name)
 
-    def _evalargs(self, args, lcls):
+    def _evalargs(self, args, lcls, ignore):
         #exact same code as funcobj, except name is args.data
-        ret = super()._evalargs(args, lcls)
+        ret = super()._evalargs(args, lcls, ignore)
         if ret != NotImplemented:
             return ret
         if __debug__:

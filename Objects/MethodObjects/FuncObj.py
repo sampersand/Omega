@@ -5,8 +5,8 @@ class funcobj(mthdobj):
     def __init__(self, name = ''):
         super().__init__(name)
 
-    def _evalargs(self, args, lcls):
-        ret = super()._evalargs(args, lcls)
+    def _evalargs(self, args, lcls, ignore):
+        ret = super()._evalargs(args, lcls, ignore)
         if ret != NotImplemented:
             return ret
         name = "_" + self.name
@@ -76,8 +76,8 @@ class funcobj(mthdobj):
             args[1].evalgrp(lcls) #execute the statement(s)
     def _for(self, args, lcls):
         if __debug__:
-            assert len(args) == 2, 'for:(init,cond,inc):(statement(s))'
-            assert len(args[0]) == 3, 'for:(init,cond,inc):(statement(s))'
+            assert len(args) == 2, 'for:(init,cond,inc):(statement(s))' + str(len(args))
+            assert len(args[0]) == 3, 'for:(init,cond,inc):(statement(s))' + str(len(args[0]))
         args[0][0].evalgrp(lcls) #initialization
         while True:
             args[0][1].evalgrp(lcls) #evaluate the condition

@@ -1,8 +1,8 @@
 from Objects import numobj, intobj
 class floatobj(numobj):
     _pyobj = float
-    def _evalargs(self, args, lcls):
-        ret = super()._evalargs(args, lcls)
+    def _evalargs(self, args, lcls, ignore):
+        ret = super()._evalargs(args, lcls, ignore)
         if ret != NotImplemented:
             return ret
         if __debug__:
