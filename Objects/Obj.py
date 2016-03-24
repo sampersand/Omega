@@ -27,9 +27,9 @@ class obj(object):
             assert len(args) > 0, "No known Obj function '' for Obj '{}'!".format(args)
         # objname = str(lcls.iv.last.data)
         fncname = str(args[0])
-        if fncname == 'clone' or fncname == 'copy' and fncname not in ignore:
+        if fncname == '$clone' or fncname == '$copy' and fncname not in ignore:
             lcls.iv.last = lcls.iv.last.deepcopy()
-        elif fncname == 'updtype' and fncname not in ignore:
+        elif fncname == '$updtype' and fncname not in ignore:
             if __debug__:
                 from Objects import arrayobj
                 assert isinstance(args[1].baseobj, arrayobj), str(args) + " should be obj:updtype:(type)"
@@ -40,7 +40,7 @@ class obj(object):
                 from Objects import typeobj
                 assert isinstance(lcls.iv.last.baseobj, typeobj), "should be obj:updtype:(type)"
             last.baseobj = lcls.iv.last.baseobj.baseclass.baseobj
-        elif fncname == 'type' and fncname not in ignore:
+        elif fncname == '$type' and fncname not in ignore:
             from Group import group # not sure this is the best way
             from Objects import typeobj # to be doing this...
             lcls.iv.last = group(data = type(lcls.iv.last.baseobj).__qualname__, baseobj = typeobj(lcls.iv.last),
@@ -50,22 +50,37 @@ class obj(object):
             from Objects import strobj # to be doing this...
             lcls.iv.last = group(data = lcls.iv.last.data, baseobj = strobj(),
                                  control = args.control)
-        elif fncname == 'setattr' and fncname not in ignore:
+        elif fncname in {'$attrs', '$a'} and fncname not in ignore:
+            from Group import group # not sure this is the best way
+            from Objects import dictobj # to be doing this...
+            lcls.iv.last = group(data = '', baseobj = dictobj(), parens = ('{', '}'),
+                                 control = args.control,
+                                 args = lcls.iv.last.attrs)
+        elif fncname in {'$setattr', '$sa'} and fncname not in ignore:
             if __debug__:
-                assert len(args) == 2, "obj:setattr:(name, value), not '{}'".format(str(args))
-                assert len(args[1]) == 2, "obj:setattr:(name, value), not '{}'".format(str(args[0]))
+                assert len(args) == 2, "obj:$setattr:(name, value), not '{}'".format(str(args))
+                assert len(args[1]) == 2, "obj:$setattr:(name, value), not '{}'".format(str(args[0]))
             last = lcls.iv.last
             args[1][0].evalgrp(lcls)
             name = lcls.iv.last
             args[1][1].evalgrp(lcls)
+            print(name.datastr in last.attrs,name.datastr, last.attrs.keys(), last.attrs)
             last.attrs[name.datastr] = lcls.iv.last
-        elif fncname == 'getattr' and fncname not in ignore:
+        elif fncname in {'$getattr', '$ga'} and fncname not in ignore:
             if __debug__:
-                assert len(args) == 2, "obj:getattr:(name), not '{}'".format(str(args))
-                assert len(args[1]) == 1, "obj:getattr:(name), not '{}'".format(str(args[0]))
+                assert len(args) == 2, "obj:$getattr:(name), not '{}'".format(str(args))
+                assert len(args[1]) == 1, "obj:$getattr:(name), not '{}'".format(str(args[0]))
             last = lcls.iv.last
             # args[1][0].evalgrp(lcls)
             lcls.iv.last = last.attrs[args[1][0].datastr]
+        elif fncname in {'$delattr', '$da'} and fncname not in ignore:
+            if __debug__:
+                assert len(args) == 2, "obj:$delattr:(name), not '{}'".format(str(args))
+                assert len(args[1]) == 1, "obj:$delattr:(name), not '{}'".format(str(args[0]))
+            last = lcls.iv.last
+            # args[1][0].evalgrp(lcls)
+            lcls.iv.last = last.attrs[args[1][0].datastr]
+            del last.attrs[args[1][0].datastr]
         else:
             if type(self)._evalargs == obj._evalargs:
                 raise SyntaxError("No known function '{}' for {} '{}'.".\

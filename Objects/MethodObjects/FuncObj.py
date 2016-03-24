@@ -52,12 +52,6 @@ class funcobj(mthdobj):
             assert len(args) == 1,' abort:()'
         if len(args[0]) == 0: #abort w/ message
             del lcls.iv.last # resets
-            if __debug__:
-                from Objects import dictobj
-                lcls.iv.last = group(data = str(lcls),
-                                     control = args.control,
-                                     baseobj = dictobj(),
-                                     )
         else:
             args[0][0].evalgrp(lcls)
         quit('Aborting!' + (" Message: " + str(lcls.iv.last) if lcls.iv.last else ''))

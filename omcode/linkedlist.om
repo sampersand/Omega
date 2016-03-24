@@ -1,14 +1,34 @@
-class:linkedlist:():{
-
-    func:$init:():{
-        $this:setattr:('head', nil)
+class:_node:():{
+    func:$init:(data, next):{
+        $this:$sa:('data', data)
+        $this:$sa:('next', next)
         return:$this
+    }
+}
+class:stack:():{
+    func:$init:():{
+        $this:$sa:('head', nil)
+        return:$this
+    }
+    func:add:(data):{
+        head <- $this:$ga:('head')
+        disp:(a == $this,'@')
+        i <- _node:$init:(data, head)
+        $this:$sa:('head', i)
+        disp:($this:$attrs,'@,')
+        disp:($this:$ga:('head'))
     }
     func:$str:():{
         ret <- '['
-        return:(ret)
+        next <- $this:$ga:('head')
+        whilst:(next <> nil):{
+            ret <- ret + next:$ga:('data') + ', '
+            next <- next:$ga:('next')
+        }
+        return:(ret + ']')
     }
 }
-ll <- linkedlist:$init:()
-disp:(ll:$str:())
-1->$dnd
+stck <- stack:$init:()
+stck:add:('tis is a node')
+disp:(stck:$str:(), stck:$ga:(head))
+1 -> $dnd
