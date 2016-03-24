@@ -26,6 +26,8 @@ class file:
             for char in it:
                 if char in self.control.escape and not iscomm:
                     ret += char + next(it)
+                    if ret[-2:] == '\\\n': ret = ret[:-2]
+                    print(ret)
                 elif char in self.control.comment:
                     iscomm = True
                     # iscomm = not iscomm
