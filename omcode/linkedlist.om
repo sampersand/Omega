@@ -1,10 +1,11 @@
 class:linkedlist:():{
+
     func:$init:():{
         $this:setattr:('head', nil)
         return:$this
     }
     func:$str:():{
-        ret <- ']'
+        ret <- '['
         return:(ret)
     }
 }

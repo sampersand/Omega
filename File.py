@@ -3,7 +3,7 @@ import codecs
 import copy
 from Group import group
 from Locals import lcls
-from Objects import arrayobj, obj
+from Objects import arrayobj, obj, strobj
 class file:
     def __init__(self, filepath, control = None, encoding = 'utf-8'):
         if control == None:
@@ -100,14 +100,17 @@ class file:
                 ret = group(control = self.control, parens = linegrp.parens) #universe
                 while len(linegrp) != 0:
                     ele = linegrp.pop(0) #pop(0) is inefficient for list. update this in the future
-                    if str(ele) not in self.control.allparens or not str(ele):
+                    if isinstance(ele.baseobj, strobj) or\
+                        str(ele) not in self.control.allparens or\
+                        not str(ele):
                         ret.append(ele)
                     else:
                         toappend = group(control = self.control)
                         parens = {str(ele):1}
                         while sum(parens.values()) > 0 and len(linegrp) != 0:
                             toappend.append(linegrp.pop(0))
-                            if str(toappend[-1]) in self.control.allparens:
+                            if str(toappend[-1]) in self.control.allparens\
+                                and not isinstance(toappend[-1].baseobj, strobj):
                                 last = str(toappend[-1])
                                 if last in self.control.parens['l']:
                                     if last not in parens:
