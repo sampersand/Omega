@@ -9,12 +9,6 @@ class funcobj(mthdobj):
         name = "_" + self.name
         if name not in dir(self):
             return super()._evalargs(args, lcls, ignore)
-            # ret = super()._evalargs(args, lcls, ignore)
-            if ret != NotImplemented:
-                return ret
-            if type(self) == funcobj:
-                raise ValueError("Function '{}' isn't defined yet!".format(self.name))
-            return NotImplemented
         self.__getattribute__(name)(args, lcls)
 
     def _disp(self, args, lcls):
@@ -156,7 +150,6 @@ class funcobj(mthdobj):
             assert len(args[2]) == 1, 'body should be :{body}, not' + str(args[2])
         for arg in args[2][0]:
             arg.evalgrp(lcls2pass)
-            print(arg, '@', lcls2pass.iv.last, '@')
             args2pass.append(lcls2pass.iv.last.deepcopy())
         lcls[str(args[0])] = group(data = args.datastr, 
                                 baseobj = uclassobj(),
