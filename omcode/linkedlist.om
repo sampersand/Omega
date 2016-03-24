@@ -1,8 +1,6 @@
 ->$dnd
-func:f:(data):{
-    disp:(data,'data')
-}
-f:(1)
+disp:(1,\
+      2)
 @eof
 class:_node:():{
     func:$init:(data, next):{
@@ -11,15 +9,21 @@ class:_node:():{
         return:$this
     }
 }
-class:stack:():{
+# n <- _node:$init:('this is a data', nil)
+# disp:(n:$attrs, n:$ga:('data'), n:$ga:('next')):'\t\t|\t'
+class:Stack:():{
     func:$init:():{
         $this:$sa:('head', nil)
         return:$this
     }
-    func:add:(data):{
-        $this:$sa:('head', _node:$init:(data, $this:$ga:('head')))
-        disp:($this:$attrs)#, $this:$ga:('head'))
+    func:push:(n):{
+        disp:($this:$ga:('head'))
+        $this:$sa:('head', _node:$init:(n, $this:$ga:('head')))
     }
+    # func:add:(data):{
+    #     $this:$sa:('head', _node:$init:(data, $this:$ga:('head')))
+    #     disp:($this:$attrs)#, $this:$ga:('head'))
+    # }
     func:$str:():{
         ret <- '['
         next <- $this:$ga:('head')
@@ -30,7 +34,6 @@ class:stack:():{
         return:(ret + ']')
     }
 }
-stck <- stack:$init:()
-stck:add:('tis is a node')
-disp:(stck:$str:(), stck:$ga:(head))
-1 -> $dnd
+stack <- Stack:$init:()
+stack:push:(1.9)
+disp:(stack:$str:())

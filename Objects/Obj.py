@@ -11,10 +11,9 @@ class obj(object):
         if __debug__:
             from Group import group
             assert isinstance(args, group), args
-
         if args.datastr in args.control.delims['applier'] and args.datastr:
             return self._evalargs(args, lcls, {})
-        if args.datastr in lcls and args.datastr: # and type(self) == obj
+        if args.datastr in lcls and args.datastr and type(args.baseobj) == obj:
             lcls.iv.last = lcls[args.datastr]
         else:
             if docopy:
