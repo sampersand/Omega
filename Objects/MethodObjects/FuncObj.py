@@ -8,7 +8,8 @@ class funcobj(mthdobj):
     def _evalargs(self, args, lcls, ignore):
         name = "_" + self.name
         if name not in dir(self):
-            ret = super()._evalargs(args, lcls, ignore)
+            return super()._evalargs(args, lcls, ignore)
+            # ret = super()._evalargs(args, lcls, ignore)
             if ret != NotImplemented:
                 return ret
             if type(self) == funcobj:
