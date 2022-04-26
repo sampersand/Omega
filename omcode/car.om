@@ -1,0 +1,19 @@
+->$dnd
+class:Car:():{
+    func:$init:(maker, wheels):{
+        $this:$sa:('maker', maker)
+        $this:$sa:('wheels', wheels)
+        return:$this
+    }
+
+    func:$str:():{
+        return:{'A car made by ' + $this:$ga:('maker') + ', with ' + $this:$ga:('wheels') + ' wheels'}
+    }
+
+    func:drive:(miles):{
+        disp:("vroom vroom, we drove", miles, "miles")
+    }
+}
+car <- Car:$init:('honda', 4)
+car:drive:(10)
+disp:(car:$str:())

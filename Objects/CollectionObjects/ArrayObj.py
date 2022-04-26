@@ -1,4 +1,5 @@
 from Objects import collectionobj, intobj
+
 class arrayobj(collectionobj):
     _pyobj = list
     # def evalobj(self, args, lcls):
@@ -36,11 +37,47 @@ class arrayobj(collectionobj):
         args[0][0].evalgrp(lcls)
         lcls.iv.last = last[int(lcls.iv.last.data)]
 
+    def _set(self, args, lcls):
+        if __debug__:
+            assert len(args) == 1, 'arr:set:(pos, ele)'
+            assert len(args[0]) == 2, 'arr:set:(pos, ele)'
+        last = lcls.iv.last
+        args[0].evalgrp(lcls)
+        args = lcls.iv.last
+        args[0].evalgrp(lcls)
+        idx = int(lcls.iv.last.data)
+        args[1].evalgrp(lcls)
+        last[idx] = lcls.iv.last
+
+    def _add(self, args, lcls):
+        from Group import group
+
+        if __debug__:
+            assert len(args) == 1, 'arr:add:(ary)'
+            assert len(args[0]) == 1, 'arr:add:(ary)'
+            assert isinstance(args[0].baseobj, arrayobj), 'have to pass an array as a parameter!'
+        last = lcls.iv.last.deepcopy()
+        args[0][0].evalgrp(lcls)
+
+        last += list(lcls.iv.last)
+        lcls.iv.last = last
+
     def _len(self, args, lcls):
+        from Group import group
         if __debug__:
             assert len(args) == 0, 'arr:len'
-        from Group import group
         lcls.iv.last = group(data = str(len(lcls.iv.last)), baseobj = intobj(), control = args.control)
+
+    def _push(self, args, lcls):
+        if __debug__:
+            assert len(args) == 1, 'arr:add:(ele)'
+            assert len(args[0]) == 1, 'arr:add:(ele)'
+            assert isinstance(args[0].baseobj, arrayobj), 'have to pass an array as a parameter!'
+        last = lcls.iv.last
+        args[0][0].evalgrp(lcls)
+        last.append(lcls.iv.last)
+        lcls.iv.last = last
+
 
     def _pop(self, args, lcls):
         if __debug__:

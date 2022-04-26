@@ -3,7 +3,9 @@ class umthdobj(mthdobj, userobj):
     def __init__(self, name = ''):
         super().__init__(name)
     
-    def _evalargs(self, args, lcls, ignore):
+    def _evalargs(self, args, lcls, ignore, origlcls=None):
+        if not origlcls:
+            origlcls = lcls
         ret = super()._evalargs(args, lcls, ignore)
         if ret != NotImplemented:
             return ret
@@ -15,14 +17,15 @@ class umthdobj(mthdobj, userobj):
                 "evalobj of a umthdobj uses the last value as the function to execute!"
             assert args, "cannot evaluate a function with a base type of '{}'!".format(type(args))
             assert len(args) == 1, "Args needs to be an array!, not '{}' [ {}] ".format(args, args.baseobj)
-            args = args[0]
+        args = args[0]
+        if __debug__:
             assert len(args) == len(params), "'{}' Expected '{}' ({}), got '{}' ({})"\
                 .format(name, params, len(params), args, len(args))
 
         for argp in range(len(params)): #setting the args
             # print(lcls2pass, lcls,sep='\t\t|\t\t')
-            args[argp].evalgrp(lcls)
-            lcls2pass[str(params[argp])] = lcls.iv.last
+            args[argp].evalgrp(origlcls)
+            lcls2pass[str(params[argp])] = origlcls.iv.last
         body.deepcopy().evalgrp(lcls2pass)
         del lcls.iv.last
         if lcls2pass.iv.ret:

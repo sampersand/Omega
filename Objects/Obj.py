@@ -63,7 +63,6 @@ class obj(object):
             args[1][0].evalgrp(lcls)
             name = lcls.iv.last
             args[1][1].evalgrp(lcls)
-            print(name.datastr in last.attrs,name.datastr, last.attrs.keys(), sep = '\t|\t')
             last.attrs[name.datastr] = lcls.iv.last
         elif fncname in {'$getattr', '$ga'} and fncname not in ignore:
             if __debug__:

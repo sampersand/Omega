@@ -10,6 +10,6 @@ class:cl:():{
 cl <- cl:$init:()
 funcs <- cl:funcs
 for:(0->i, i < funcs:len, i <- i + 1):{
-    disp:(cl:funcs:[i])
+    disp:(funcs:get:(i))
 }
 disp:(cl:$str:(),'<--')

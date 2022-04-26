@@ -1,0 +1,15 @@
+func:fizzbuzz:(max):{
+	for:(1->i, i <= max, i <- i + 1):{
+		disp:(if:(i%15==0):{
+			"FizzBuzz"
+		}:{
+			if:(i%3==0):{
+				"Fizz"
+			}:{
+				if:(i%5==0):{ "Buzz" }:{ i }
+			}
+		})
+	}
+}
+
+disp:(fizzbuzz:(15))

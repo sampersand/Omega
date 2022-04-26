@@ -158,6 +158,8 @@ class group(list):
     def datastr(self):
         return '' if self.data == None else str(self.data)
 
+    # 4/22 NOTE: I removed the only calling site of this, but with all the meta-
+    # programming I was wary removing it. So here it shall stay.
     def updatedata(self, datagroup, funcname):
         self.data = datagroup.data
 

@@ -1,3 +1,4 @@
+->$dnd
 class:_node:():{
     func:$init:(data, next):{
         $this:$sa:('data', data)
@@ -13,16 +14,30 @@ class:Stack:():{
     func:push:(n):{
         $this:$sa:('head', _node:$init:(n, $this:$ga:('head')))
     }
+    func:pop:():{
+        ret <- $this:$ga:('head')
+        $this:$sa:('head', ret:$ga:('next'))
+        return:(ret:$ga:('data'))
+    }
     func:$str:():{
-        ret <- '['
         next <- $this:$ga:('head')
-        whilst:(next <> nil):{
-            ret <- ret + next:$ga:('data') + ', '
-            next <- next:$ga:('next')
+        if:(next == nil):{
+            return:'[]'
         }
+
+        ret <- '[' + next:$ga:('data')
+        whilst:(nil <> (next <- next:$ga:('next'))):{
+            ret <+- ', ' + next:$ga:('data')
+        }
+
         return:(ret + ']')
     }
 }
+
 stack <- Stack:$init:()
 stack:push:(1.9)
+stack:push:(1.8)
+disp:(stack:$str:())
+disp:(stack:pop:())
+disp:(stack:pop:())
 disp:(stack:$str:())

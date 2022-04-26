@@ -26,8 +26,8 @@ class uclassobj(collectionobj, userobj):
                 delim = args.control.delims['applier']
                 # print(topass,group(data = delim[0], baseobj = delim[1], 
                                                    # control = args.control, args = args[1:]))
-                topass.iv.last.baseobj.evalobj(group(data = delim[0], baseobj = delim[1], 
-                                                   control = args.control, args = args[1:]), topass)
+                topass.iv.last.baseobj._evalargs(group(data = delim[0], baseobj = delim[1],
+                                                   control = args.control, args = args[1:]), topass, {}, lcls)
                 lcls.iv.last = topass.iv.last.deepcopy()
                 return lcls.iv.last
         if funcname == 'funcs':

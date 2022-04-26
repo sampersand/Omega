@@ -1,0 +1,11 @@
+func:fib:(n):{
+	return:{
+		if:(n<=1):{
+			n
+		}:{
+			fib:(n-1) + fib:(n-2)
+		}
+	}
+}
+
+disp:(fib:(10))

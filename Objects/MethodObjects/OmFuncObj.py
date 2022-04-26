@@ -1,6 +1,7 @@
-from Objects import funcobj, typeobj
+from Objects import funcobj, typeobj, floatobj
 from Group import group
 import random
+
 class omfuncobj(funcobj):
     def __init__(self, name = ''):
         super().__init__(name)
@@ -31,7 +32,9 @@ class omfuncobj(funcobj):
     #     self.__getattribute__(name)(args, lcls)
 
     def _rand(self, args, lcls):
-        lcls.iv.last = group(data = str(random.random()), control = args.control)
+        lcls.iv.last = group(data = str(random.random()),
+            baseobj=floatobj(),
+            control = args.control)
 
     def _types(self, args, lcls):
         if __debug__:
