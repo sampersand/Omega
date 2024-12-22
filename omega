@@ -1,3 +1,8 @@
-#!/bin/sh
+#!/bin/zsh
+
+if [[ $# = 2 && $1 = -e ]] then
+	exec 3<<<"$2"
+	set -- /dev/fd/3
+fi
 
 python3 ${DEBUG:--O} ./Main.py "$1"
