@@ -5,4 +5,7 @@ if [[ $# = 2 && $1 = -e ]] then
 	set -- /dev/fd/3
 fi
 
-python3 ${DEBUG:--O} ./Main.py "$1"
+oflag=
+[[ -z $DEBUG ]] && oflag=-O
+
+python3 $oflag ./Main.py "$1"
